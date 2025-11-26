@@ -1,0 +1,31 @@
+## Top-level gitignore for this project
+# Ignore common Python virtual environment directories
+venv/
+env/
+.venv/
+
+# Ignore environment variable files
+.env
+
+# Bytecode and caches
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Large raw datasets kept outside the repo
+ml_engine/data/raw/
+
+# Ignore model artifact files (joblib) created by training
+# Keep them out of git because they're large and reproducible from training
+ml_engine/models/*.joblib
+ml_engine/models/*.pkl
+*.parquet
+*.csv
+
