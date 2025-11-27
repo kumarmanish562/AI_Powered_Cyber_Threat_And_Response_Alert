@@ -1,0 +1,24 @@
+
+@import "tailwindcss";
+
+/* Custom Scrollbar for that 'Cyber' feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b; 
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6; 
+}
+
+html {
+  scroll-behavior: smooth;
+}
