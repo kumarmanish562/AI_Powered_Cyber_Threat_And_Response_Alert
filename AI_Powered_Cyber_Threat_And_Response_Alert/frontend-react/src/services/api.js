@@ -53,18 +53,32 @@ export const getSecurityLogs = async () => {
     return res.data;
 };
 
-// ... (keep existing imports and code)
-
 // NEW: Fetch network devices
 export const getNetworkDevices = async () => {
     const res = await api.get("/api/network/devices");
     return res.data;
 };
 
-// ... (keep existing imports and code)
-
 // NEW: Fetch log analytics stats
 export const getLogStats = async () => {
     const res = await api.get("/api/logs/stats");
+    return res.data;
+};
+
+// NEW: Execute Playbook
+export const executePlaybook = async () => {
+    const res = await api.post("/api/remediations/execute");
+    return res.data;
+};
+
+// NEW: Perform Remediation Action
+export const performRemediationAction = async (id, action) => {
+    const res = await api.post(`/api/remediations/${id}/action`, { action });
+    return res.data;
+};
+
+// NEW: Get Remediation Logs
+export const getRemediationLogs = async (id) => {
+    const res = await api.get(`/api/remediations/${id}/logs`);
     return res.data;
 };

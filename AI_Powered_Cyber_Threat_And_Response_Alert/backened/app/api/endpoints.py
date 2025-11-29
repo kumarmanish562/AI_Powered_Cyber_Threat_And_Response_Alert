@@ -152,20 +152,6 @@ def get_remediation_tasks(db: Session = Depends(get_db)):
             })
 
         return tasks
-
-    except Exception as e:
-        print(f"Error fetching remediations: {e}")
-        raise HTTPException(status_code=500, detail="Failed to fetch remediation tasks")
-
-
-# ============================================================
-#  NEW ENDPOINT: SECURITY LOGS
-# ============================================================
-@router.get("/logs")
-def get_security_logs(db: Session = Depends(get_db)):
-    try:
-        logs = []
-
         # 1. Convert Database Alerts into Log Entries
         alerts = db.query(Alert).order_by(Alert.timestamp.desc()).limit(15).all()
 
