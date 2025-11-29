@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
-import { getThreats } from "../services/api"; // Import the API function
+import { getThreats, performRemediationAction } from "../services/api"; // Import API functions
 import {
   ShieldAlert,
   Filter,
@@ -11,7 +11,10 @@ import {
   XCircle,
   Play,
   MoreVertical,
-  RefreshCw
+  RefreshCw,
+  Activity,
+  Globe,
+  Server
 } from "lucide-react";
 
 /**
@@ -20,13 +23,14 @@ import {
  * - Fetches live data from backend
  * - Auto-refreshes every 5 seconds
  * - Preserves unique design and interactions
+ * - Functional Actions (View Details, Run Remediation)
  */
 
 // ----- Helper components -----
 const DropdownItem = ({ icon, label, onClick }) => (
   <button
     onClick={(e) => {
-      e.stopPropagation(); 
+      e.stopPropagation();
       onClick();
     }}
     className="w-full text-left px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white flex items-center gap-3 transition-colors border-b border-slate-700/50 last:border-0"
@@ -41,31 +45,85 @@ const SeverityBadge = ({ severity }) => {
     Critical: "bg-red-500/10 text-red-400 border-red-500/20",
     High: "bg-orange-500/10 text-orange-400 border-orange-500/20",
     Medium: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-    Low: "bg-sky-500/10 text-sky-400 border-sky-500/20",
-    Default: "bg-slate-500/10 text-slate-400 border-slate-500/20",
+    Low: "bg-blue-500/10 text-blue-400 border-blue-500/20",
   };
   return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium border ${
-        classes[severity] || classes.Default
-      }`}
-    >
+    <span className={`px-2 py-1 rounded-full text-xs border ${classes[severity] || classes.Low}`}>
       {severity}
     </span>
   );
 };
 
-// ----- Main component -----
+const ThreatDetailsModal = ({ isOpen, onClose, threat }) => {
+  if (!isOpen || !threat) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <div className="bg-slate-800 p-6 rounded-lg w-full max-w-2xl m-4 border border-slate-700 shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl text-white font-bold flex items-center gap-2">
+            <ShieldAlert className="text-cyan-400" size={24} />
+            Threat Details
+          </h2>
+          <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors"><X size={20} /></button>
+        </div>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="text-xs text-slate-500 uppercase font-semibold tracking-wider">Threat Name</label>
+              <p className="text-white text-lg font-medium mt-1">{threat.name}</p>
+            </div>
+            <div>
+              <label className="text-xs text-slate-500 uppercase font-semibold tracking-wider">Severity</label>
+              <div className="mt-1"><SeverityBadge severity={threat.severity} /></div>
+            </div>
+            <div>
+              <label className="text-xs text-slate-500 uppercase font-semibold tracking-wider">Type</label>
+              <p className="text-slate-300 mt-1">{threat.type}</p>
+            </div>
+            <div>
+              <label className="text-xs text-slate-500 uppercase font-semibold tracking-wider">Status</label>
+              <p className="text-slate-300 mt-1">{threat.status}</p>
+            </div>
+            <div>
+              <label className="text-xs text-slate-500 uppercase font-semibold tracking-wider">IP Address</label>
+              <p className="text-cyan-400 font-mono mt-1">{threat.ip}</p>
+            </div>
+            <div>
+              <label className="text-xs text-slate-500 uppercase font-semibold tracking-wider">Detected At</label>
+              <p className="text-slate-300 mt-1">{threat.detected}</p>
+            </div>
+          </div>
+          <div>
+            <label className="text-xs text-slate-500 uppercase font-semibold tracking-wider">Raw Data</label>
+            <pre className="bg-[#0f172a] p-4 rounded-lg border border-slate-700 text-xs text-slate-300 overflow-auto max-h-48 mt-2 font-mono">
+              {JSON.stringify(threat, null, 2)}
+            </pre>
+          </div>
+        </div>
+        <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-slate-700/50">
+          <button onClick={onClose} className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">Close</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Threats() {
-  const [threats, setThreats] = useState([]); // Start empty, fetch real data
+  const [page, setPage] = useState(1);
+  const [activeMenuId, setActiveMenuId] = useState(null);
+
+  // Modal State
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [selectedThreat, setSelectedThreat] = useState(null);
+
+  // Missing state variables restored
+  const [threats, setThreats] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState("");
   const [severityFilter, setSeverityFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [typeFilter, setTypeFilter] = useState("All");
-  const [showFilters, setShowFilters] = useState(true);
-  const [page, setPage] = useState(1);
-  const [activeMenuId, setActiveMenuId] = useState(null);
+  const [query, setQuery] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
   const pageSize = 8; // Increased slightly for better view
 
@@ -126,19 +184,34 @@ export default function Threats() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const pageItems = filtered.slice((page - 1) * pageSize, page * pageSize);
 
-  // Action Handlers (Mock logic for now, can be connected to API later)
-  const handleAction = (id, actionType) => {
+  // Action Handlers
+  const handleAction = async (id, actionType) => {
     console.log(`Action: ${actionType} on ID: ${id}`);
-    
+    setActiveMenuId(null);
+
+    if (actionType === "View") {
+      const threat = threats.find(t => t.id === id);
+      setSelectedThreat(threat);
+      setDetailsModalOpen(true);
+      return;
+    }
+
     // Optimistic UI Update
-    if (actionType === "Remediate") {
+    if (actionType === "RunAuto" || actionType === "Remediate") {
       setThreats((prev) => prev.map((t) => (t.id === id ? { ...t, status: "Remediated" } : t)));
+      try {
+        // Assuming "Approve" maps to remediation in backend logic for now
+        await performRemediationAction(id, "Approve");
+        fetchThreatData(); // Refresh to ensure sync
+      } catch (error) {
+        console.error("Remediation failed:", error);
+        fetchThreatData(); // Revert on error
+      }
     } else if (actionType === "Investigate") {
       setThreats((prev) => prev.map((t) => (t.id === id ? { ...t, status: "Investigating" } : t)));
     } else if (actionType === "FalsePositive") {
       setThreats((prev) => prev.map((t) => (t.id === id ? { ...t, status: "False Positive" } : t)));
     }
-    setActiveMenuId(null);
   };
 
   const resetFilters = () => {
@@ -151,6 +224,12 @@ export default function Threats() {
   return (
     <div className="flex min-h-screen bg-[#0f172a] text-slate-300 font-sans">
       <Sidebar />
+
+      <ThreatDetailsModal
+        isOpen={detailsModalOpen}
+        onClose={() => setDetailsModalOpen(false)}
+        threat={selectedThreat}
+      />
 
       <main className="flex-1 p-8 overflow-y-auto h-screen">
         {/* Header */}
@@ -182,11 +261,10 @@ export default function Threats() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
-                  showFilters
-                    ? "bg-slate-800 text-white border-slate-600"
-                    : "bg-transparent text-slate-400 border-slate-700 hover:border-slate-500"
-                }`}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${showFilters
+                  ? "bg-slate-800 text-white border-slate-600"
+                  : "bg-transparent text-slate-400 border-slate-700 hover:border-slate-500"
+                  }`}
               >
                 <Filter size={16} /> Filters
               </button>
@@ -266,19 +344,19 @@ export default function Threats() {
               </thead>
               <tbody className="divide-y divide-slate-800">
                 {loading && threats.length === 0 ? (
-                   // Loading Skeleton
-                   [...Array(5)].map((_, i) => (
-                     <tr key={i} className="animate-pulse">
-                        <td className="p-5"><div className="h-4 bg-slate-800 rounded w-32"></div></td>
-                        <td className="p-5"><div className="h-4 bg-slate-800 rounded w-20"></div></td>
-                        <td className="p-5"><div className="h-4 bg-slate-800 rounded w-16"></div></td>
-                        <td className="p-5"><div className="h-4 bg-slate-800 rounded w-20"></div></td>
-                        <td className="p-5"><div className="h-4 bg-slate-800 rounded w-12"></div></td>
-                        <td className="p-5"><div className="h-4 bg-slate-800 rounded w-24"></div></td>
-                        <td className="p-5"><div className="h-4 bg-slate-800 rounded w-28"></div></td>
-                        <td className="p-5"></td>
-                     </tr>
-                   ))
+                  // Loading Skeleton
+                  [...Array(5)].map((_, i) => (
+                    <tr key={i} className="animate-pulse">
+                      <td className="p-5"><div className="h-4 bg-slate-800 rounded w-32"></div></td>
+                      <td className="p-5"><div className="h-4 bg-slate-800 rounded w-20"></div></td>
+                      <td className="p-5"><div className="h-4 bg-slate-800 rounded w-16"></div></td>
+                      <td className="p-5"><div className="h-4 bg-slate-800 rounded w-20"></div></td>
+                      <td className="p-5"><div className="h-4 bg-slate-800 rounded w-12"></div></td>
+                      <td className="p-5"><div className="h-4 bg-slate-800 rounded w-24"></div></td>
+                      <td className="p-5"><div className="h-4 bg-slate-800 rounded w-28"></div></td>
+                      <td className="p-5"></td>
+                    </tr>
+                  ))
                 ) : pageItems.length > 0 ? (
                   pageItems.map((threat) => (
                     <tr key={threat.id} className="group hover:bg-slate-800/50 transition-colors">
@@ -286,7 +364,7 @@ export default function Threats() {
                         {threat.name}
                         {/* New Indicator */}
                         {new Date(threat.detected) > new Date(Date.now() - 60000) && (
-                            <span className="ml-2 inline-block w-2 h-2 bg-cyan-500 rounded-full animate-pulse" title="Just Now"></span>
+                          <span className="ml-2 inline-block w-2 h-2 bg-cyan-500 rounded-full animate-pulse" title="Just Now"></span>
                         )}
                       </td>
                       <td className="p-5 text-slate-400">{threat.type}</td>
@@ -294,20 +372,19 @@ export default function Threats() {
                         <SeverityBadge severity={threat.severity} />
                       </td>
                       <td className="p-5">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                          threat.status === 'Active' ? 'bg-rose-500/10 text-rose-400 ring-1 ring-inset ring-rose-500/20' : 
-                          threat.status === 'Remediated' ? 'bg-emerald-500/10 text-emerald-400 ring-1 ring-inset ring-emerald-500/20' : 
-                          'bg-slate-700/30 text-slate-400 ring-1 ring-inset ring-slate-700/50'
-                        }`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${threat.status === 'Active' ? 'bg-rose-500' : threat.status === 'Remediated' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                        <span className={`px-2 py-1 rounded-full text-xs ${threat.status === 'Active' ? 'bg-red-500/20 text-red-400' :
+                            threat.status === 'Investigating' ? 'bg-yellow-500/20 text-yellow-400' :
+                              threat.status === 'Remediated' ? 'bg-green-500/20 text-green-400' :
+                                'bg-slate-500/20 text-slate-400'
+                          }`}>
                           {threat.status}
                         </span>
                       </td>
                       <td className="p-5">
                         <div className="flex items-center gap-2">
                           <div className="w-16 h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                            <div 
-                              className={`h-full rounded-full ${threat.confidence > 90 ? 'bg-red-500' : threat.confidence > 75 ? 'bg-orange-500' : 'bg-blue-500'}`} 
+                            <div
+                              className={`h-full rounded-full ${threat.confidence > 90 ? 'bg-red-500' : threat.confidence > 75 ? 'bg-orange-500' : 'bg-blue-500'}`}
                               style={{ width: `${threat.confidence}%` }}
                             />
                           </div>
@@ -316,17 +393,16 @@ export default function Threats() {
                       </td>
                       <td className="p-5 text-slate-400 font-mono text-xs text-cyan-500/80">{threat.ip}</td>
                       <td className="p-5 text-slate-400 text-xs whitespace-nowrap">{threat.detected}</td>
-                      
+
                       {/* ACTION COLUMN */}
                       <td className="p-5 text-right relative">
                         <div className="relative inline-block text-left">
                           <button
                             onClick={(e) => toggleMenu(e, threat.id)}
-                            className={`p-2 rounded-lg transition-colors ${
-                              activeMenuId === threat.id 
-                                ? "bg-cyan-500 text-black shadow-lg shadow-cyan-500/20" 
-                                : "text-slate-400 hover:text-white hover:bg-slate-700"
-                            }`}
+                            className={`p-2 rounded-lg transition-colors ${activeMenuId === threat.id
+                              ? "bg-cyan-500 text-black shadow-lg shadow-cyan-500/20"
+                              : "text-slate-400 hover:text-white hover:bg-slate-700"
+                              }`}
                           >
                             <MoreVertical size={16} />
                           </button>
@@ -335,31 +411,31 @@ export default function Threats() {
                           {activeMenuId === threat.id && (
                             <div className="absolute right-0 mt-2 w-56 bg-[#0f172a] border border-slate-700 rounded-lg shadow-2xl z-50 overflow-hidden ring-1 ring-black ring-opacity-5 animate-in fade-in zoom-in-95 duration-100 origin-top-right">
                               <div className="py-1">
-                                <DropdownItem 
-                                  icon={<Eye size={16} className="text-blue-400"/>} 
-                                  label="View Details" 
-                                  onClick={() => handleAction(threat.id, "View")} 
+                                <DropdownItem
+                                  icon={<Eye size={16} className="text-blue-400" />}
+                                  label="View Details"
+                                  onClick={() => handleAction(threat.id, "View")}
                                 />
-                                <DropdownItem 
-                                  icon={<Search size={16} className="text-yellow-400"/>} 
-                                  label="Mark Investigating" 
-                                  onClick={() => handleAction(threat.id, "Investigate")} 
+                                <DropdownItem
+                                  icon={<Search size={16} className="text-yellow-400" />}
+                                  label="Mark Investigating"
+                                  onClick={() => handleAction(threat.id, "Investigate")}
                                 />
-                                <DropdownItem 
-                                  icon={<CheckCircle size={16} className="text-emerald-400"/>} 
-                                  label="Mark Remediated" 
-                                  onClick={() => handleAction(threat.id, "Remediate")} 
+                                <DropdownItem
+                                  icon={<CheckCircle size={16} className="text-emerald-400" />}
+                                  label="Mark Remediated"
+                                  onClick={() => handleAction(threat.id, "Remediate")}
                                 />
-                                <DropdownItem 
-                                  icon={<XCircle size={16} className="text-rose-400"/>} 
-                                  label="False Positive" 
-                                  onClick={() => handleAction(threat.id, "FalsePositive")} 
+                                <DropdownItem
+                                  icon={<XCircle size={16} className="text-rose-400" />}
+                                  label="False Positive"
+                                  onClick={() => handleAction(threat.id, "FalsePositive")}
                                 />
                                 <div className="border-t border-slate-700/50 my-1"></div>
-                                <DropdownItem 
-                                  icon={<Play size={16} className="text-cyan-400"/>} 
-                                  label="Run Remediation" 
-                                  onClick={() => handleAction(threat.id, "RunAuto")} 
+                                <DropdownItem
+                                  icon={<Play size={16} className="text-cyan-400" />}
+                                  label="Run Remediation"
+                                  onClick={() => handleAction(threat.id, "RunAuto")}
                                 />
                               </div>
                             </div>
@@ -372,8 +448,8 @@ export default function Threats() {
                   <tr>
                     <td colSpan="8" className="p-12 text-center text-slate-500">
                       <div className="flex flex-col items-center justify-center gap-3">
-                         <Search size={32} className="opacity-20" />
-                         <p>No threats found matching your filters.</p>
+                        <Search size={32} className="opacity-20" />
+                        <p>No threats found matching your filters.</p>
                       </div>
                     </td>
                   </tr>
@@ -406,8 +482,8 @@ export default function Threats() {
               </button>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </div >
+      </main >
+    </div >
   );
 }

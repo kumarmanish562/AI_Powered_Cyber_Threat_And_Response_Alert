@@ -152,58 +152,6 @@ def get_remediation_tasks(db: Session = Depends(get_db)):
             })
 
         return tasks
-        # 1. Convert Database Alerts into Log Entries
-        alerts = db.query(Alert).order_by(Alert.timestamp.desc()).limit(15).all()
-
-        for alert in alerts:
-            logs.append({
-                "id": f"LOG-{alert.id}",
-                "timestamp": alert.timestamp,
-                "level": "ERROR" if alert.severity in ["Critical", "High"] else "WARNING",
-                "event": f"Threat: {alert.prediction}",
-                "source": "AI Detection Engine",
-                "user": "SYSTEM",
-                "ip": alert.src_ip,
-                "message": f"Automated block triggered for {alert.prediction} (Confidence: {alert.confidence:.2f})",
-                "trace_id": f"TR-{alert.id}-{str(uuid.uuid4())[:4]}"
-            })
-
-        # 2. Simulated System Events
-        # FIX: Use timezone-aware datetime (UTC) to match database Alert timestamps
-        current_time = datetime.now(timezone.utc)
-
-        system_events = [
-            {"ev": "User Login Success", "src": "Auth Service", "usr": "admin", "lvl": "SUCCESS", "msg": "Authenticated via MFA"},
-            {"ev": "File Accessed", "src": "File Share", "usr": "j.doe", "lvl": "INFO", "msg": "Read access to /confidential/report.pdf"},
-            {"ev": "Health Check", "src": "Load Balancer", "usr": "SYSTEM", "lvl": "INFO", "msg": "Node healthy"},
-            {"ev": "Config Change", "src": "System Settings", "usr": "admin", "lvl": "WARNING", "msg": "Firewall rule updated"},
-            {"ev": "API Request", "src": "Gateway", "usr": "api_client", "lvl": "INFO", "msg": "POST /api/v1/data returned 200"},
-        ]
-
-        for i in range(10):
-            evt = random.choice(system_events)
-            # Subtracting timedelta from an aware datetime results in an aware datetime
-            log_time = current_time - timedelta(
-                minutes=random.randint(0, 20),
-                seconds=random.randint(0, 59)
-            )
-
-            logs.append({
-                "id": f"SYS-{random.randint(1000, 9999)}",
-                "timestamp": log_time,
-                "level": evt["lvl"],
-                "event": evt["ev"],
-                "source": evt["src"],
-                "user": evt["usr"],
-                "ip": f"192.168.1.{random.randint(2, 254)}",
-                "message": evt["msg"],
-                "trace_id": str(uuid.uuid4())[:8]
-            })
-
-        # Sort logs newest first (Both are now timezone-aware)
-        logs.sort(key=lambda x: x["timestamp"], reverse=True)
-
-        return logs
 
     except Exception as e:
         print(f"Error fetching logs: {e}")
@@ -335,3 +283,90 @@ def get_log_stats():
     except Exception as e:
         print(f"Error fetching log stats: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch log stats")
+
+
+# ============================================================
+#  NEW ENDPOINT: EXECUTE PLAYBOOK (SIMULATION)
+# ============================================================
+class RemediationAction(BaseModel):
+    action: str
+
+@router.post("/remediations/execute")
+def execute_playbook(db: Session = Depends(get_db)):
+    try:
+        # Simulate creating a new critical alert that needs remediation
+        new_alert = Alert(
+            src_ip=f"192.168.1.{random.randint(100, 200)}",
+            prediction="Attack",
+            confidence=0.98,
+            severity="Critical",
+            status="Active",
+            timestamp=datetime.now(timezone.utc)
+        )
+        db.add(new_alert)
+        db.commit()
+        db.refresh(new_alert)
+        
+        return {"message": "Playbook executed successfully", "task_id": new_alert.id}
+    except Exception as e:
+        print(f"Error executing playbook: {e}")
+        raise HTTPException(status_code=500, detail="Failed to execute playbook")
+
+
+# ============================================================
+#  NEW ENDPOINT: REMEDIATION ACTIONS
+# ============================================================
+@router.post("/remediations/{id}/action")
+def remediation_action(id: int, action_data: RemediationAction, db: Session = Depends(get_db)):
+    try:
+        alert = db.query(Alert).filter(Alert.id == id).first()
+        if not alert:
+            raise HTTPException(status_code=404, detail="Task not found")
+
+        action = action_data.action
+        
+        if action == "Approve":
+            alert.status = "Remediated"
+        elif action == "Retry":
+            alert.status = "Active" # Reset to active to simulate retry
+        elif action == "Rollback":
+            alert.status = "Active" # Rollback to active
+        elif action == "Stop":
+            alert.status = "Safe" # Mark as safe/stopped
+            
+        db.commit()
+        return {"message": f"Action {action} performed successfully", "status": alert.status}
+    except Exception as e:
+        print(f"Error performing action: {e}")
+        raise HTTPException(status_code=500, detail="Failed to perform action")
+
+
+# ============================================================
+#  NEW ENDPOINT: SECURITY LOGS FOR A TASK
+# ============================================================
+@router.get("/remediations/{id}/logs")
+def get_remediation_logs(id: int):
+    # Simulate logs for a specific task
+    logs = []
+    base_time = datetime.now(timezone.utc)
+    
+    steps = [
+        ("INFO", "Initializing playbook execution..."),
+        ("INFO", "Scanning target IP address..."),
+        ("WARNING", "High severity threat detected."),
+        ("INFO", "Isolating host from network..."),
+        ("SUCCESS", "Host isolated successfully."),
+        ("INFO", "Applying firewall rules..."),
+        ("SUCCESS", "Firewall rules updated."),
+        ("INFO", "Verifying system integrity..."),
+        ("SUCCESS", "Remediation complete.")
+    ]
+    
+    for i, (level, msg) in enumerate(steps):
+        logs.append({
+            "timestamp": base_time - timedelta(seconds=(len(steps) - i) * 5),
+            "level": level,
+            "message": msg
+        })
+        
+    return logs
