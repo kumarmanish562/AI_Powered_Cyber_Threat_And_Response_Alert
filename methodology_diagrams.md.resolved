@@ -1,0 +1,74 @@
+# Project Methodology Diagrams
+
+## 1. System Architecture
+This diagram illustrates the high-level components of the AI-Powered Cyber Threat and Response Alert System.
+
+```mermaid
+graph TD
+    User[User / Admin] -->|HTTPS| Frontend[React Frontend Dashboard]
+    Frontend -->|REST API| API[FastAPI Backend]
+    
+    subgraph Backend System
+        API -->|Auth & Data| DB[(PostgreSQL/SQLite)]
+        API -->|Traffic Data| ML[ML Engine Service]
+        API -->|Notifications| Email[Email Service]
+    end
+    
+    subgraph Machine Learning
+        ML -->|Load| Model[Random Forest Model]
+        ML -->|Preprocess| Scaler[Data Scaler]
+    end
+    
+    ML -->|Prediction| API
+    API -->|Alerts| Frontend
+```
+
+## 2. Threat Detection Data Flow
+This diagram details the step-by-step process of how network traffic is analyzed and threats are detected.
+
+```mermaid
+sequenceDiagram
+    participant Network as Network Traffic
+    participant API as API Endpoint
+    participant ML as ML Service
+    participant DB as Database
+    participant Alert as Alert System
+
+    Network->>API: Send Traffic Data (IP, Ports, Protocols)
+    API->>ML: Forward Data for Analysis
+    activate ML
+    ML->>ML: Preprocess Data (Scaling/Encoding)
+    ML->>ML: Model Inference (Random Forest)
+    ML-->>API: Return Prediction (Safe/Attack) & Confidence
+    deactivate ML
+    
+    API->>DB: Log Alert/Event
+    
+    alt Is Threat Detected?
+        API->>Alert: Trigger Response (Email/SMS)
+        Alert-->>User: Send Notification
+        API->>Network: Automated Block (Simulated)
+    end
+    
+    API-->>Network: Response (200 OK)
+```
+
+## 3. Machine Learning Pipeline
+This diagram shows the lifecycle of the machine learning model from training to deployment.
+
+```mermaid
+flowchart LR
+    subgraph Training Phase
+        Raw[Raw Dataset (NSL-KDD)] --> Clean[Data Cleaning]
+        Clean --> Feature[Feature Selection]
+        Feature --> Train[Train Random Forest]
+        Train --> Eval[Evaluate Model]
+        Eval --> Save[Save .joblib Model]
+    end
+    
+    subgraph Inference Phase
+        Live[Live Traffic] --> Load[Load Model]
+        Load --> Predict[Real-time Prediction]
+        Predict --> Action[Threat Response]
+    end
+```

@@ -10,6 +10,7 @@ import SecurityLogs from './pages/SecurityLogs';
 import LogAnalysis from './pages/LogAnalysis';
 import NetworkScan from './pages/NetworkScan';
 import Settings from './pages/Settings';
+import Meetteam from './components/Meetteam'; // <--- Import Meetteam
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/analysis" element={<LogAnalysis />} /> {/* <--- Add Route */}
         <Route path="/network" element={<NetworkScan />} /> {/* <--- Add Route */}
         <Route path="/settings" element={<Settings />} /> {/* <--- Add Route */}
+        <Route path="/meet-team" element={<Meetteam />} /> {/* <--- Add Route */}
       </Routes>
     </Router>
   );

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Target, Users, Award } from "lucide-react";
 
 const stats = [
@@ -12,7 +13,7 @@ const About = () => {
     <section id="about" className="py-24 bg-[#0b1120] border-t border-slate-900">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
+
           {/* Text Content */}
           <div>
             <h2 className="text-blue-500 font-bold uppercase tracking-wide text-sm mb-2">About Us</h2>
@@ -25,10 +26,10 @@ const About = () => {
             <p className="text-slate-400 text-lg mb-8 leading-relaxed">
               We combine state-of-the-art machine learning with deep packet inspection to predict attacks before they happen, ensuring your infrastructure remains resilient against the threats of tomorrow.
             </p>
-            
-            <button className="text-blue-400 font-semibold hover:text-blue-300 flex items-center gap-2 group transition-colors">
+
+            <Link to="/meet-team" className="text-blue-400 font-semibold hover:text-blue-300 flex items-center gap-2 group transition-colors">
               Meet the Team <span className="group-hover:translate-x-1 transition-transform">→</span>
-            </button>
+            </Link>
           </div>
 
           {/* Stats Grid */}
