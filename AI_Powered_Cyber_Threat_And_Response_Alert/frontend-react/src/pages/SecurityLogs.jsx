@@ -22,6 +22,7 @@ import {
  * - Fetches data from backend
  * - Functional CSV Export
  * - Enhanced UI design
+ * - Time Range Filtering
  */
 
 // ----- Helper Components -----
@@ -49,6 +50,7 @@ export default function SecurityLogs() {
   const [expandedRow, setExpandedRow] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [levelFilter, setLevelFilter] = useState("ALL");
+  const [timeRange, setTimeRange] = useState("24h");
   const [isLive, setIsLive] = useState(true);
 
   // --- 1. Real-Time Data Fetching ---
@@ -77,23 +79,34 @@ export default function SecurityLogs() {
 
   // --- 2. Filter Logic ---
   const filteredLogs = useMemo(() => {
+    const now = new Date();
+    const timeRanges = {
+      "1h": 60 * 60 * 1000,
+      "6h": 6 * 60 * 60 * 1000,
+      "24h": 24 * 60 * 60 * 1000,
+      "7d": 7 * 24 * 60 * 60 * 1000,
+    };
+
     return logs.filter(log => {
-      const matchesSearch = 
-        log.event.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      const matchesSearch =
+        log.event.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.ip.includes(searchTerm);
-      
+
       const matchesLevel = levelFilter === "ALL" || log.level === levelFilter;
-      
-      return matchesSearch && matchesLevel;
+
+      const logTime = new Date(log.timestamp);
+      const matchesTime = (now - logTime) <= timeRanges[timeRange];
+
+      return matchesSearch && matchesLevel && matchesTime;
     });
-  }, [logs, searchTerm, levelFilter]);
+  }, [logs, searchTerm, levelFilter, timeRange]);
 
   // --- 3. CSV Export Functionality ---
   const handleExportCSV = () => {
     // Define headers
     const headers = ["ID", "Timestamp", "Level", "Event", "Source", "User", "IP Address", "Message"];
-    
+
     // Map filtered data to CSV rows
     const rows = filteredLogs.map(log => [
       log.id,
@@ -108,7 +121,7 @@ export default function SecurityLogs() {
 
     // Combine headers and rows
     const csvContent = [
-      headers.join(","), 
+      headers.join(","),
       ...rows.map(row => row.join(","))
     ].join("\n");
 
@@ -117,7 +130,7 @@ export default function SecurityLogs() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `security_logs_${new Date().toISOString().slice(0,10)}.csv`);
+    link.setAttribute("download", `security_logs_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -157,18 +170,17 @@ export default function SecurityLogs() {
           </div>
 
           <div className="flex gap-3">
-             <button 
+            <button
               onClick={() => setIsLive(!isLive)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold border transition-all ${
-                isLive 
-                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]' 
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold border transition-all ${isLive
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
                   : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
-              }`}
+                }`}
             >
               <RefreshCw size={14} className={isLive ? "animate-spin" : ""} />
               {isLive ? "LIVE STREAM ON" : "PAUSED"}
             </button>
-            <button 
+            <button
               onClick={handleExportCSV}
               className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 hover:text-white text-slate-300 text-sm font-medium rounded-lg border border-slate-700 transition-colors shadow-lg"
             >
@@ -179,13 +191,13 @@ export default function SecurityLogs() {
 
         {/* --- Controls / Filters --- */}
         <div className="px-6 py-4 bg-[#1e293b]/50 backdrop-blur-sm border-b border-slate-800 shrink-0 grid grid-cols-1 md:grid-cols-12 gap-4 relative z-10">
-          
+
           {/* Search */}
           <div className="md:col-span-5 relative">
             <Search className="absolute left-3 top-2.5 text-slate-500" size={16} />
-            <input 
-              type="text" 
-              placeholder="Search by Event, Source, or IP..." 
+            <input
+              type="text"
+              placeholder="Search by Event, Source, or IP..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-[#0f172a] border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition"
@@ -194,9 +206,9 @@ export default function SecurityLogs() {
 
           {/* Level Filter */}
           <div className="md:col-span-3">
-             <div className="relative">
+            <div className="relative">
               <Filter className="absolute left-3 top-2.5 text-slate-500" size={16} />
-              <select 
+              <select
                 value={levelFilter}
                 onChange={(e) => setLevelFilter(e.target.value)}
                 className="w-full bg-[#0f172a] border border-slate-700 rounded-lg pl-9 pr-8 py-2 text-sm text-slate-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none appearance-none cursor-pointer"
@@ -208,16 +220,24 @@ export default function SecurityLogs() {
                 <option value="SUCCESS">Success</option>
               </select>
               <ChevronDown className="absolute right-3 top-3 text-slate-500 pointer-events-none" size={14} />
-             </div>
+            </div>
           </div>
 
-           {/* Date Picker Mock */}
-           <div className="md:col-span-4">
+          {/* Time Range Filter */}
+          <div className="md:col-span-4">
             <div className="relative w-full">
               <Calendar className="absolute left-3 top-2.5 text-slate-500" size={16} />
-              <button className="w-full text-left bg-[#0f172a] border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-400 hover:border-slate-500 transition">
-                Last 24 Hours
-              </button>
+              <select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+                className="w-full bg-[#0f172a] border border-slate-700 rounded-lg pl-9 pr-8 py-2 text-sm text-slate-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none appearance-none cursor-pointer"
+              >
+                <option value="1h">Last 1 Hour</option>
+                <option value="6h">Last 6 Hours</option>
+                <option value="24h">Last 24 Hours</option>
+                <option value="7d">Last 7 Days</option>
+              </select>
+              <ChevronDown className="absolute right-3 top-3 text-slate-500 pointer-events-none" size={14} />
             </div>
           </div>
         </div>
@@ -238,29 +258,28 @@ export default function SecurityLogs() {
             </thead>
             <tbody className="divide-y divide-slate-800 text-sm">
               {loading && logs.length === 0 ? (
-                 // Loading Skeleton
-                 [...Array(10)].map((_, i) => (
-                    <tr key={i} className="animate-pulse">
-                        <td className="p-4"><div className="w-4 h-4 bg-slate-800 rounded"></div></td>
-                        <td className="p-4"><div className="w-32 h-4 bg-slate-800 rounded"></div></td>
-                        <td className="p-4"><div className="w-16 h-4 bg-slate-800 rounded"></div></td>
-                        <td className="p-4"><div className="w-48 h-4 bg-slate-800 rounded"></div></td>
-                        <td className="p-4"><div className="w-24 h-4 bg-slate-800 rounded"></div></td>
-                        <td className="p-4"><div className="w-20 h-4 bg-slate-800 rounded"></div></td>
-                        <td className="p-4"><div className="w-32 h-4 bg-slate-800 rounded"></div></td>
-                    </tr>
-                 ))
+                // Loading Skeleton
+                [...Array(10)].map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="p-4"><div className="w-4 h-4 bg-slate-800 rounded"></div></td>
+                    <td className="p-4"><div className="w-32 h-4 bg-slate-800 rounded"></div></td>
+                    <td className="p-4"><div className="w-16 h-4 bg-slate-800 rounded"></div></td>
+                    <td className="p-4"><div className="w-48 h-4 bg-slate-800 rounded"></div></td>
+                    <td className="p-4"><div className="w-24 h-4 bg-slate-800 rounded"></div></td>
+                    <td className="p-4"><div className="w-20 h-4 bg-slate-800 rounded"></div></td>
+                    <td className="p-4"><div className="w-32 h-4 bg-slate-800 rounded"></div></td>
+                  </tr>
+                ))
               ) : (
                 filteredLogs.map((log) => (
                   <React.Fragment key={log.id}>
                     {/* Main Row */}
-                    <tr 
+                    <tr
                       onClick={() => toggleExpand(log.id)}
-                      className={`cursor-pointer transition-colors border-l-2 ${
-                        expandedRow === log.id 
-                          ? "bg-slate-800/60 border-l-blue-500" 
+                      className={`cursor-pointer transition-colors border-l-2 ${expandedRow === log.id
+                          ? "bg-slate-800/60 border-l-blue-500"
                           : "hover:bg-slate-800/30 border-l-transparent"
-                      }`}
+                        }`}
                     >
                       <td className="p-4 text-slate-500">
                         {expandedRow === log.id ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
@@ -269,16 +288,16 @@ export default function SecurityLogs() {
                       <td className="p-4"><LogLevelBadge level={log.level} /></td>
                       <td className="p-4 font-medium text-slate-200">
                         <div className="flex items-center gap-2">
-                           {log.level === 'ERROR' && <Shield size={14} className="text-red-400"/>}
-                           {log.level === 'SUCCESS' && <Activity size={14} className="text-emerald-400"/>}
-                           {log.event}
+                          {log.level === 'ERROR' && <Shield size={14} className="text-red-400" />}
+                          {log.level === 'SUCCESS' && <Activity size={14} className="text-emerald-400" />}
+                          {log.event}
                         </div>
                       </td>
                       <td className="p-4 text-slate-400">{log.source}</td>
                       <td className="p-4 text-slate-300">{log.user}</td>
                       <td className="p-4 text-right font-mono text-xs text-cyan-500/80">{log.ip}</td>
                     </tr>
-  
+
                     {/* Expanded Detail Row */}
                     {expandedRow === log.id && (
                       <tr className="bg-[#0b1120] animate-in slide-in-from-top-2 duration-200">
@@ -286,19 +305,19 @@ export default function SecurityLogs() {
                           <div className="border-y border-slate-800/50 p-6 shadow-inner relative overflow-hidden">
                             {/* Decorative glow for expanded row */}
                             <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-blue-500 to-transparent"></div>
-                            
+
                             <div className="flex justify-between items-start mb-4">
                               <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                                 <Server size={14} /> Log Trace Details
                               </h4>
-                              <button 
+                              <button
                                 onClick={() => handleCopy(JSON.stringify(log, null, 2))}
                                 className="flex items-center gap-2 text-xs text-cyan-400 hover:text-cyan-300 transition-colors border border-cyan-900/50 px-2 py-1 rounded bg-cyan-950/30"
                               >
                                 <Copy size={12} /> Copy JSON
                               </button>
                             </div>
-                            
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                               <div className="font-mono text-xs space-y-3 text-slate-400">
                                 <p className="flex justify-between border-b border-slate-800 pb-1"><span className="text-slate-500">ID</span> <span className="text-slate-200">{log.id}</span></p>
@@ -307,10 +326,10 @@ export default function SecurityLogs() {
                                 <p className="flex justify-between border-b border-slate-800 pb-1"><span className="text-slate-500">User</span> <span className="text-white">{log.user}</span></p>
                                 <p className="flex justify-between border-b border-slate-800 pb-1"><span className="text-slate-500">Trace ID</span> <span className="text-cyan-400">{log.trace_id}</span></p>
                               </div>
-                              
+
                               {/* Raw Message Block */}
                               <div className="bg-[#020408] rounded-lg p-4 border border-slate-800 font-mono text-xs text-emerald-400 overflow-x-auto shadow-inner">
-  {`{
+                                {`{
     "timestamp": "${log.timestamp}",
     "level": "${log.level}",
     "ip_address": "${log.ip}",
@@ -326,7 +345,7 @@ export default function SecurityLogs() {
                   </React.Fragment>
                 ))
               )}
-              
+
               {!loading && filteredLogs.length === 0 && (
                 <tr>
                   <td colSpan="7" className="p-12 text-center text-slate-500">
@@ -340,7 +359,7 @@ export default function SecurityLogs() {
             </tbody>
           </table>
         </div>
-        
+
         {/* Footer Stats */}
         <div className="p-3 bg-[#1e293b] border-t border-slate-800 flex justify-between items-center text-xs text-slate-500 shrink-0 z-20">
           <span>Total Records: {logs.length}</span>
