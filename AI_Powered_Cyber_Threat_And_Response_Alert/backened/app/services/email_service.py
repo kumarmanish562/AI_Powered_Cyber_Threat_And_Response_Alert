@@ -92,3 +92,40 @@ async def send_password_reset_email(email: str, otp: str):
 
     except Exception as e:
         logger.error(f"❌ Failed to send Reset OTP: {e}")
+
+async def send_newsletter_subscription_email(email: str):
+    """
+    Sends Newsletter Subscription Confirmation
+    """
+    try:
+        html = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
+            <div style="background-color: #10b981; padding: 20px; text-align: center;">
+                <img src="https://img.icons8.com/color/96/000000/security-checked--v1.png" alt="CyberSentinels Logo" style="width: 64px; height: 64px; margin-bottom: 10px;">
+                <h1 style="color: white; margin: 0; font-size: 24px;">Subscription Confirmed!</h1>
+            </div>
+            <div style="padding: 30px; background-color: #f8fafc; text-align: center;">
+                <p style="color: #475569; margin-bottom: 20px;">Thank you for subscribing to CyberSentinels updates.</p>
+                
+                <div style="background-color: #ecfdf5; color: #047857; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    You will now receive the latest threat intelligence and security alerts directly to your inbox.
+                </div>
+                
+                <p style="color: #94a3b8; font-size: 12px; margin-top: 20px;">If you didn't subscribe, please ignore this email.</p>
+            </div>
+        </div>
+        """
+        
+        message = MessageSchema(
+            subject="✅ Subscription Confirmed - CyberSentinels",
+            recipients=[email],
+            body=html,
+            subtype=MessageType.html
+        )
+
+        fm = FastMail(conf)
+        await fm.send_message(message)
+        logger.info(f"📧 Newsletter confirmation sent to {email}")
+
+    except Exception as e:
+        logger.error(f"❌ Failed to send Newsletter Confirmation: {e}")

@@ -10,7 +10,13 @@ import SecurityLogs from './pages/SecurityLogs';
 import LogAnalysis from './pages/LogAnalysis';
 import NetworkScan from './pages/NetworkScan';
 import Settings from './pages/Settings';
-import Meetteam from './components/Meetteam'; // <--- Import Meetteam
+import Meetteam from './components/Meetteam';
+import ApiDocumentation from './components/ApiDocumentation'; // <--- Import
+import StayUpdated from './components/StayUpdated'; // <--- Import
+import ProtectedRoute from './components/ProtectedRoute'; // <--- Import
+import Careers from './components/Careers';
+import SecurityResearch from './components/SecurityResearch';
+import Contact from './components/Contact';
 
 function App() {
   return (
@@ -19,14 +25,19 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} /> {/* <--- Add Route */}
-        <Route path="/threats" element={<Threats />} /> {/* <--- Add Route */}
-        <Route path="/remediation" element={<Remediation />} /> {/* <--- Add Route */}
-        <Route path="/logs" element={<SecurityLogs />} /> {/* <--- Add Route */}
-        <Route path="/analysis" element={<LogAnalysis />} /> {/* <--- Add Route */}
-        <Route path="/network" element={<NetworkScan />} /> {/* <--- Add Route */}
-        <Route path="/settings" element={<Settings />} /> {/* <--- Add Route */}
-        <Route path="/meet-team" element={<Meetteam />} /> {/* <--- Add Route */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/threats" element={<ProtectedRoute><Threats /></ProtectedRoute>} />
+        <Route path="/remediation" element={<ProtectedRoute><Remediation /></ProtectedRoute>} />
+        <Route path="/logs" element={<ProtectedRoute><SecurityLogs /></ProtectedRoute>} />
+        <Route path="/analysis" element={<ProtectedRoute><LogAnalysis /></ProtectedRoute>} />
+        <Route path="/network" element={<ProtectedRoute><NetworkScan /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="/meet-team" element={<Meetteam />} />
+        <Route path="/api-docs" element={<ApiDocumentation />} /> {/* <--- Add Route */}
+        <Route path="/stay-updated" element={<StayUpdated />} /> {/* <--- Add Route */}
+        <Route path="/careers" element={<Careers />} />
+        <Route path="/research" element={<SecurityResearch />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
   );

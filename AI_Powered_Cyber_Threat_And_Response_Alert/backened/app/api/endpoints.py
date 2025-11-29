@@ -5,12 +5,13 @@ from app.db.session import get_db
 from app.db.models import Alert
 from app.schemas.traffic import TrafficData
 from app.services.ml_service import ml_engine
-from app.services.email_service import send_alert_email
-from datetime import datetime, timedelta, timezone  # <--- Updated Import
+from app.services.email_service import send_alert_email, send_newsletter_subscription_email
+from datetime import datetime, timedelta, timezone
 import traceback
 from typing import List
 import random
 import uuid
+from pydantic import BaseModel, EmailStr
 
 router = APIRouter()
 
@@ -261,8 +262,33 @@ def get_network_devices():
     except Exception as e:
         print(f"Error fetching network devices: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch network devices")
-    
-    # --- NEW ENDPOINT: LOG ANALYTICS ---
+
+
+# ============================================================
+#  NEWSLETTER SUBSCRIPTION
+# ============================================================
+class SubscriptionRequest(BaseModel):
+    email: EmailStr
+
+@router.post("/subscribe")
+async def subscribe_newsletter(
+    request: SubscriptionRequest, 
+    background_tasks: BackgroundTasks
+):
+    try:
+        # In a real app, you'd save this to a database
+        print(f"New subscriber: {request.email}")
+        
+        # Send confirmation email
+        background_tasks.add_task(send_newsletter_subscription_email, request.email)
+        
+        return {"message": "Subscription successful"}
+    except Exception as e:
+        print(f"Error subscribing: {e}")
+        raise HTTPException(status_code=500, detail="Failed to subscribe")
+
+
+# --- NEW ENDPOINT: LOG ANALYTICS ---
 @router.get("/logs/stats")
 def get_log_stats():
     """
