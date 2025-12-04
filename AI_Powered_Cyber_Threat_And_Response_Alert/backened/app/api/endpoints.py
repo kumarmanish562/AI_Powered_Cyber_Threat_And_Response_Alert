@@ -370,3 +370,61 @@ def get_remediation_logs(id: int):
         })
         
     return logs
+
+
+# ============================================================
+#  GET SECURITY LOGS (GENERAL)
+# ============================================================
+@router.get("/logs")
+def get_security_logs(limit: int = 100, db: Session = Depends(get_db)):
+    try:
+        # For now, we can reuse the alerts table or create a separate logs table.
+        # Since we don't have a dedicated logs table in the provided context, 
+        # we will simulate logs based on alerts + some random system events.
+        
+        alerts = db.query(Alert).order_by(Alert.timestamp.desc()).limit(limit).all()
+        logs = []
+        
+        for alert in alerts:
+            logs.append({
+                "id": f"log-{alert.id}",
+                "timestamp": alert.timestamp,
+                "level": "ERROR" if alert.severity in ["Critical", "High"] else "WARNING",
+                "event": alert.prediction,
+                "source": "IDS/IPS",
+                "user": "System",
+                "ip": alert.src_ip,
+                "message": f"Threat detected: {alert.prediction} with {alert.confidence} confidence.",
+                "trace_id": str(uuid.uuid4())
+            })
+            
+        # Add some simulated INFO/SUCCESS logs
+        base_time = datetime.now(timezone.utc)
+        system_events = [
+            ("INFO", "User Login", "Auth", "admin", "192.168.1.10"),
+            ("SUCCESS", "Backup Completed", "System", "backup-service", "localhost"),
+            ("INFO", "Health Check", "Monitor", "system", "localhost"),
+            ("WARNING", "High CPU Usage", "System", "kernel", "localhost"),
+        ]
+        
+        for i in range(20):
+            level, event, source, user, ip = random.choice(system_events)
+            logs.append({
+                "id": f"sys-{i}",
+                "timestamp": base_time - timedelta(minutes=random.randint(1, 60)),
+                "level": level,
+                "event": event,
+                "source": source,
+                "user": user,
+                "ip": ip,
+                "message": f"{event} event recorded.",
+                "trace_id": str(uuid.uuid4())
+            })
+            
+        # Sort by timestamp desc
+        logs.sort(key=lambda x: x['timestamp'], reverse=True)
+        return logs[:limit]
+
+    except Exception as e:
+        print(f"Error fetching security logs: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch security logs")

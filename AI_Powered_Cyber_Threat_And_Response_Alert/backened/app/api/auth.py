@@ -140,6 +140,56 @@ def verify_user(data: UserVerify, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Account verified successfully"}
 
+# --- FORGOT PASSWORD ---
+@router.post("/forgot-password")
+async def forgot_password(
+    request: ForgotPasswordRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.email == request.email).first()
+    if not user:
+        # We generally don't want to reveal if a user exists, but for this internal tool it might be fine.
+        # Standard practice: return 200 even if user not found, or specific error.
+        # Let's return 404 for now as per typical internal tool logic, or just return success to avoid enumeration.
+        # Given the context, let's be helpful.
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Generate OTP
+    otp_code = "".join([str(random.randint(0, 9)) for _ in range(6)])
+    user.otp = otp_code
+    user.otp_expiry = datetime.now(timezone.utc) + timedelta(minutes=15)
+    db.commit()
+    
+    # Send Email
+    background_tasks.add_task(send_password_reset_email, user.email, otp_code)
+    
+    return {"message": "Password reset OTP sent to your email"}
+
+# --- RESET PASSWORD ---
+@router.post("/reset-password")
+def reset_password(
+    request: ResetPasswordRequest,
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.email == request.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    if not user.otp or user.otp != request.otp:
+        raise HTTPException(status_code=400, detail="Invalid OTP")
+        
+    if user.otp_expiry and datetime.now(timezone.utc) > user.otp_expiry:
+        raise HTTPException(status_code=400, detail="OTP has expired")
+        
+    # Reset Password
+    user.hashed_password = get_password_hash(request.new_password)
+    user.otp = None
+    user.otp_expiry = None
+    db.commit()
+    
+    return {"message": "Password has been reset successfully"}
+
 # --- ADD THIS NEW ENDPOINT ---
 @router.get("/me/mfa/setup")
 def setup_mfa(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
