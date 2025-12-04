@@ -1,180 +1,402 @@
-import React, { useState } from 'react';
-import { ArrowLeft, User, Lock, KeyRound, Check, Shield } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowLeft, User, Lock, KeyRound, CheckCircle2, Shield, ChevronRight, AlertCircle, Fingerprint, ScanEye, Terminal } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-
-const API = 'http://localhost:8000';
+import gsap from 'gsap';
+import Navbar from '../components/Home/Navbar';
+import Footer from '../components/Home/Footer';
+import { forgotPassword, login } from '../services/api';
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const containerRef = useRef(null);
+  const formRef = useRef(null);
+  const imageRef = useRef(null);
+
   const from = location.state?.from || '/dashboard';
   const [view, setView] = useState('login');
 
-  // Login States
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [mfaCode, setMfaCode] = useState(''); // New State
-  const [showMfaInput, setShowMfaInput] = useState(false); // New State
+  const [mfaCode, setMfaCode] = useState('');
+  const [showMfaInput, setShowMfaInput] = useState(false);
 
-  // UI States
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [resetSent, setResetSent] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  // --- 1. REAL LOGIN HANDLER ---
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(imageRef.current, {
+        x: -100,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power3.out"
+      });
+
+      gsap.from(formRef.current, {
+        x: 100,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power3.out",
+        delay: 0.2
+      });
+
+      gsap.from(".anim-input", {
+        y: 20,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "back.out(1.2)",
+        delay: 0.6
+      });
+
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(".view-content",
+        { opacity: 0, x: 20 },
+        { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }
+      );
+    }, formRef);
+    return () => ctx.revert();
+  }, [view, showMfaInput]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
     try {
-      const resp = await fetch(`${API}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, mfa_code: mfaCode }),
-      });
-
-      const data = await resp.json();
-
-      if (!resp.ok) {
-        // DETECT MFA REQUIREMENT
-        if (data.detail === "MFA_REQUIRED") {
-          setShowMfaInput(true);
-          setLoading(false);
-          return;
-        }
-        throw new Error(data.detail || 'Invalid credentials');
-      }
-
+      const data = await login({ email, password, mfa_code: mfaCode });
       localStorage.setItem('token', data.access_token);
-      navigate(from);
+
+      setSuccess(true);
+      setTimeout(() => navigate(from), 2000);
 
     } catch (err) {
-      setError(String(err.message));
-      if (!showMfaInput) setShowMfaInput(false);
+      if (err.response && err.response.status === 403 && err.response.data.detail === "MFA_REQUIRED") {
+        setShowMfaInput(true);
+        setLoading(false);
+        return;
+      }
+
+      const errorMessage = err.response?.data?.detail || err.message || 'Invalid credentials';
+      setError(errorMessage);
+
     } finally {
-      setLoading(false);
+      if (!showMfaInput) setLoading(false);
     }
   };
 
-  // --- 2. REAL FORGOT PASSWORD HANDLER ---
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const resp = await fetch(`${API}/auth/forgot-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      if (!resp.ok) throw new Error("Failed");
-      setResetSent(true);
+      await forgotPassword(email);
+      navigate('/reset-password', { state: { email } });
     } catch (err) {
-      // We simulate success for security reasons even if API fails/user not found
-      setResetSent(true);
+      navigate('/reset-password', { state: { email } });
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
-        <div className="absolute top-20 left-20 w-48 h-48 bg-blue-600 rounded-full blur-[80px]"></div>
-        <div className="absolute bottom-20 right-20 w-48 h-48 bg-cyan-600 rounded-full blur-[80px]"></div>
+  if (success) {
+    return (
+      <div className="min-h-screen bg-[#020617] flex flex-col font-sans text-slate-300">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-[#020617]"></div>
+
+          <div className="bg-[#0f172a] border border-blue-500/30 p-12 rounded-3xl text-center max-w-md w-full shadow-2xl relative z-10">
+            <div className="w-24 h-24 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-blue-500/20 shadow-[0_0_40px_rgba(59,130,246,0.2)]">
+              <ScanEye className="text-blue-500 w-12 h-12" />
+            </div>
+
+            <h2 className="text-3xl font-bold text-white mb-2">Identity Verified</h2>
+            <p className="text-slate-400">Initializing dashboard session...</p>
+          </div>
+        </div>
       </div>
+    );
+  }
 
-      <div className="max-w-sm w-full bg-slate-900 border border-slate-700 rounded-lg shadow-2xl relative z-10">
-        <Link to="/" className="absolute -top-10 left-0 text-slate-400 hover:text-white flex items-center gap-2 text-sm transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Back to Home
-        </Link>
+  return (
+    <div ref={containerRef} className="min-h-screen bg-[#020617] flex flex-col font-sans text-slate-300 selection:bg-blue-500/30 overflow-visible">
+      <Navbar />
 
-        <div className="bg-blue-600 p-6 rounded-t-lg text-center border-b border-blue-500">
-          <div className="flex justify-center mb-2">
-            <div className="p-3 bg-white/10 rounded-full">
-              {view === 'login' ? <Lock className="w-6 h-6 text-white" /> : <KeyRound className="w-6 h-6 text-white" />}
+      <div className="flex-grow flex relative pt-20">
+
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-indigo-900/10 blur-[120px] rounded-full"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 relative z-10 min-h-[calc(100vh-80px)]">
+
+          {/* LEFT IMAGE SECTION */}
+          <div ref={imageRef} className="hidden lg:flex flex-col justify-center p-12 relative">
+            <div className="absolute inset-0 bg-indigo-600/5 rounded-3xl border border-white/5 backdrop-blur-sm m-6 -z-10"></div>
+
+            <div className="relative z-10 max-w-lg">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-8 uppercase tracking-wider">
+                <Shield size={12} />
+                Restricted Area
+              </div>
+
+              <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
+                Welcome Back, <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Operator.</span>
+              </h1>
+
+              <p className="text-lg text-slate-400 mb-10 leading-relaxed">
+                Access the central command terminal. Monitor live threats, manage incidents, and deploy countermeasures.
+              </p>
+
+              <div className="bg-[#09090b] p-6 rounded-2xl border border-white/10 shadow-2xl max-w-sm">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">
+                    <Terminal className="text-emerald-500" size={20} />
+                  </div>
+                  <div>
+                    <div className="text-white font-bold text-sm">System Status</div>
+                    <div className="text-xs text-green-400 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                      Online & Secure
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-full w-full bg-emerald-500/50 rounded-full"></div>
+                  </div>
+                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>UPLINK: STABLE</span>
+                    <span>LATENCY: 12ms</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div className="absolute inset-0 -z-20 m-6 rounded-3xl overflow-hidden opacity-40">
+              <img src="https://images.unsplash.com/photo-1558494949-efc535b5c47c?q=80&w=2000&auto=format&fit=crop" className="w-full h-full object-cover grayscale" alt="Background" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#020617] via-[#020617]/80 to-transparent"></div>
             </div>
           </div>
-          <h2 className="text-xl font-bold text-white tracking-wide">
-            {view === 'login' ? 'Welcome Back' : 'Reset Password'}
-          </h2>
-        </div>
 
-        <div className="p-6">
-          {view === 'login' ? (
-            <form className="space-y-5" onSubmit={handleSubmit}>
-              {/* Standard Inputs */}
-              {!showMfaInput && (
-                <>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email</label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
-                      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-md py-2.5 pl-10 pr-3 text-sm text-white focus:border-blue-500 outline-none" placeholder="name@company.com" required />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Password</label>
-                      <button type="button" onClick={() => setView('forgot')} className="text-xs text-blue-400 hover:text-blue-300">Forgot Password?</button>
-                    </div>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
-                      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-md py-2.5 pl-10 pr-3 text-sm text-white focus:border-blue-500 outline-none" placeholder="••••••••" required />
-                    </div>
-                  </div>
-                </>
-              )}
+          {/* RIGHT FORM SECTION */}
+          <div className="flex items-center justify-center p-6 lg:p-12">
+            <div
+              ref={formRef}
+              className="relative z-20 w-full max-w-md bg-[#0f172a]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl overflow-visible"
+            >
 
-              {/* MFA Input (Only shows when required) */}
-              {showMfaInput && (
-                <div className="animate-fade-in bg-slate-800/50 p-4 rounded-lg border border-cyan-500/30">
-                  <label className="block text-xs font-bold text-cyan-400 uppercase tracking-wider mb-2 text-center">
-                    Enter 2FA Code
-                  </label>
-                  <div className="relative">
-                    <Shield className="absolute left-3 top-3 h-5 w-5 text-cyan-500" />
-                    <input
-                      type="text"
-                      value={mfaCode}
-                      onChange={(e) => setMfaCode(e.target.value)}
-                      className="w-full bg-slate-950 border border-cyan-500 rounded-md py-2.5 pl-10 pr-3 text-center text-lg tracking-widest text-white focus:ring-1 focus:ring-cyan-500 outline-none"
-                      placeholder="000 000"
-                      autoFocus
-                    />
-                  </div>
-                </div>
-              )}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
 
-              <button disabled={loading} className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-md text-sm transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-70">
-                {loading ? 'Authenticating...' : (showMfaInput ? 'Verify Code' : 'Sign In')}
-              </button>
-
-              {error && <div className="text-red-400 text-xs text-center bg-red-900/20 p-2.5 rounded border border-red-900/50 animate-shake">{error}</div>}
-            </form>
-          ) : (
-            // Forgot Password UI (Same as before but using real handleForgotSubmit)
-            !resetSent ? (
-              <form className="space-y-5" onSubmit={handleForgotSubmit}>
-                <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Registered Email</label>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-md py-2.5 px-3 text-sm text-white focus:border-blue-500 outline-none" required />
-                </div>
-                <button disabled={loading} className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-md text-sm">
-                  {loading ? 'Sending...' : 'Send Reset Link'}
-                </button>
-                <button type="button" onClick={() => setView('login')} className="w-full text-xs text-slate-500 hover:text-white mt-2">Back to Login</button>
-              </form>
-            ) : (
-              <div className="text-center py-4">
-                <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4"><Check className="text-green-500 w-6 h-6" /></div>
-                <h3 className="text-white font-bold mb-2">Check your inbox</h3>
-                <button onClick={() => { setView('login'); setResetSent(false); }} className="text-blue-400 hover:text-blue-300 text-sm font-medium">Return to Login</button>
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-white mb-1">
+                  {view === 'login'
+                    ? (showMfaInput ? 'Security Check' : 'Portal Login')
+                    : 'Password Recovery'}
+                </h2>
+                <p className="text-slate-400 text-sm">
+                  {view === 'login'
+                    ? (showMfaInput ? 'Enter your 2FA code.' : 'Enter your credentials to continue.')
+                    : 'We’ll send you a reset link.'}
+                </p>
               </div>
-            )
-          )}
+
+              <div className="view-content">
+                {/* LOGIN VIEW */}
+                {view === 'login' ? (
+                  <form className="space-y-5" onSubmit={handleSubmit}>
+
+                    {!showMfaInput ? (
+                      <>
+                        {/* EMAIL INPUT */}
+                        <div className="anim-input group">
+                          <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">
+                            Email Address
+                          </label>
+                          <div className="relative">
+                            <User className="absolute left-4 top-3.5 h-4 w-4 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+                            <input
+                              type="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600"
+                              placeholder="operator@system.io"
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        {/* PASSWORD INPUT */}
+                        <div className="anim-input group">
+                          <div className="flex justify-between items-center mb-1.5">
+                            <label className="text-xs font-bold text-slate-500 uppercase group-focus-within:text-blue-400">
+                              Password
+                            </label>
+
+                            <button
+                              type="button"
+                              onClick={() => setView('forgot')}
+                              className="text-xs text-blue-400 hover:text-blue-300 font-medium transition-colors"
+                            >
+                              Forgot?
+                            </button>
+                          </div>
+
+                          <div className="relative">
+                            <Lock className="absolute left-4 top-3.5 h-4 w-4 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+                            <input
+                              type="password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600"
+                              placeholder="••••••••"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      /* MFA INPUT */
+                      <div className="anim-input bg-slate-900/50 p-6 rounded-2xl border border-blue-500/30 relative overflow-hidden">
+                        <label className="block text-xs font-bold text-blue-400 uppercase tracking-wider mb-3 text-center">
+                          Two-Factor Authentication
+                        </label>
+
+                        <div className="relative">
+                          <Fingerprint className="absolute left-4 top-3.5 h-5 w-5 text-blue-500" />
+                          <input
+                            type="text"
+                            value={mfaCode}
+                            onChange={(e) => setMfaCode(e.target.value)}
+                            className="w-full bg-slate-950 border border-blue-500/50 rounded-xl py-3 pl-12 pr-4 text-center text-xl tracking-[0.5em] font-mono text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none transition-all placeholder:text-slate-700"
+                            placeholder="000000"
+                            autoFocus
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* LOGIN BUTTON */}
+                    <button
+                      disabled={loading}
+                      className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 flex items-center justify-center gap-2 mt-4 disabled:opacity-50 disabled:cursor-not-allowed group"
+                    >
+                      {loading ? (
+                        <span className="flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Authenticating...
+                        </span>
+                      ) : (
+                        <>
+                          {showMfaInput ? 'Verify Session' : 'Access System'}
+                          <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                ) : (
+                  /* FORGOT VIEW */
+                  !resetSent ? (
+                    <form className="space-y-5" onSubmit={handleForgotSubmit}>
+                      <div className="anim-input group">
+                        <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">
+                          Registered Email
+                        </label>
+                        <div className="relative">
+                          <User className="absolute left-4 top-3.5 h-4 w-4 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <button
+                        disabled={loading}
+                        className="anim-input w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 flex items-center justify-center gap-2 disabled:opacity-50"
+                      >
+                        {loading ? 'Sending...' : 'Send Reset Link'}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setView('login')}
+                        className="anim-input w-full text-xs text-slate-500 hover:text-white mt-2 transition-colors flex items-center justify-center gap-1 group"
+                      >
+                        <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" />
+                        Back to Login
+                      </button>
+                    </form>
+                  ) : (
+                    /* RESET SENT MESSAGE */
+                    <div className="text-center py-8 anim-input">
+                      <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500/20">
+                        <CheckCircle2 className="text-green-500 w-8 h-8" />
+                      </div>
+
+                      <h3 className="text-xl font-bold text-white mb-2">Check your inbox</h3>
+
+                      <p className="text-slate-400 text-sm mb-6">
+                        We've sent a password reset link to <br />
+                        <span className="text-white font-mono">{email}</span>
+                      </p>
+
+                      <button
+                        onClick={() => { setView('login'); setResetSent(false); }}
+                        className="text-blue-400 hover:text-blue-300 text-sm font-bold hover:underline transition-all"
+                      >
+                        Return to Login
+                      </button>
+                    </div>
+                  )
+                )}
+              </div>
+
+              {error && (
+                <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-3 text-red-400 text-xs animate-shake">
+                  <Shield size={14} className="shrink-0" />
+                  {error}
+                </div>
+              )}
+
+              {/* APPLY FOR ACCESS BUTTON — NOW ALWAYS VISIBLE IN LOGIN VIEW */}
+              {view === 'login' && (
+                <div className="mt-8 text-center pt-6 border-t border-white/5">
+                  <p className="text-slate-500 text-xs">
+                    New to CyberSentinels?
+                    <Link
+                      to="/register"
+                      className="text-blue-400 hover:text-blue-300 font-bold ml-1 transition-colors"
+                    >
+                      Apply for access
+                    </Link>
+                  </p>
+                </div>
+              )}
+
+            </div>
+          </div>
+
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 };
