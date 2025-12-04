@@ -1,14 +1,14 @@
 import React from 'react';
 
 // Import components
-import Navbar from '../components/Navbar';
-import Hero from '../components/Hero';
-import Features from '../components/Features';
-import ThreatsSection from '../components/ThreatsSection'; // New
-// import Pricing from '../components/Pricing'; // New
-import About from '../components/About'; // New
-import Testimonials from '../components/Testimonials';
-import Footer from '../components/Footer';
+import Navbar from '../components/Home/Navbar';
+import Hero from '../components/Home/Hero';
+import Features from '../components/Home/Features';
+import ThreatsSection from '../components/Home/ThreatsSection'; // New
+// import Pricing from '../components/Home/Pricing'; // New
+import About from '../components/Home/About'; // New
+import Testimonials from '../components/Home/Testimonials';
+import Footer from '../components/Home/Footer';
 
 const Home = () => {
   return (
@@ -18,7 +18,7 @@ const Home = () => {
         <Hero />
         <Features />
         <ThreatsSection /> {/* Section ID: #threats */}
-        {/* <Pricing />        Section ID: #pricing */}
+        {/* <Pricing /> */}
         <Testimonials />
         <About />          {/* Section ID: #about */}
       </main>

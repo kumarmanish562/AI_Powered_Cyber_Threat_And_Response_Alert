@@ -296,10 +296,8 @@ const Dashboard = () => {
                 <Globe className="text-slate-600" size={20} />
               </div>
 
-              <div className="h-[220px]">
-                {/* --- STATUS CHART COMPONENT --- */}
-                <StatusChart data={stats.status_distribution} />
-              </div>
+              {/* --- STATUS CHART COMPONENT --- */}
+              <StatusChart data={stats.status_distribution} />
             </div>
 
             {/* Quick System Health (Visual Only) */}
