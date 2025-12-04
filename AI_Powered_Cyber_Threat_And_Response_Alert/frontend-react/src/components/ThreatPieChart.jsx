@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import gsap from "gsap";
 
 // Data for Chart 1: Severity
 const severityData = [
@@ -24,10 +25,10 @@ const CustomTooltip = ({ active, payload }) => {
       <div className="bg-[#0f172a]/90 backdrop-blur-md border border-slate-700/50 p-3 rounded-lg shadow-xl">
         <p className="text-slate-200 text-xs font-bold mb-1">{data.name}</p>
         <div className="flex items-center gap-2">
-            <span className="block w-2 h-2 rounded-full" style={{ backgroundColor: data.payload.fill }}></span>
-            <span className="text-cyan-400 font-mono text-sm">
-              {data.value}%
-            </span>
+          <span className="block w-2 h-2 rounded-full" style={{ backgroundColor: data.payload.fill }}></span>
+          <span className="text-cyan-400 font-mono text-sm">
+            {data.value}%
+          </span>
         </div>
       </div>
     );
@@ -35,54 +36,136 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
+// --- Exporting Components Individually ---
+
+export const SeverityChart = ({ data }) => {
+  const chartRef = useRef(null);
+  // Allow external data override or fallback to static
+  const chartData = data && data.length > 0 ? data : severityData;
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(chartRef.current, {
+        scale: 0.9,
+        opacity: 0,
+        duration: 0.8,
+        ease: "back.out(1.7)"
+      });
+    }, chartRef);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div ref={chartRef} className="h-[220px] w-full min-w-0">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={chartData}
+            cx="50%"
+            cy="50%"
+            innerRadius={60}
+            outerRadius={80}
+            paddingAngle={5}
+            dataKey="value"
+            stroke="none"
+          >
+            {chartData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.color}
+                className="transition-all duration-300 hover:opacity-80 hover:scale-105 origin-center"
+                stroke="rgba(0,0,0,0)"
+              />
+            ))}
+          </Pie>
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            verticalAlign="bottom"
+            height={36}
+            iconType="circle"
+            iconSize={8}
+            wrapperStyle={{ fontSize: '11px', color: '#94a3b8', paddingTop: '10px' }}
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
+export const StatusChart = ({ data }) => {
+  const chartRef = useRef(null);
+  // Allow external data override or fallback to static
+  const chartData = data && data.length > 0 ? data : statusData;
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(chartRef.current, {
+        scale: 0.9,
+        opacity: 0,
+        duration: 0.8,
+        delay: 0.1, // Stagger slightly
+        ease: "back.out(1.7)"
+      });
+    }, chartRef);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div ref={chartRef} className="h-[220px] w-full min-w-0">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={chartData}
+            cx="50%"
+            cy="50%"
+            innerRadius={60}
+            outerRadius={80}
+            paddingAngle={5}
+            dataKey="value"
+            stroke="none"
+          >
+            {chartData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.color}
+                className="transition-all duration-300 hover:opacity-80 hover:scale-105 origin-center"
+                stroke="rgba(0,0,0,0)"
+              />
+            ))}
+          </Pie>
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            verticalAlign="bottom"
+            height={36}
+            iconType="circle"
+            iconSize={8}
+            wrapperStyle={{ fontSize: '11px', color: '#94a3b8', paddingTop: '10px' }}
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
+// Legacy wrapper for backward compatibility if needed
 const ThreatPieChart = ({ type }) => {
-  const data = type === 'severity' ? severityData : statusData;
   const title = type === 'severity' ? 'Threat Severity' : 'Remediation Status';
   const glowColor = type === 'severity' ? 'bg-rose-500/10' : 'bg-emerald-500/10';
+  const ChartComponent = type === 'severity' ? SeverityChart : StatusChart;
 
   return (
     <div className="group relative bg-[#151f32]/80 backdrop-blur-sm rounded-2xl p-6 border border-slate-800/60 transition-all duration-300 hover:border-slate-600 hover:shadow-2xl overflow-hidden h-full flex flex-col">
-      
+
       {/* Ambient Background Glow */}
       <div className={`absolute -right-10 -top-10 w-40 h-40 rounded-full opacity-20 blur-3xl transition-opacity duration-500 group-hover:opacity-30 ${glowColor}`}></div>
 
       <div className="relative z-10 flex-1 flex flex-col">
         <h3 className="text-slate-400 text-[11px] font-bold uppercase tracking-[0.1em] mb-4 flex items-center gap-2">
-           {title}
+          {title}
         </h3>
 
-        <div className="flex-1 min-h-[250px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={5}
-                dataKey="value"
-                stroke="none"
-              >
-                {data.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={entry.color} 
-                    className="transition-all duration-300 hover:opacity-80"
-                    stroke="rgba(0,0,0,0)" 
-                  />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-              <Legend 
-                verticalAlign="bottom" 
-                height={36} 
-                iconType="circle"
-                iconSize={8}
-                wrapperStyle={{ fontSize: '11px', color: '#94a3b8', paddingTop: '10px' }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+        <div className="flex-1 w-full">
+          <ChartComponent />
         </div>
       </div>
     </div>

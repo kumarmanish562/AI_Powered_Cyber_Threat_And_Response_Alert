@@ -1,94 +1,221 @@
-import React from "react";
-import { ArrowLeft, Linkedin, Twitter, Github } from "lucide-react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { Linkedin, Twitter, Github, Shield, Code, Terminal, Fingerprint, Globe, Key, Cpu, ScanFace, Share2 } from "lucide-react";
+import gsap from "gsap";
+import Navbar from "../components/Home/Navbar";
+import Footer from "../components/Home/Footer";
+
+const SOCIAL_LINKS = [
+    { icon: Linkedin, href: "#" },
+    { icon: Twitter, href: "#" },
+    { icon: Github, href: "#" }
+];
 
 const teamMembers = [
     {
-        name: "Alex Mercer",
+        id: 1,
+        name: "Manish",
         role: "Chief Executive Officer",
-        bio: "Ex-NSA cybersecurity analyst with 15+ years of experience in threat intelligence and network defense.",
-        image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400",
+        codeName: "VANGUARD",
+        bio: "Visionary leader with a decade of experience in cyber warfare. Pioneering AI-driven threat neutralization strategies.",
+        image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop",
+        icon: Shield,
+        specialty: "Strategic Defense",
+        clearance: "L-5"
     },
     {
-        name: "Sarah Connor",
-        role: "CTO & Lead AI Architect",
-        bio: "PhD in Machine Learning from MIT. Specialist in adversarial AI and automated defense systems.",
-        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
+        id: 2,
+        name: "Ankita",
+        role: "Chief Technology Officer",
+        codeName: "ARCHITECT",
+        bio: "AI Architect specializing in neural networks for anomaly detection. Leading the autonomous response engine.",
+        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop",
+        icon: Code,
+        specialty: "Neural Networks",
+        clearance: "L-4"
     },
     {
-        name: "David Chen",
-        role: "Head of Security Operations",
-        bio: "Former Red Team leader for a Fortune 500 bank. Expert in penetration testing and incident response.",
-        image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400",
-    },
-    {
-        name: "Emily Rodriguez",
-        role: "Senior Threat Researcher",
-        bio: "Specializes in malware analysis and reverse engineering. Contributor to multiple open-source security tools.",
-        image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400",
+        id: 3,
+        name: "Anki",
+        role: "Head of Security Ops",
+        codeName: "OPERATOR",
+        bio: "Expert in red teaming and penetration testing. Ensuring our systems stay ahead of global threats.",
+        image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1000&auto=format&fit=crop",
+        icon: Terminal,
+        specialty: "Red Teaming",
+        clearance: "L-4"
     },
 ];
 
-const Meetteam = () => {
+const MeetTeam = () => {
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            const tl = gsap.timeline();
+
+            // 1. Header Entrance
+            tl.from(".team-reveal", {
+                y: 30,
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: "power3.out",
+                clearProps: "all" // Ensures elements stay visible after animation
+            });
+
+            // 2. Card Entrance
+            tl.from(".team-card", {
+                y: 60,
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: "back.out(1.2)",
+                clearProps: "all"
+            }, "-=0.4");
+
+        }, containerRef);
+
+        return () => ctx.revert();
+    }, []);
+
     return (
-        <div className="min-h-screen bg-[#0b1120] text-slate-200 font-sans selection:bg-blue-500 selection:text-white">
-            {/* Header / Nav */}
-            <nav className="p-6 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors font-semibold">
-                        <ArrowLeft className="w-5 h-5" />
-                        Back to Home
-                    </Link>
-                    <h1 className="text-xl font-bold text-white tracking-wide">CyberSentinels Team</h1>
+        <div ref={containerRef} className="min-h-screen bg-[#020617] text-slate-200 font-sans flex flex-col selection:bg-cyan-500/30">
+
+            <Navbar />
+
+            <main className="flex-grow relative pt-32 pb-20 overflow-hidden">
+
+                {/* --- VISIBLE GRID BACKGROUND --- */}
+                <div className="absolute inset-0 pointer-events-none">
+                    {/* Top Spotlight - Increased Brightness */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1000px] h-[600px] bg-blue-600/20 blur-[120px] rounded-full"></div>
+
+                    {/* Explicit Cyan Grid - Increased Opacity */}
+                    <div className="absolute inset-0"
+                        style={{
+                            backgroundImage: `linear-gradient(to right, rgba(6, 182, 212, 0.15) 1px, transparent 1px), 
+                                     linear-gradient(to bottom, rgba(6, 182, 212, 0.15) 1px, transparent 1px)`,
+                            backgroundSize: '4rem 4rem',
+                            maskImage: 'radial-gradient(ellipse 80% 80% at 50% 0%, black 40%, transparent 100%)',
+                            WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 0%, black 40%, transparent 100%)'
+                        }}>
+                    </div>
+
+                    {/* Bottom Fade */}
+                    <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-[#020617] to-transparent"></div>
                 </div>
-            </nav>
 
-            {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-6 py-16">
-                <div className="text-center mb-16">
-                    <h2 className="text-blue-500 font-bold uppercase tracking-wide text-sm mb-3">Our Experts</h2>
-                    <h3 className="text-4xl md:text-5xl font-extrabold text-white mb-6">
-                        Meet the Minds Behind the Defense
-                    </h3>
-                    <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
-                        We are a diverse team of security veterans, data scientists, and engineers united by a single mission: to secure the digital future.
-                    </p>
-                </div>
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {teamMembers.map((member, index) => (
-                        <div key={index} className="group relative bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
-                            {/* Image */}
-                            <div className="aspect-[4/5] overflow-hidden">
-                                <img
-                                    src={member.image}
-                                    alt={member.name}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
-                            </div>
-
-                            {/* Content */}
-                            <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                <h4 className="text-xl font-bold text-white mb-1">{member.name}</h4>
-                                <p className="text-blue-400 text-sm font-medium mb-3">{member.role}</p>
-                                <p className="text-slate-300 text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75 mb-4">
-                                    {member.bio}
-                                </p>
-
-                                {/* Social Links */}
-                                <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-                                    <a href="#" className="text-slate-400 hover:text-white transition-colors"><Linkedin className="w-5 h-5" /></a>
-                                    <a href="#" className="text-slate-400 hover:text-white transition-colors"><Twitter className="w-5 h-5" /></a>
-                                    <a href="#" className="text-slate-400 hover:text-white transition-colors"><Github className="w-5 h-5" /></a>
-                                </div>
-                            </div>
+                    {/* --- HEADER --- */}
+                    <div className="text-center mb-24 max-w-3xl mx-auto">
+                        <div className="team-reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider mb-6 shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+                            <Fingerprint size={14} />
+                            Core Leadership
                         </div>
-                    ))}
+
+                        <h1 className="team-reveal text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight leading-tight">
+                            The Minds Behind <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500">
+                                The Machine.
+                            </span>
+                        </h1>
+
+                        <p className="team-reveal text-lg text-slate-400 leading-relaxed">
+                            A collective of white-hat hackers, AI researchers, and defense strategists building the future of autonomous security.
+                        </p>
+                    </div>
+
+                    {/* --- TEAM GRID --- */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+                        {teamMembers.map((member) => (
+                            <div
+                                key={member.id}
+                                className="team-card group relative bg-[#0f172a] rounded-3xl overflow-hidden border border-slate-800 hover:border-cyan-500/50 transition-all duration-500 hover:shadow-[0_0_40px_-10px_rgba(6,182,212,0.3)] flex flex-col"
+                            >
+
+                                {/* Image Container (Top) */}
+                                <div className="relative h-[400px] w-full overflow-hidden bg-slate-900">
+                                    <img
+                                        src={member.image}
+                                        alt={member.name}
+                                        className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110 opacity-100"
+                                    />
+                                    {/* Gradient Overlay for Text readability at bottom of image */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-90"></div>
+
+                                    {/* Clearance Badge */}
+                                    <div className="absolute top-4 right-4 px-3 py-1 bg-black/60 backdrop-blur-md border border-white/10 rounded-lg flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                                        <span className="text-[10px] font-mono font-bold text-slate-300 tracking-wider">{member.clearance} ACCESS</span>
+                                    </div>
+                                </div>
+
+                                {/* Content Body (Bottom) */}
+                                <div className="p-8 relative -mt-12 z-10">
+                                    {/* Code Name Tag */}
+                                    <div className="inline-flex items-center gap-1.5 text-cyan-400 font-mono text-xs uppercase tracking-widest mb-3">
+                                        <ScanFace size={14} />
+                                        {member.codeName}
+                                    </div>
+
+                                    <h3 className="text-3xl font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors">
+                                        {member.name}
+                                    </h3>
+                                    <p className="text-slate-400 font-medium text-sm mb-6 border-b border-slate-800 pb-6">
+                                        {member.role}
+                                    </p>
+
+                                    {/* Description */}
+                                    <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                                        {member.bio}
+                                    </p>
+
+                                    {/* Specs Box */}
+                                    <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 mb-6 flex items-center justify-between group-hover:border-slate-700 transition-colors">
+                                        <div className="flex items-center gap-2">
+                                            <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+                                                <member.icon size={16} />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] text-slate-500 uppercase font-bold">Specialty</span>
+                                                <span className="text-xs text-slate-200 font-medium">{member.specialty}</span>
+                                            </div>
+                                        </div>
+                                        <div className="text-slate-600">
+                                            <Cpu size={18} />
+                                        </div>
+                                    </div>
+
+                                    {/* Social Actions */}
+                                    <div className="flex items-center gap-3">
+                                        {SOCIAL_LINKS.map((social, i) => (
+                                            <a
+                                                key={i}
+                                                href={social.href}
+                                                className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:bg-cyan-600 hover:text-white hover:border-cyan-500 transition-all duration-300"
+                                            >
+                                                <social.icon size={16} />
+                                            </a>
+                                        ))}
+                                        <div className="w-full h-px bg-slate-800 flex-1 mx-2"></div>
+                                        <button className="text-xs font-bold text-slate-500 hover:text-white flex items-center gap-1 transition-colors uppercase tracking-wider">
+                                            Dossier <Share2 size={12} />
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        ))}
+                    </div>
+
                 </div>
             </main>
+
+            <Footer />
         </div>
     );
 };
 
-export default Meetteam;
+export default MeetTeam;
