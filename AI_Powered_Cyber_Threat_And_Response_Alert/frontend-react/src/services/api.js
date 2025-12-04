@@ -14,6 +14,18 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+// Handle 401 Interceptor
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
+
 export const getProfile = async () => {
     const res = await api.get("/auth/me");
     return res.data;
@@ -80,5 +92,20 @@ export const performRemediationAction = async (id, action) => {
 // NEW: Get Remediation Logs
 export const getRemediationLogs = async (id) => {
     const res = await api.get(`/api/remediations/${id}/logs`);
+    return res.data;
+};
+
+export const forgotPassword = async (email) => {
+    const res = await api.post("/auth/forgot-password", { email });
+    return res.data;
+};
+
+export const resetPassword = async (data) => {
+    const res = await api.post("/auth/reset-password", data);
+    return res.data;
+};
+
+export const login = async (credentials) => {
+    const res = await api.post("/auth/login", credentials);
     return res.data;
 };

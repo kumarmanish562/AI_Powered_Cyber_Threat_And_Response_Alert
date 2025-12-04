@@ -1,376 +1,359 @@
-import React, { useState, useEffect } from "react";
-import Sidebar from "../components/Sidebar";
-import { getLogStats } from "../services/api"; // Import API
-import SourceConfigModal from "../components/SourceConfigModal";
-import TopTalkersModal from "../components/TopTalkersModal";
+import React, { useEffect, useState, useRef } from 'react';
+import Sidebar from '../components/Sidebar';
+import { getSecurityLogs } from '../services/api';
 import {
-  PieChart,
-  BarChart2,
-  Calendar,
-  Download,
-  Share2,
-  RefreshCw,
-  AlertTriangle,
-  BrainCircuit,
-  TrendingUp,
-  Server,
-  Shield,
-  Globe,
-  Database,
-  Activity
-} from "lucide-react";
+  PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  AreaChart, Area
+} from 'recharts';
+import {
+  Activity, Shield, AlertTriangle, CheckCircle, Filter, Calendar,
+  Download, RefreshCw, Search, FileText, BarChart2, Server, Terminal, Cpu, Zap
+} from 'lucide-react';
+import gsap from 'gsap';
 
-/**
- * Log Analysis Page (Real-Time)
- * Features:
- * - Dynamic Histogram visualization
- * - Live Source Distribution
- * - AI Anomaly Summary
- * - Top Talkers Table
- */
-
-// ----- Custom CSS Chart Components -----
-
-const Histogram = ({ data }) => {
-  const maxVal = Math.max(...data.map((d) => d.value));
-  return (
-    <div className="h-64 flex items-end justify-between gap-1 pt-6 px-2 relative">
-      {/* Grid lines background */}
-      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10">
-        <div className="border-t border-slate-400 w-full"></div>
-        <div className="border-t border-slate-400 w-full"></div>
-        <div className="border-t border-slate-400 w-full"></div>
-        <div className="border-t border-slate-400 w-full"></div>
-      </div>
-
-      {data.map((item, index) => (
-        <div key={index} className="group relative flex flex-col items-center justify-end w-full h-full z-10">
-          {/* Tooltip */}
-          <div className="absolute -top-12 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 backdrop-blur text-xs text-white px-2 py-1 rounded border border-slate-700 pointer-events-none whitespace-nowrap z-20 shadow-xl">
-            <span className="font-bold">{item.label}</span>: {item.value.toLocaleString()} events
-          </div>
-          {/* Bar */}
-          <div
-            className={`w-full mx-[1px] rounded-t-sm transition-all duration-500 ease-in-out ${item.isAnomaly
-              ? "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]"
-              : "bg-cyan-600/60 hover:bg-cyan-500"
-              }`}
-            style={{ height: `${(item.value / maxVal) * 100}%` }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const DistributionBar = ({ label, count, total, color, icon }) => {
-  const percent = Math.round((count / total) * 100) || 0;
-  const IconComponent = icon;
-  return (
-    <div className="mb-5">
-      <div className="flex justify-between items-center mb-1.5">
-        <div className="flex items-center gap-2 text-sm text-slate-300 font-medium">
-          {IconComponent ? <IconComponent size={14} className="text-slate-500" /> : null}
-          {label}
-        </div>
-        <div className="text-xs font-mono text-slate-400">
-          {count.toLocaleString()} <span className="text-slate-600">/</span> <span className="text-cyan-400">{percent}%</span>
-        </div>
-      </div>
-      <div className="w-full h-1.5 bg-slate-800/50 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all duration-1000 ${color}`}
-          style={{ width: `${percent}%` }}
-        />
-      </div>
-    </div>
-  );
-};
-
-// ----- Icon Mapping Helper -----
-const getIconForLabel = (label) => {
-  if (label.includes("Firewall")) return Shield;
-  if (label.includes("Auth")) return Globe; // or Lock
-  if (label.includes("System")) return Server;
-  if (label.includes("Database")) return Database;
-  return Activity;
-};
-
-// ----- Main Component -----
-
-export default function LogAnalysis() {
-  const [timeRange, setTimeRange] = useState("24h");
-  const [data, setData] = useState(null);
+const LogAnalysis = () => {
+  const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
-  const [isTalkersModalOpen, setIsTalkersModalOpen] = useState(false);
+  const [timeRange, setTimeRange] = useState('24h');
+  const containerRef = useRef(null);
 
-  // --- Data Fetching ---
+  // --- Data Processing ---
+  const logsByLevel = [
+    { name: 'Error', value: logs.filter(l => l.level === 'ERROR').length, color: '#f43f5e' }, // Rose-500
+    { name: 'Warning', value: logs.filter(l => l.level === 'WARNING').length, color: '#f59e0b' }, // Amber-500
+    { name: 'Info', value: logs.filter(l => l.level === 'INFO').length, color: '#3b82f6' },    // Blue-500
+    { name: 'Success', value: logs.filter(l => l.level === 'SUCCESS').length, color: '#10b981' }, // Emerald-500
+  ].filter(item => item.value > 0);
+
+  const logsOverTime = logs.reduce((acc, log) => {
+    const time = new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const existing = acc.find(item => item.time === time);
+    if (existing) {
+      existing.count += 1;
+      if (log.level === 'ERROR') existing.errors += 1;
+    } else {
+      acc.push({ time, count: 1, errors: log.level === 'ERROR' ? 1 : 0 });
+    }
+    return acc;
+  }, []).slice(-15); // Extended view
+
+  const logsBySource = Object.entries(logs.reduce((acc, log) => {
+    acc[log.source] = (acc[log.source] || 0) + 1;
+    return acc;
+  }, {})).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value).slice(0, 5);
+
+
+  // --- Fetching & Animation ---
   const fetchData = async () => {
+    // Optimistic UI: Don't set loading to true on refresh to keep UI stable
+    if (logs.length === 0) setLoading(true);
     try {
-      const stats = await getLogStats();
-      setData(stats);
-      setLoading(false);
+      const data = await getSecurityLogs();
+      setLogs(data);
     } catch (error) {
-      console.error("Failed to fetch log stats:", error);
+      console.error("Failed to fetch logs:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 5000); // Update every 5s
+    const interval = setInterval(fetchData, 10000); // Auto-refresh
     return () => clearInterval(interval);
   }, []);
 
-  const handleDownloadHistogram = () => {
-    if (!data || !data.histogram) return;
+  useEffect(() => {
+    if (!loading && logs.length > 0) {
+      const ctx = gsap.context(() => {
+        const tl = gsap.timeline();
 
-    // CSV Header
-    const headers = ['Time Label', 'Event Count', 'Is Anomaly'];
+        tl.from(".log-header", { y: -20, opacity: 0, duration: 0.6, ease: "power3.out" })
+          .from(".stat-card-anim", { y: 20, opacity: 0, duration: 0.5, stagger: 0.1, ease: "back.out(1.2)" }, "-=0.3")
+          .from(".chart-anim", { scale: 0.98, opacity: 0, duration: 0.8, stagger: 0.15, ease: "power2.out" }, "-=0.4")
+          .from(".anomaly-item", { x: -10, opacity: 0, duration: 0.4, stagger: 0.05, ease: "power1.out" }, "-=0.6");
 
-    // CSV Rows
-    const rows = data.histogram.map(item => [
-      item.label,
-      item.value,
-      item.isAnomaly ? 'Yes' : 'No'
-    ]);
+      }, containerRef);
+      return () => ctx.revert();
+    }
+  }, [loading]); // Only run once when data loads initially
 
-    // Combine to CSV string
-    const csvContent = [
-      headers.join(','),
-      ...rows.map(row => row.join(','))
-    ].join('\n');
-
-    // Create Blob and Download Link
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `event_volume_report_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  // --- Custom Tooltip ---
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-[#0f172a]/95 backdrop-blur-xl border border-slate-700 p-3 rounded-lg shadow-2xl">
+          <p className="text-slate-400 text-xs font-mono mb-2">{label}</p>
+          {payload.map((entry, index) => (
+            <div key={index} className="flex items-center gap-2 text-xs font-bold mb-1">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></div>
+              <span style={{ color: entry.color }}>
+                {entry.name}: {entry.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    return null;
   };
 
-  // Loading State
-  if (loading) {
-    return (
-      <div className="flex min-h-screen bg-[#0f172a] text-slate-300 font-sans">
-        <Sidebar />
-        <main className="flex-1 p-8 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-4 animate-pulse">
-            <BarChart2 size={48} className="text-cyan-500/50" />
-            <p className="text-slate-500 font-mono text-sm">Initializing Analytics Engine...</p>
-          </div>
-        </main>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex min-h-screen bg-[#0f172a] text-slate-300 font-sans">
+    <div className="flex min-h-screen bg-[#020617] font-sans text-slate-200 overflow-hidden">
       <Sidebar />
 
-      <main className="flex-1 p-8 overflow-y-auto h-screen relative">
-        {/* Background Glow */}
-        <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-indigo-900/10 to-transparent pointer-events-none"></div>
+      <main ref={containerRef} className="flex-1 p-8 h-screen overflow-y-auto relative scroll-smooth">
 
-        {/* --- Header --- */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 relative z-10">
-          <div>
-            <h1 className="text-2xl text-white font-bold flex items-center gap-3">
-              <BarChart2 className="text-cyan-400" size={28} /> Log Analytics
-            </h1>
-            <p className="text-slate-400 mt-1 flex items-center gap-2">
-              Deep dive into system behavior.
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span className="text-xs text-emerald-500 font-bold tracking-wider">LIVE</span>
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 bg-[#1e293b]/80 backdrop-blur p-1 rounded-lg border border-slate-700">
-            {['1h', '24h', '7d', '30d'].map((range) => (
-              <button
-                key={range}
-                onClick={() => setTimeRange(range)}
-                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${timeRange === range
-                  ? 'bg-slate-700 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
-                  }`}
-              >
-                {range}
-              </button>
-            ))}
-          </div>
+        {/* --- BACKGROUND (Unified Grid) --- */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-900/10 blur-[120px] rounded-full"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20"></div>
         </div>
 
-        {/* --- Top Cards Row --- */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 relative z-10">
-          <div className="bg-[#1e293b]/60 backdrop-blur-sm p-5 rounded-xl border border-slate-800 shadow-lg">
-            <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Total Events</p>
-            <h3 className="text-2xl font-bold text-white mt-1">{data.total_events.toLocaleString()}</h3>
-            <p className="text-emerald-400 text-xs flex items-center gap-1 mt-2"><TrendingUp size={12} /> +12% vs avg</p>
-          </div>
+        <div className="max-w-7xl mx-auto relative z-10">
 
-          <div className="bg-[#1e293b]/60 backdrop-blur-sm p-5 rounded-xl border border-slate-800 shadow-lg">
-            <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Data Ingested</p>
-            <h3 className="text-2xl font-bold text-white mt-1">{data.data_ingested}</h3>
-            <p className="text-slate-500 text-xs mt-2">Compressed (LZ4)</p>
-          </div>
-
-          <div className="bg-[#1e293b]/60 backdrop-blur-sm p-5 rounded-xl border border-slate-800 shadow-lg relative overflow-hidden group">
-            <div className="absolute right-0 top-0 p-3 opacity-10 text-rose-500 group-hover:opacity-20 transition-opacity"><AlertTriangle size={60} /></div>
-            <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Anomalies</p>
-            <h3 className="text-2xl font-bold text-rose-400 mt-1">{data.anomalies} Detected</h3>
-            <p className="text-rose-400/80 text-xs mt-2">Requires attention</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-indigo-900/80 to-slate-900/80 backdrop-blur p-5 rounded-xl border border-indigo-500/30 shadow-lg flex flex-col justify-center">
-            <div className="flex items-center gap-2 mb-2">
-              <BrainCircuit size={16} className="text-indigo-400" />
-              <p className="text-indigo-200 text-xs font-bold uppercase tracking-wider">AI Insight</p>
-            </div>
-            <p className="text-xs text-indigo-100 italic leading-relaxed opacity-90">
-              "Traffic pattern anomaly detected. 15% deviation from baseline in firewall logs at 14:00."
-            </p>
-          </div>
-        </div>
-
-        {/* --- Main Histogram --- */}
-        <div className="bg-[#1e293b]/60 backdrop-blur-md rounded-xl border border-slate-800 shadow-xl p-6 mb-6 relative z-10">
-          <div className="flex justify-between items-center mb-4">
+          {/* --- Header --- */}
+          <header className="log-header mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <h3 className="text-lg font-semibold text-white">Event Volume</h3>
-              <p className="text-xs text-slate-400">Last 24 Hours</p>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={fetchData} className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-white transition border border-slate-700 hover:border-slate-600">
-                <RefreshCw size={16} />
-              </button>
-              <button
-                onClick={handleDownloadHistogram}
-                className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-white transition border border-slate-700 hover:border-slate-600"
-                title="Download CSV"
-              >
-                <Download size={16} />
-              </button>
-            </div>
-          </div>
-
-          {/* Custom Histogram Component */}
-          <Histogram data={data.histogram} />
-
-          {/* X-Axis Labels */}
-          <div className="flex justify-between text-[10px] text-slate-500 mt-3 px-2 font-mono uppercase tracking-widest">
-            <span>00:00</span>
-            <span>04:00</span>
-            <span>08:00</span>
-            <span>12:00</span>
-            <span>16:00</span>
-            <span>20:00</span>
-            <span>23:59</span>
-          </div>
-        </div>
-
-        {/* --- Split View: Distribution & Top Talkers --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
-
-          {/* Left: Source Distribution */}
-          <div className="bg-[#1e293b]/60 backdrop-blur-md rounded-xl border border-slate-800 shadow-xl p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <PieChart size={18} className="text-purple-400" />
-              <h3 className="font-semibold text-white">Log Sources</h3>
-            </div>
-
-            <div className="space-y-6">
-              {data.sources.map((item) => (
-                <DistributionBar
-                  key={item.label}
-                  {...item}
-                  total={data.total_events}
-                  icon={getIconForLabel(item.label)}
-                />
-              ))}
-            </div>
-
-            <div className="mt-8 pt-6 border-t border-slate-700/50">
-              <button
-                onClick={() => setIsConfigModalOpen(true)}
-                className="w-full py-2.5 border border-slate-600 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-300 hover:bg-slate-700/50 transition"
-              >
-                View Source Config
-              </button>
-            </div>
-          </div>
-
-          {/* Right: Top Talkers Table */}
-          <div className="lg:col-span-2 bg-[#1e293b]/60 backdrop-blur-md rounded-xl border border-slate-800 shadow-xl p-0 overflow-hidden flex flex-col">
-            <div className="p-6 border-b border-slate-800 flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <Globe size={18} className="text-blue-400" />
-                <div>
-                  <h3 className="font-semibold text-white">Top Talkers</h3>
-                  <p className="text-xs text-slate-400">Highest volume IP addresses</p>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2.5 bg-indigo-500/10 rounded-xl border border-indigo-500/20 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+                  <BarChart2 className="text-indigo-400" size={28} />
                 </div>
+                <h1 className="text-3xl font-bold text-white tracking-tight">Log Analytics</h1>
               </div>
-              <button
-                onClick={() => setIsTalkersModalOpen(true)}
-                className="text-xs font-bold text-cyan-400 hover:text-cyan-300 uppercase tracking-wide"
-              >
-                View Full Report
-              </button>
+              <p className="text-slate-400 text-sm flex items-center gap-2">
+                <Activity size={14} className="text-emerald-500 animate-pulse" />
+                Ingesting data stream...
+              </p>
             </div>
 
-            <div className="flex-1 overflow-auto">
-              <table className="w-full text-left">
-                <thead className="bg-[#0f172a]/50 text-[10px] text-slate-400 uppercase font-bold tracking-wider">
-                  <tr>
-                    <th className="px-6 py-4">IP Address</th>
-                    <th className="px-6 py-4">Location</th>
-                    <th className="px-6 py-4">Request Count</th>
-                    <th className="px-6 py-4">Risk Level</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800 text-sm">
-                  {data.top_talkers.map((talker, idx) => (
-                    <tr key={idx} className="hover:bg-slate-800/40 transition">
-                      <td className="px-6 py-4 font-mono text-slate-300">{talker.ip}</td>
-                      <td className="px-6 py-4 text-slate-400">{talker.country}</td>
-                      <td className="px-6 py-4 font-bold text-white">{talker.requests.toLocaleString()}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase border tracking-wide ${talker.risk === 'Critical' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
-                          talker.risk === 'High' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
-                            talker.risk === 'Medium' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' :
-                              'bg-slate-500/10 text-slate-400 border-slate-500/20'
-                          }`}>
-                          {talker.risk}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="flex items-center gap-3 bg-[#0f172a]/50 p-1.5 rounded-xl border border-slate-800/60 backdrop-blur-md">
+              <div className="relative group">
+                <Calendar className="absolute left-3 top-2.5 text-slate-500 group-hover:text-blue-400 transition-colors" size={16} />
+                <select
+                  value={timeRange}
+                  onChange={(e) => setTimeRange(e.target.value)}
+                  className="bg-transparent border-none text-sm text-slate-300 pl-9 pr-8 py-2 focus:ring-0 cursor-pointer hover:text-white transition-colors appearance-none"
+                >
+                  <option value="1h">Last 1 Hour</option>
+                  <option value="24h">Last 24 Hours</option>
+                  <option value="7d">Last 7 Days</option>
+                </select>
+              </div>
+              <div className="w-px h-6 bg-slate-700"></div>
+              <button
+                onClick={fetchData}
+                className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
+                title="Refresh Data"
+              >
+                <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
+              </button>
+              <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors" title="Export CSV">
+                <Download size={18} />
+              </button>
+            </div>
+          </header>
+
+          {/* --- KPI Stats Row --- */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <StatCard
+              title="Total Events"
+              value={logs.length.toLocaleString()}
+              sub="Processed (24h)"
+              icon={<FileText size={24} />}
+              color="text-blue-400"
+              border="border-blue-500/30"
+            />
+            <StatCard
+              title="Critical Errors"
+              value={logs.filter(l => l.level === 'ERROR').length}
+              sub="Require Action"
+              icon={<AlertTriangle size={24} />}
+              color="text-rose-400"
+              border="border-rose-500/30"
+            />
+            <StatCard
+              title="Warnings"
+              value={logs.filter(l => l.level === 'WARNING').length}
+              sub="Potential Issues"
+              icon={<Shield size={24} />}
+              color="text-amber-400"
+              border="border-amber-500/30"
+            />
+            <StatCard
+              title="System Health"
+              value="98.2%"
+              sub="Operational"
+              icon={<CheckCircle size={24} />}
+              color="text-emerald-400"
+              border="border-emerald-500/30"
+            />
+          </div>
+
+          {/* --- Charts Grid --- */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+            {/* 1. Event Volume (Wide) */}
+            <div className="chart-anim lg:col-span-2 bg-[#0f172a]/60 backdrop-blur-xl rounded-2xl border border-slate-800 p-6 shadow-xl relative overflow-hidden group">
+              {/* Pulse Background */}
+              <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl group-hover:bg-indigo-500/10 transition-colors duration-700"></div>
+
+              <div className="flex justify-between items-center mb-6 relative z-10">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Activity size={18} className="text-indigo-400" /> Ingestion Volume
+                </h3>
+                <span className="px-2 py-1 bg-indigo-500/10 text-indigo-300 text-[10px] font-mono font-bold uppercase tracking-wider rounded border border-indigo-500/20">
+                  Live Stream
+                </span>
+              </div>
+
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={logsOverTime}>
+                    <defs>
+                      <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
+                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="colorError" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.4} />
+                        <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                    <XAxis dataKey="time" stroke="#475569" fontSize={10} tickLine={false} axisLine={false} />
+                    <YAxis stroke="#475569" fontSize={10} tickLine={false} axisLine={false} />
+                    <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1 }} />
+                    <Area type="monotone" dataKey="count" name="Total Events" stroke="#6366f1" strokeWidth={2} fillOpacity={1} fill="url(#colorVolume)" />
+                    <Area type="monotone" dataKey="errors" name="Errors" stroke="#f43f5e" strokeWidth={2} fillOpacity={1} fill="url(#colorError)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* 2. Top Sources (Tall) */}
+            <div className="chart-anim bg-[#0f172a]/60 backdrop-blur-xl rounded-2xl border border-slate-800 p-6 shadow-xl flex flex-col">
+              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                <Server size={18} className="text-purple-400" /> Top Sources
+              </h3>
+              <div className="flex-1 min-h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={logsBySource} layout="vertical" margin={{ left: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" horizontal={false} />
+                    <XAxis type="number" stroke="#475569" fontSize={10} tickLine={false} axisLine={false} />
+                    <YAxis dataKey="name" type="category" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} width={70} />
+                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                    <Bar dataKey="value" name="Events" fill="#a855f7" radius={[0, 4, 4, 0]} barSize={24} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
 
+          {/* --- Bottom Row: Pie & Anomalies --- */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {/* 3. Log Distribution */}
+            <div className="chart-anim bg-[#0f172a]/60 backdrop-blur-xl rounded-2xl border border-slate-800 p-6 shadow-xl relative overflow-hidden">
+              <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+              <h3 className="text-lg font-bold text-white mb-2 relative z-10">Severity Distribution</h3>
+              <p className="text-slate-500 text-xs mb-4 font-mono relative z-10">Event breakdown by log level</p>
+
+              <div className="h-[220px] w-full relative z-10">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={logsByLevel}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                      stroke="none"
+                    >
+                      {logsByLevel.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} stroke="rgba(0,0,0,0)" />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend
+                      verticalAlign="bottom"
+                      height={36}
+                      iconType="circle"
+                      iconSize={8}
+                      wrapperStyle={{ fontSize: '11px', color: '#94a3b8' }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* 4. AI Insights / Anomalies Feed */}
+            <div className="chart-anim lg:col-span-2 bg-[#0f172a]/60 backdrop-blur-xl rounded-2xl border border-slate-800 p-0 overflow-hidden flex flex-col shadow-xl">
+              <div className="p-6 border-b border-slate-800 bg-[#1e293b]/30 flex justify-between items-center">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Zap size={18} className="text-amber-400" /> AI Anomalies
+                </h3>
+                <span className="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-1 rounded animate-pulse">
+                  ACTION REQUIRED
+                </span>
+              </div>
+
+              <div className="p-4 overflow-y-auto max-h-[250px] custom-scrollbar space-y-3">
+                {logs.filter(l => l.level === 'ERROR').length > 0 ? (
+                  logs.filter(l => l.level === 'ERROR').slice(0, 5).map((log, idx) => (
+                    <div key={idx} className="anomaly-item flex items-start gap-4 p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-rose-500/30 transition-colors group">
+                      <div className="p-2 bg-rose-500/10 rounded-lg text-rose-500 mt-0.5 group-hover:scale-110 transition-transform">
+                        <AlertTriangle size={18} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start mb-1">
+                          <h4 className="text-sm font-bold text-rose-200">Critical Failure Detected</h4>
+                          <span className="text-[10px] text-slate-500 font-mono">{new Date(log.timestamp).toLocaleTimeString()}</span>
+                        </div>
+                        <p className="text-xs text-slate-400 font-mono mb-2">{log.message}</p>
+                        <div className="flex gap-2">
+                          <span className="text-[10px] bg-slate-950 px-2 py-0.5 rounded text-slate-500 border border-slate-800">Source: {log.source}</span>
+                          <span className="text-[10px] bg-rose-950/30 px-2 py-0.5 rounded text-rose-400 border border-rose-900/30">Error Code: 0x5F</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full py-10 text-slate-500">
+                    <CheckCircle size={40} className="text-emerald-500/20 mb-4" />
+                    <p>No anomalies detected. System nominal.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+          </div>
+
         </div>
-
-        <SourceConfigModal
-          isOpen={isConfigModalOpen}
-          onClose={() => setIsConfigModalOpen(false)}
-        />
-
-        <TopTalkersModal
-          isOpen={isTalkersModalOpen}
-          onClose={() => setIsTalkersModalOpen(false)}
-          initialData={data.top_talkers}
-        />
-
       </main>
     </div>
   );
-}
+};
+
+// --- Helper: Stat Card Component ---
+const StatCard = ({ title, value, sub, icon, color, border }) => (
+  <div className={`stat-card-anim bg-[#1e293b]/40 backdrop-blur-md rounded-xl border ${border} p-5 shadow-lg hover:bg-[#1e293b]/60 transition-colors group`}>
+    <div className="flex justify-between items-start mb-2">
+      <div className={`p-2.5 rounded-lg bg-opacity-10 bg-white ${color}`}>
+        {React.cloneElement(icon, { size: 20 })}
+      </div>
+      <span className={`text-xs font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-800 text-slate-400 group-hover:text-white transition-colors`}>
+        +2.4%
+      </span>
+    </div>
+    <div>
+      <h3 className="text-2xl font-bold text-white mb-0.5">{value}</h3>
+      <p className="text-slate-400 text-xs uppercase tracking-wide">{title}</p>
+      <p className="text-slate-500 text-[10px] mt-1">{sub}</p>
+    </div>
+  </div>
+);
+
+export default LogAnalysis;

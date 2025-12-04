@@ -173,8 +173,8 @@ export default function SecurityLogs() {
             <button
               onClick={() => setIsLive(!isLive)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold border transition-all ${isLive
-                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
-                  : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
                 }`}
             >
               <RefreshCw size={14} className={isLive ? "animate-spin" : ""} />
@@ -246,8 +246,7 @@ export default function SecurityLogs() {
         <div className="flex-1 overflow-auto bg-[#0f172a] relative scroll-smooth">
           <table className="w-full text-left border-collapse">
             <thead className="bg-[#1e293b] sticky top-0 z-10 text-xs font-semibold text-slate-400 uppercase tracking-wider shadow-md">
-              <tr>
-                <th className="p-4 w-10"></th> {/* Expand Toggle */}
+              <tr><th className="p-4 w-10"></th> {/* Expand Toggle */}
                 <th className="p-4">Timestamp</th>
                 <th className="p-4">Level</th>
                 <th className="p-4">Event Name</th>
@@ -277,8 +276,8 @@ export default function SecurityLogs() {
                     <tr
                       onClick={() => toggleExpand(log.id)}
                       className={`cursor-pointer transition-colors border-l-2 ${expandedRow === log.id
-                          ? "bg-slate-800/60 border-l-blue-500"
-                          : "hover:bg-slate-800/30 border-l-transparent"
+                        ? "bg-slate-800/60 border-l-blue-500"
+                        : "hover:bg-slate-800/30 border-l-transparent"
                         }`}
                     >
                       <td className="p-4 text-slate-500">
