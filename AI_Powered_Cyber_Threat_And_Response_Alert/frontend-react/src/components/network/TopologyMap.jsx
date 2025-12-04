@@ -47,13 +47,13 @@ const TopologyMap = ({ devices, isScanning }) => {
                         />
 
                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg border transition-all hover:scale-110 cursor-pointer relative ${device.status === 'Critical' ? 'bg-rose-900/80 border-rose-500 text-rose-400 shadow-rose-900/50' :
-                                device.status === 'Warning' ? 'bg-amber-900/80 border-amber-500 text-amber-400 shadow-amber-900/50' :
-                                    'bg-slate-800/90 border-slate-600 text-slate-300 shadow-slate-900/50'
+                            device.status === 'Warning' ? 'bg-amber-900/80 border-amber-500 text-amber-400 shadow-amber-900/50' :
+                                'bg-slate-800/90 border-slate-600 text-slate-300 shadow-slate-900/50'
                             }`}>
                             {/* Status Dot */}
                             <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-[#1e293b] ${device.status === 'Critical' ? 'bg-rose-500 animate-pulse' :
-                                    device.status === 'Warning' ? 'bg-amber-500' :
-                                        'bg-emerald-500'
+                                device.status === 'Warning' ? 'bg-amber-500' :
+                                    'bg-emerald-500'
                                 }`}></div>
 
                             {device.type === 'Server' && <Server size={20} />}

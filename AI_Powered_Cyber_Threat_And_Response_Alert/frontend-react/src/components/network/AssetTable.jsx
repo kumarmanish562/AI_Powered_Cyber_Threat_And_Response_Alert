@@ -1,100 +1,151 @@
-import React, { useState } from 'react';
-import { Server, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Server, ChevronRight, ShieldCheck, AlertTriangle, Activity, Search } from 'lucide-react';
 import DeviceDetailsModal from './DeviceDetailsModal';
+import gsap from "gsap";
 
 const AssetTable = ({ devices, loading }) => {
     const [selectedDevice, setSelectedDevice] = useState(null);
+    const tableRef = useRef(null);
+
+    useEffect(() => {
+        if (!loading && devices.length > 0) {
+            const ctx = gsap.context(() => {
+                gsap.from(".asset-row", {
+                    y: 20,
+                    opacity: 0,
+                    duration: 0.4,
+                    stagger: 0.05,
+                    ease: "power2.out"
+                });
+            }, tableRef);
+            return () => ctx.revert();
+        }
+    }, [loading, devices]);
 
     return (
         <>
-            <div className="bg-[#1e293b]/60 backdrop-blur-sm rounded-xl border border-slate-800 shadow-xl overflow-hidden animate-fade-in-up">
-                <div className="p-5 border-b border-slate-800 flex justify-between items-center">
-                    <h3 className="font-bold text-white flex items-center gap-2">
-                        <Server size={18} className="text-slate-400" /> Discovered Assets ({devices.length})
-                    </h3>
-                    <div className="flex gap-2 text-xs font-medium">
-                        <span className="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md">
+            <div ref={tableRef} className="bg-[#1e293b]/40 backdrop-blur-xl rounded-2xl border border-slate-800 shadow-2xl overflow-hidden relative">
+                {/* Top Gradient Line */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+
+                <div className="p-6 border-b border-slate-800/60 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#0f172a]/50">
+                    <div>
+                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                            <div className="p-2 bg-blue-600/20 rounded-lg border border-blue-500/30 text-blue-400">
+                                <Server size={20} />
+                            </div>
+                            Discovered Assets
+                            <span className="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded border border-slate-800 ml-2">
+                                {devices.length} NODES
+                            </span>
+                        </h3>
+                        <p className="text-slate-400 text-sm mt-1 ml-11">Real-time network topology scan results.</p>
+                    </div>
+
+                    <div className="flex gap-3 text-xs font-bold uppercase tracking-wider">
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-lg">
+                            <AlertTriangle size={14} />
                             {devices.filter(d => d.status === 'Critical').length} Critical
-                        </span>
-                        <span className="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-md">
+                        </div>
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-lg">
+                            <Activity size={14} />
                             {devices.filter(d => d.status === 'Warning').length} Warning
-                        </span>
+                        </div>
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg">
+                            <ShieldCheck size={14} />
+                            {devices.filter(d => d.status === 'Safe').length} Secure
+                        </div>
                     </div>
                 </div>
 
-                <table className="w-full text-left">
-                    <thead className="bg-[#0f172a]/80 text-xs uppercase text-slate-400 font-semibold tracking-wider">
-                        <tr>
-                            <th className="p-4">Device Name</th>
-                            <th className="p-4">IP Address</th>
-                            <th className="p-4">Type</th>
-                            <th className="p-4">OS Fingerprint</th>
-                            <th className="p-4">Open Ports</th>
-                            <th className="p-4 text-right">Latency</th>
-                            <th className="p-4 text-right">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-800 text-sm">
-                        {loading && devices.length === 0 ? (
-                            // Loading State
-                            [...Array(4)].map((_, i) => (
-                                <tr key={i} className="animate-pulse">
-                                    <td className="p-4"><div className="w-32 h-4 bg-slate-800 rounded"></div></td>
-                                    <td className="p-4"><div className="w-24 h-4 bg-slate-800 rounded"></div></td>
-                                    <td className="p-4"><div className="w-16 h-4 bg-slate-800 rounded"></div></td>
-                                    <td className="p-4"><div className="w-20 h-4 bg-slate-800 rounded"></div></td>
-                                    <td className="p-4"><div className="w-24 h-4 bg-slate-800 rounded"></div></td>
-                                    <td className="p-4"></td>
-                                    <td className="p-4"></td>
-                                </tr>
-                            ))
-                        ) : (
-                            devices.map((device) => (
-                                <tr key={device.ip} className="hover:bg-slate-800/40 transition-colors group">
-                                    <td className="p-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)] ${device.status === 'Safe' ? 'bg-emerald-500 shadow-emerald-500/20' :
-                                                    device.status === 'Critical' ? 'bg-rose-500 shadow-rose-500/20' :
-                                                        'bg-amber-500 shadow-amber-500/20'
-                                                }`}></div>
-                                            <span className="font-bold text-slate-200">{device.hostname}</span>
+                <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-left border-collapse">
+                        <thead className="bg-[#0f172a] text-[11px] uppercase text-slate-500 font-bold tracking-widest">
+                            <tr>
+                                <th className="p-5 border-b border-slate-800">Device Name</th>
+                                <th className="p-5 border-b border-slate-800">IP Address</th>
+                                <th className="p-5 border-b border-slate-800">Type</th>
+                                <th className="p-5 border-b border-slate-800">OS Fingerprint</th>
+                                <th className="p-5 border-b border-slate-800">Open Ports</th>
+                                <th className="p-5 border-b border-slate-800 text-right">Latency</th>
+                                <th className="p-5 border-b border-slate-800 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800/50 text-sm bg-[#0b1120]/30">
+                            {loading && devices.length === 0 ? (
+                                // Loading Skeleton
+                                [...Array(5)].map((_, i) => (
+                                    <tr key={i} className="animate-pulse">
+                                        <td className="p-5"><div className="w-32 h-4 bg-slate-800 rounded"></div></td>
+                                        <td className="p-5"><div className="w-24 h-4 bg-slate-800 rounded"></div></td>
+                                        <td className="p-5"><div className="w-16 h-4 bg-slate-800 rounded"></div></td>
+                                        <td className="p-5"><div className="w-24 h-4 bg-slate-800 rounded"></div></td>
+                                        <td className="p-5"><div className="w-32 h-4 bg-slate-800 rounded"></div></td>
+                                        <td className="p-5 text-right"><div className="w-12 h-4 bg-slate-800 rounded ml-auto"></div></td>
+                                        <td className="p-5 text-right"><div className="w-8 h-8 bg-slate-800 rounded ml-auto"></div></td>
+                                    </tr>
+                                ))
+                            ) : devices.length === 0 ? (
+                                <tr>
+                                    <td colSpan="7" className="p-12 text-center text-slate-500">
+                                        <div className="flex flex-col items-center justify-center">
+                                            <Search size={48} className="mb-4 opacity-20" />
+                                            <p>No assets discovered yet.</p>
                                         </div>
                                     </td>
-                                    <td className="p-4 font-mono text-slate-400 text-xs">{device.ip}</td>
-                                    <td className="p-4">
-                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 text-xs border border-slate-700 font-medium">
-                                            {device.type}
-                                        </span>
-                                    </td>
-                                    <td className="p-4 text-slate-400">{device.os}</td>
-                                    <td className="p-4">
-                                        <div className="flex gap-1 flex-wrap">
-                                            {device.ports.map(port => (
-                                                <span key={port} className="px-1.5 py-0.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded text-[10px] font-mono">
-                                                    {port}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </td>
-                                    <td className="p-4 text-right font-mono text-xs text-slate-500">
-                                        {device.latency}
-                                    </td>
-                                    <td className="p-4 text-right">
-                                        <button
-                                            onClick={() => setSelectedDevice(device)}
-                                            className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity"
-                                        >
-                                            Details <ChevronRight size={14} />
-                                        </button>
-                                    </td>
                                 </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                            ) : (
+                                devices.map((device) => (
+                                    <tr key={device.ip} className="asset-row hover:bg-slate-800/30 transition-colors group">
+                                        <td className="p-5">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`relative flex h-3 w-3`}>
+                                                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${device.status === 'Critical' ? 'bg-rose-500' : device.status === 'Warning' ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
+                                                    <span className={`relative inline-flex rounded-full h-3 w-3 ${device.status === 'Critical' ? 'bg-rose-500' : device.status === 'Warning' ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
+                                                </div>
+                                                <span className="font-bold text-white group-hover:text-blue-400 transition-colors">{device.hostname}</span>
+                                            </div>
+                                        </td>
+                                        <td className="p-5 font-mono text-slate-400 text-xs">{device.ip}</td>
+                                        <td className="p-5">
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700 text-slate-300 text-[10px] font-bold uppercase tracking-wide shadow-sm">
+                                                {device.type}
+                                            </span>
+                                        </td>
+                                        <td className="p-5 text-slate-400 text-xs">{device.os}</td>
+                                        <td className="p-5">
+                                            <div className="flex gap-1.5 flex-wrap">
+                                                {device.ports.slice(0, 3).map(port => (
+                                                    <span key={port} className="px-1.5 py-0.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded text-[10px] font-mono font-bold">
+                                                        {port}
+                                                    </span>
+                                                ))}
+                                                {device.ports.length > 3 && (
+                                                    <span className="text-[10px] text-slate-500 px-1">+{device.ports.length - 3}</span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="p-5 text-right">
+                                            <span className={`font-mono text-xs font-bold ${parseInt(device.latency) > 100 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                                                {device.latency}
+                                            </span>
+                                        </td>
+                                        <td className="p-5 text-right">
+                                            <button
+                                                onClick={() => setSelectedDevice(device)}
+                                                className="text-xs font-bold text-slate-500 hover:text-white flex items-center gap-1 justify-end group/btn transition-colors uppercase tracking-wider"
+                                            >
+                                                Inspect <ChevronRight size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            {/* Device Details Modal */}
             <DeviceDetailsModal
                 device={selectedDevice}
                 onClose={() => setSelectedDevice(null)}
