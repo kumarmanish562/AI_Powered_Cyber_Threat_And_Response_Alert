@@ -115,20 +115,28 @@ const Register = () => {
 
     setLoading(true);
     try {
-      // Simulate API call for demo if server not running
-      // Remove setTimeout in production and use fetch
-      /* const resp = await fetch(`${API}/auth/signup`, { ... });
-      */
+      const response = await fetch(`${API}/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          // Frontend fields map to backend schema
+          email: formData.email,
+          password: formData.password,
+          full_name: `${formData.firstName} ${formData.lastName}`
+        })
+      });
 
-      // Simulating success for UI demo
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.detail || 'Registration failed');
+      }
 
       setStep('verify');
       setTimer(60);
       setCanResend(false);
 
     } catch (err) {
-      setError("Connection failed. Please check your network.");
+      setError(err.message || "Connection failed. Please check your network.");
     } finally {
       setLoading(false);
     }
@@ -146,14 +154,25 @@ const Register = () => {
     setLoading(true);
 
     try {
-      // Simulate Verification
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await fetch(`${API}/auth/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          otp: formData.otp
+        })
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.detail || 'Verification failed');
+      }
 
       setSuccess(true);
       setTimeout(() => navigate('/login'), 2000);
 
     } catch (err) {
-      setError("Invalid code.");
+      setError(err.message || "Invalid code.");
     } finally {
       setLoading(false);
     }

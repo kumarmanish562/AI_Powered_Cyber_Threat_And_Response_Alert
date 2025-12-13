@@ -122,7 +122,7 @@ const About = () => {
             {/* Description */}
             <div className="about-reveal space-y-6 text-lg text-slate-400 leading-relaxed mb-10">
               <p>
-                CyberSentinels began as a research project to solve a single problem: <strong className="text-slate-200">Static firewalls cannot stop dynamic threats.</strong>
+                ThreatWatch AI AI began as a research project to solve a single problem: <strong className="text-slate-200">Static firewalls cannot stop dynamic threats.</strong>
               </p>
               <p>
                 Today, we are a global network of security engineers, data scientists, and ethical hackers building the first autonomous defense layer for the modern web. We don't just log attacks; we predict and neutralize them.

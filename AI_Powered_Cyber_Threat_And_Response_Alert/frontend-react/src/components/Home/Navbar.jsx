@@ -92,8 +92,8 @@ const Navbar = () => {
               </div>
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold text-white tracking-tight leading-none">
-                Cyber<span className="text-blue-500">Sentinels</span>
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-200">
+                ThreatWatch AI<span className="font-extralight opacity-80">AI</span>
               </span>
               <span className="text-[10px] text-slate-400 font-mono uppercase tracking-widest leading-none mt-1">
                 Security Ops

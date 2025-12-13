@@ -148,23 +148,20 @@ async def forgot_password(
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.email == request.email).first()
-    if not user:
-        # We generally don't want to reveal if a user exists, but for this internal tool it might be fine.
-        # Standard practice: return 200 even if user not found, or specific error.
-        # Let's return 404 for now as per typical internal tool logic, or just return success to avoid enumeration.
-        # Given the context, let's be helpful.
-        raise HTTPException(status_code=404, detail="User not found")
-
-    # Generate OTP
-    otp_code = "".join([str(random.randint(0, 9)) for _ in range(6)])
-    user.otp = otp_code
-    user.otp_expiry = datetime.now(timezone.utc) + timedelta(minutes=15)
-    db.commit()
     
-    # Send Email
-    background_tasks.add_task(send_password_reset_email, user.email, otp_code)
+    # SECURITY: Always return 200 to prevent email enumeration.
+    # If user exists, send email. If not, do nothing but pretend we did.
+    if user:
+        # Generate OTP
+        otp_code = "".join([str(random.randint(0, 9)) for _ in range(6)])
+        user.otp = otp_code
+        user.otp_expiry = datetime.now(timezone.utc) + timedelta(minutes=15)
+        db.commit()
+        
+        # Send Email
+        background_tasks.add_task(send_password_reset_email, user.email, otp_code)
     
-    return {"message": "Password reset OTP sent to your email"}
+    return {"message": "If an account exists with this email, a password reset OTP has been sent."}
 
 # --- RESET PASSWORD ---
 @router.post("/reset-password")
@@ -199,7 +196,7 @@ def setup_mfa(current_user: User = Depends(get_current_user), db: Session = Depe
     
     uri = pyotp.totp.TOTP(secret).provisioning_uri(
         name=current_user.email, 
-        issuer_name="CyberSentinels"
+        issuer_name="ThreatWatch AI AI"
     )
     return {"secret": secret, "qr_uri": uri}
 

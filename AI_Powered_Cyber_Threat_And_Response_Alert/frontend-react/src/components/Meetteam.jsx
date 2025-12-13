@@ -3,6 +3,9 @@ import { Linkedin, Twitter, Github, Shield, Code, Terminal, Fingerprint, Globe, 
 import gsap from "gsap";
 import Navbar from "../components/Home/Navbar";
 import Footer from "../components/Home/Footer";
+import boy from "../assets/boy.jpg";
+import girl1 from "../assets/girl1.jpg";
+import girl2 from "../assets/girl2.jpg";
 
 const SOCIAL_LINKS = [
     { icon: Linkedin, href: "#" },
@@ -13,33 +16,33 @@ const SOCIAL_LINKS = [
 const teamMembers = [
     {
         id: 1,
-        name: "Manish",
+        name: "Manish Kumar",
         role: "Chief Executive Officer",
         codeName: "VANGUARD",
         bio: "Visionary leader with a decade of experience in cyber warfare. Pioneering AI-driven threat neutralization strategies.",
-        image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop",
+        image: boy,
         icon: Shield,
         specialty: "Strategic Defense",
         clearance: "L-5"
     },
     {
         id: 2,
-        name: "Ankita",
+        name: "Ankita Mishra",
         role: "Chief Technology Officer",
         codeName: "ARCHITECT",
         bio: "AI Architect specializing in neural networks for anomaly detection. Leading the autonomous response engine.",
-        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop",
+        image: girl1,
         icon: Code,
         specialty: "Neural Networks",
         clearance: "L-4"
     },
     {
         id: 3,
-        name: "Anki",
+        name: "Amisha Kumar",
         role: "Head of Security Ops",
         codeName: "OPERATOR",
         bio: "Expert in red teaming and penetration testing. Ensuring our systems stay ahead of global threats.",
-        image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1000&auto=format&fit=crop",
+        image: girl2,
         icon: Terminal,
         specialty: "Red Teaming",
         clearance: "L-4"

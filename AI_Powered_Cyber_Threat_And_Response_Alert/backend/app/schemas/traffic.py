@@ -48,3 +48,4 @@ class TrafficData(BaseModel):
     ct_src_dport_ltm: int
     ct_dst_sport_ltm: int
     ct_dst_src_ltm: int
+    simulation: bool = False

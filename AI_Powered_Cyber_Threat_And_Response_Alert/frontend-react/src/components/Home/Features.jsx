@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from "react";
-import { Eye, GitBranch, Database, Shield, Zap, Search, Lock, Activity, CheckCircle, Terminal, ArrowRight } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { useParams, useNavigate } from 'react-router-dom';
+import { Eye, GitBranch, Database, Shield, Zap, CheckCircle, Terminal, ArrowRight, X, Activity } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { AnimatePresence, motion } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -9,37 +11,135 @@ const featuresData = [
   {
     id: 1,
     title: "Deep Packet Inspection",
-    subtitle: "X-Ray Vision for Network Traffic",
-    description: "We don't just look at headers. Our engine deconstructs every packet payload in real-time, identifying concealed exploits, SQL injections, and zero-day signatures hidden within encrypted traffic streams.",
+    subtitle: "Advanced Traffic Analysis",
+    description:
+      "Our system examines network traffic in real time to detect harmful activity. It looks deeper than basic firewalls and helps identify risks before they become threats.",
     icon: Eye,
     color: "cyan",
-    image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=2070&auto=format&fit=crop",
-    uiType: "scanner"
+    image:
+      "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=2070&auto=format&fit=crop",
+    uiType: "scanner",
+    detailedContent: (
+      <div className="space-y-4">
+        <p className="text-slate-300 leading-relaxed">
+          Deep Packet Inspection (DPI) gives a clear view of what is happening inside your network traffic. Instead of analyzing only packet headers, it checks the full data content to spot unusual or unsafe patterns.
+        </p>
+        <ul className="space-y-2 text-slate-400">
+          <li className="flex items-start gap-2">
+            <CheckCircle size={16} className="text-cyan-400 mt-1" />
+            <span>
+              <strong>Protocol Checking:</strong> Detects when traffic does not match normal usage patterns.
+            </span>
+          </li>
+          <li className="flex items-start gap-2">
+            <CheckCircle size={16} className="text-cyan-400 mt-1" />
+            <span>
+              <strong>Known Threat Detection:</strong> Compares data with a large database of common security threats.
+            </span>
+          </li>
+          <li className="flex items-start gap-2">
+            <CheckCircle size={16} className="text-cyan-400 mt-1" />
+            <span>
+              <strong>Encrypted Traffic Monitoring:</strong> Identifies suspicious behavior in encrypted data streams.
+            </span>
+          </li>
+        </ul>
+      </div>
+    )
   },
+
   {
     id: 2,
     title: "Visual Workflow Automation",
-    subtitle: "Orchestrate Response Logic",
-    description: "Stop writing custom scripts for every incident. Drag and drop nodes to create complex remediation workflows that trigger instantly. Block IPs, reset credentials, and notify Slack channels automatically.",
+    subtitle: "Simple Incident Response",
+    description:
+      "Create automated workflows using an easy drag-and-drop interface. No coding needed. Set triggers and actions to respond instantly to security events.",
     icon: GitBranch,
     color: "violet",
-    image: "https://images.unsplash.com/photo-1558494949-efc535b5c47c?q=80&w=2000&auto=format&fit=crop",
-    uiType: "nodes"
+    image:
+      "https://images.unsplash.com/photo-1558494949-efc535b5c47c?q=80&w=2000&auto=format&fit=crop",
+    uiType: "nodes",
+    detailedContent: (
+      <div className="space-y-4">
+        <p className="text-slate-300 leading-relaxed">
+          Visual automation makes it easy to handle security incidents quickly. Build step-by-step response processes with simple blocks rather than writing scripts.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+            <h4 className="text-violet-400 font-bold mb-2 text-sm">
+              Triggers
+            </h4>
+            <ul className="text-xs text-slate-400 space-y-1">
+              <li>• New security alert</li>
+              <li>• Too many failed logins</li>
+              <li>• Unusual data flow</li>
+            </ul>
+          </div>
+
+          <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+            <h4 className="text-violet-400 font-bold mb-2 text-sm">
+              Actions
+            </h4>
+            <ul className="text-xs text-slate-400 space-y-1">
+              <li>• Block suspicious IP</li>
+              <li>• Disconnect affected device</li>
+              <li>• Send alert to team</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    )
   },
+
   {
     id: 3,
     title: "Forensic-Grade Logging",
-    subtitle: "Immutable Audit Trails",
-    description: "Compliance is baked in. Every event is cryptographically signed and stored in cold storage. Generate SOC2, HIPAA, and GDPR compliance reports with a single click.",
+    subtitle: "Secure Audit Records",
+    description:
+      "All logs are stored safely and cannot be modified. Generate compliance-ready reports and maintain clear records of system activity.",
     icon: Database,
     color: "emerald",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop",
-    uiType: "terminal"
+    image:
+      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop",
+    uiType: "terminal",
+    detailedContent: (
+      <div className="space-y-4">
+        <p className="text-slate-300 leading-relaxed">
+          Our logging system ensures every activity is recorded securely. Each entry is stored in a way that prevents tampering, giving you a reliable audit trail.
+        </p>
+        <ul className="space-y-2 text-slate-400">
+          <li className="flex items-start gap-2">
+            <CheckCircle size={16} className="text-emerald-400 mt-1" />
+            <span>
+              <strong>Compliance:</strong> Easy reporting for security standards such as SOC2 and GDPR.
+            </span>
+          </li>
+
+          <li className="flex items-start gap-2">
+            <CheckCircle size={16} className="text-emerald-400 mt-1" />
+            <span>
+              <strong>Long-Term Storage:</strong> Records can be kept for years without risk of loss.
+            </span>
+          </li>
+
+          <li className="flex items-start gap-2">
+            <CheckCircle size={16} className="text-emerald-400 mt-1" />
+            <span>
+              <strong>Audit Tracking:</strong> See who accessed logs, when, and what actions they performed.
+            </span>
+          </li>
+        </ul>
+      </div>
+    )
   }
 ];
 
+
 const Features = () => {
   const sectionRef = useRef(null);
+  const [selectedFeature, setSelectedFeature] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -150,7 +250,7 @@ const Features = () => {
             </span>
           </h2>
           <p className="text-lg text-slate-400 leading-relaxed">
-            The only platform that combines military-grade inspection with consumer-grade usability. Secure your infrastructure without slowing down innovation.
+            The only platform that combines AI inspection with consumer-grade usability. Secure your infrastructure without slowing down innovation.
           </p>
         </div>
 
@@ -178,7 +278,10 @@ const Features = () => {
                 <p className="text-slate-400 text-lg leading-relaxed mb-8 border-l-2 border-slate-800 pl-6">
                   {feature.description}
                 </p>
-                <button className="group text-sm font-bold text-white flex items-center gap-2 hover:text-${feature.color}-400 transition-colors">
+                <button
+                  onClick={() => setSelectedFeature(feature)}
+                  className={`group text-sm font-bold text-white flex items-center gap-2 hover:text-${feature.color}-400 transition-colors cursor-pointer`}
+                >
                   Explore Documentation
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -310,9 +413,74 @@ const Features = () => {
           ))}
         </div>
 
+        {/* --- Feature Detail Modal --- */}
+        <AnimatePresence>
+          {selectedFeature && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+              onClick={() => setSelectedFeature(null)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                className="bg-[#0f172a] w-full max-w-2xl rounded-2xl border border-slate-700 shadow-2xl overflow-hidden relative"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Modal Header */}
+                <div className="p-6 border-b border-slate-800 flex justify-between items-start">
+                  <div className="flex items-center gap-4">
+                    <div className={`p-3 rounded-lg bg-${selectedFeature.color}-500/10 border border-${selectedFeature.color}-500/20 text-${selectedFeature.color}-400`}>
+                      <selectedFeature.icon size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-1">{selectedFeature.title}</h3>
+                      <p className={`text-sm font-mono text-${selectedFeature.color}-400 uppercase tracking-wider`}>
+                        {selectedFeature.subtitle}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelectedFeature(null)}
+                    className="p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                {/* Modal Content */}
+                <div className="p-8">
+                  {selectedFeature.detailedContent}
+                </div>
+
+                {/* Modal Footer */}
+                <div className="p-6 bg-slate-950/50 border-t border-slate-800 flex justify-end gap-3">
+                  <button
+                    onClick={() => setSelectedFeature(null)}
+                    className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white transition-colors"
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={() => navigate(`/technical-specs/${selectedFeature.id}`)}
+                    className={`px-4 py-2 text-sm font-bold bg-${selectedFeature.color}-600 hover:bg-${selectedFeature.color}-500 text-white rounded-lg transition-colors flex items-center gap-2`}
+                  >
+                    Full Technical Specs <ArrowRight size={16} />
+                  </button>
+                </div>
+
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
       </div>
     </section>
   );
 };
 
 export default Features;
+

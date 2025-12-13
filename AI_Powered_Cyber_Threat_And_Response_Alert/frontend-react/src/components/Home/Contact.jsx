@@ -106,7 +106,7 @@ const Contact = () => {
                             {/* Contact Cards */}
                             <div className="contact-reveal space-y-6">
                                 {[
-                                    { icon: Mail, title: "Email Us", info: "support@cybersentinels.io", sub: "Response < 2 hours" },
+                                    { icon: Mail, title: "Email Us", info: "support@ThreatWatch AI.ai", sub: "Response < 2 hours" },
                                     { icon: Phone, title: "Emergency Line", info: "+1 (888) 99-CYBER", sub: "24/7 SOC Access" },
                                     { icon: MapPin, title: "Global HQ", info: "San Francisco, CA", sub: "Silicon Valley" }
                                 ].map((item, idx) => (
@@ -208,8 +208,8 @@ const Contact = () => {
                                         type="submit"
                                         disabled={status === 'sending' || status === 'sent'}
                                         className={`w-full font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 group relative overflow-hidden ${status === 'sent'
-                                                ? 'bg-green-600 text-white cursor-default'
-                                                : 'bg-blue-600 hover:bg-blue-500 text-white hover:shadow-blue-500/25'
+                                            ? 'bg-green-600 text-white cursor-default'
+                                            : 'bg-blue-600 hover:bg-blue-500 text-white hover:shadow-blue-500/25'
                                             }`}
                                     >
                                         {/* Button Content */}

@@ -1,9 +1,12 @@
 import React, { useEffect, useRef } from "react";
-import { Book, Server, Zap, Database, Globe, Shield, Activity, Code, Lock, Terminal, FileJson, ArrowRight } from "lucide-react";
-import Sidebar from "../components/Sidebar";
+import { Book, Server, Zap, Database, Globe, Shield, Activity, Code, Lock, Terminal, FileJson, ArrowRight, ArrowLeft } from "lucide-react";
+import Navbar from "./Home/Navbar";
+import Footer from "./Home/Footer";
+import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 
 const ApiDocumentation = () => {
+    const navigate = useNavigate();
     const containerRef = useRef(null);
     const contentRef = useRef(null);
 
@@ -41,9 +44,20 @@ const ApiDocumentation = () => {
     }, []);
 
     return (
-        <div className="flex h-screen bg-[#020617] text-slate-200 font-sans selection:bg-cyan-500/30 overflow-hidden">
-            <Sidebar />
-            <div className="flex-1 flex flex-col h-full overflow-hidden relative" ref={containerRef}>
+        <div className="min-h-screen bg-[#020617] text-slate-200 font-sans selection:bg-cyan-500/30 flex flex-col">
+            <Navbar />
+            <div className="flex-1 flex flex-col relative pt-20" ref={containerRef}>
+
+                {/* Back Button */}
+                <div className="max-w-7xl mx-auto w-full px-6 lg:px-8 py-6 z-20">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
+                    >
+                        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                        <span>Back to Platform</span>
+                    </button>
+                </div>
 
                 {/* Background Ambience */}
                 <div className="absolute inset-0 pointer-events-none">
@@ -52,7 +66,7 @@ const ApiDocumentation = () => {
                 </div>
 
                 {/* Header */}
-                <nav className="api-header px-8 py-6 border-b border-white/5 bg-[#020617]/80 backdrop-blur-md shrink-0 z-20 flex justify-between items-center">
+                <nav className="api-header px-6 lg:px-8 mb-8 z-20 flex justify-between items-center max-w-7xl mx-auto w-full">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-blue-600/20 rounded-lg border border-blue-500/30">
                             <Book className="w-5 h-5 text-blue-500" />
@@ -70,7 +84,7 @@ const ApiDocumentation = () => {
                 </nav>
 
                 {/* Content */}
-                <main className="flex-1 overflow-y-auto w-full p-8 lg:p-12 space-y-16 custom-scrollbar relative z-10 scroll-smooth">
+                <main className="flex-1 w-full max-w-7xl mx-auto px-6 lg:px-8 space-y-16 relative z-10 pb-20">
 
                     {/* Introduction */}
                     <section className="api-section max-w-4xl">
@@ -79,7 +93,7 @@ const ApiDocumentation = () => {
                             <h2 className="text-3xl font-bold text-white">System Overview</h2>
                         </div>
                         <p className="text-slate-400 leading-relaxed text-lg mb-8 border-l-2 border-slate-800 pl-6">
-                            The CyberSentinels API provides programmatic access to the threat detection engine, real-time monitoring streams, and system logs.
+                            The ThreatWatch AI AI API provides programmatic access to the threat detection engine, real-time monitoring streams, and system logs.
                             Designed for high-throughput environments, it enables seamless integration with SIEMs, SOARs, and custom dashboards.
                         </p>
 
@@ -119,7 +133,7 @@ const ApiDocumentation = () => {
                                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block group-hover:text-blue-400 transition-colors">Base Endpoint</label>
                                         <div className="flex items-center gap-3 bg-black/40 p-4 rounded-xl border border-slate-700 font-mono text-sm text-blue-400 shadow-inner">
                                             <Globe size={16} className="text-slate-600" />
-                                            <span>https://api.cybersentinels.io/v1</span>
+                                            <span>https://api.ThreatWatch AI.ai/v1</span>
                                         </div>
                                     </div>
 
@@ -223,7 +237,7 @@ const ApiDocumentation = () => {
                                                 <Code size={16} className="text-slate-600" />
                                             </div>
                                             <pre className="text-slate-300 overflow-x-auto">
-                                                {`curl -X POST https://api.cybersentinels.io/v1/alerts/subscribe \\
+                                                {`curl -X POST https://api.ThreatWatch AI.ai/v1/alerts/subscribe \\
   -H "Authorization: Bearer $API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -244,7 +258,7 @@ const ApiDocumentation = () => {
 
                     {/* Footer Area */}
                     <div className="pt-10 border-t border-white/5 flex justify-between items-center text-slate-500 text-sm">
-                        <p>© 2024 CyberSentinels API Team</p>
+                        <p>© 2024 ThreatWatch AI AI API Team</p>
                         <a href="#" className="flex items-center gap-2 hover:text-blue-400 transition-colors">
                             View Full Changelog <ArrowRight size={16} />
                         </a>
@@ -252,7 +266,8 @@ const ApiDocumentation = () => {
 
                 </main>
             </div>
-        </div>
+            <Footer />
+        </div >
     );
 };
 

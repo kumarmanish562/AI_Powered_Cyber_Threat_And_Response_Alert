@@ -28,9 +28,9 @@ def run_migrations():
             # ... existing migrations ...
             connection.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS mfa_secret VARCHAR"))
             connection.commit()
-            print("✅ Database migration successful: All columns verified.")
+            print("Database migration successful: All columns verified.")
     except Exception as e:
-        print(f"⚠️ Migration warning: {e}")
+        print(f"Migration warning: {e}")
 
 # Run the migration
 run_migrations()

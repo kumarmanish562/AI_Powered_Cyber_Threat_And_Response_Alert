@@ -67,7 +67,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData(); // Initial load
-    const interval = setInterval(fetchData, 5000); // Poll backend every 5s
+    const interval = setInterval(fetchData, 2000); // Poll backend every 2s for real-time feel
     return () => clearInterval(interval);
   }, []);
 
@@ -94,28 +94,89 @@ const Dashboard = () => {
     return () => clearInterval(trafficInterval);
   }, []);
 
-  // --- Attack Simulation Logic ---
+  // --- Dynamic Attack Simulation Logic ---
   const runSimulation = async () => {
     setAlert({ message: "Initiating Deep Packet Inspection...", type: "info" });
 
-    // Mock Malicious Packet
-    const attackPacket = {
-      srcip: "192.168.50.12", sport: 443, dstip: "10.0.0.5", dsport: 80,
-      proto: "tcp", state: "FIN", dur: 0.5, sbytes: 500, dbytes: 0,
-      sttl: 60, dttl: 0, sloss: 0, dloss: 0, service: "http",
-      Sload: 1000.0, Dload: 0.0, Spkts: 10, Dpkts: 0, swin: 255, dwin: 0,
-      stcpb: 0, dtcpb: 0, smeansz: 50, dmeansz: 0, trans_depth: 0,
-      res_bdy_len: 0, Sjit: 0.0, Djit: 0.0, Stime: 1420000000, Ltime: 1420000000,
-      Sintpkt: 0.1, Dintpkt: 0.0, tcprtt: 0.0, synack: 0.0, ackdat: 0.0,
-      is_sm_ips_ports: 0, ct_state_ttl: 2, ct_flw_http_mthd: 0, is_ftp_login: 0,
-      ct_ftp_cmd: 0, ct_srv_src: 2, ct_srv_dst: 2, ct_dst_ltm: 2, ct_src_ltm: 2,
-      ct_src_dport_ltm: 2, ct_dst_sport_ltm: 1, ct_dst_src_ltm: 2
+    // Helper: Generate Random IP
+    const getRandomIP = () => {
+      return Array(4).fill(0).map((_, i) =>
+        // Bias towards external IPs for variety, but allow internal range 192.168.x.x occasionally
+        i === 0 ? Math.floor(Math.random() * 223) + 1 : Math.floor(Math.random() * 256)
+      ).join('.');
     };
 
+    // Helper: Generate Random Port
+    const getRandomPort = () => {
+      const ports = [80, 443, 8080, 22, 21, 3389, 53, 23];
+      return ports[Math.floor(Math.random() * ports.length)];
+    };
+
+    // Helper: Generate Varied Traffic Data
+    const generatePacket = () => {
+      return {
+        srcip: getRandomIP(), // DYNAMIC: Random Source IP
+        sport: getRandomPort(),
+        dstip: "10.0.0.5",
+        dsport: getRandomPort(),
+        proto: ["tcp", "udp", "icmp"][Math.floor(Math.random() * 3)],
+        state: "FIN",
+        dur: Number((Math.random() * 5).toFixed(2)),
+        sbytes: Math.floor(Math.random() * 5000) + 200,
+        dbytes: Math.floor(Math.random() * 2000),
+        sttl: Math.floor(Math.random() * 64) + 30,
+        dttl: 0,
+        sloss: 0,
+        dloss: 0,
+        service: ["http", "ssh", "ftp", "dns", "rdp"][Math.floor(Math.random() * 5)],
+        Sload: Math.random() * 1000,
+        Dload: 0.0,
+        Spkts: Math.floor(Math.random() * 20) + 1,
+        Dpkts: 0,
+        swin: 255,
+        dwin: 0,
+        stcpb: 0,
+        dtcpb: 0,
+        smeansz: Math.floor(Math.random() * 100) + 40,
+        dmeansz: 0,
+        trans_depth: 0,
+        res_bdy_len: 0,
+        Sjit: 0.0,
+        Djit: 0.0,
+        Stime: 1420000000,
+        Ltime: 1420000000,
+        Sintpkt: 0.1,
+        Dintpkt: 0.0,
+        tcprtt: 0.0,
+        synack: 0.0,
+        ackdat: 0.0,
+        is_sm_ips_ports: 0,
+        ct_state_ttl: Math.floor(Math.random() * 6),
+        ct_flw_http_mthd: 0,
+        is_ftp_login: 0,
+        ct_ftp_cmd: 0,
+        ct_srv_src: Math.floor(Math.random() * 10),
+        ct_dst_ltm: Math.floor(Math.random() * 10),
+        ct_src_dport_ltm: Math.floor(Math.random() * 5),
+        ct_dst_sport_ltm: 1,
+        ct_dst_src_ltm: Math.floor(Math.random() * 5),
+        // NOTE: Missing fields from schema will be auto-filled by defaults or ignored if robust, 
+        // but let's ensure we match the backend schema logic if needed. 
+        // Backend schema expects all fields. Let's ensure we provide them.
+        ct_srv_dst: Math.floor(Math.random() * 10),
+        ct_src_ltm: Math.floor(Math.random() * 10),
+        simulation: true // Flag to trigger backend simulation mode
+      };
+    };
+
+    const attackPacket = generatePacket();
+
     try {
-      // Small delay to make it feel like "processing"
+      // Small delay to make it feel like "processing" in real-time
       setTimeout(async () => {
         const result = await analyzeTraffic(attackPacket);
+
+        // Show result regardless of threat status for better feedback
         if (result.is_threat) {
           setAlert({
             message: `THREAT DETECTED: Source ${attackPacket.srcip} blocked.`,
@@ -124,14 +185,22 @@ const Dashboard = () => {
 
           if (Notification.permission === "granted") {
             new Notification("🚨 Threat Blocked", {
-              body: `Severity: Critical | Confidence: ${(result.confidence * 100).toFixed(0)}%`,
+              body: `Severity: ${result.severity} | Source: ${attackPacket.srcip}`,
+              icon: '/shield-alert.png' // hypothetical icon
             });
           }
-          fetchData(); // Refresh stats immediately
+        } else {
+          setAlert({
+            message: `TRAFFIC CLEARED: Source ${attackPacket.srcip} is safe.`,
+            type: "success"
+          });
         }
-      }, 1500);
+
+        fetchData(); // Refresh stats immediately
+      }, 800 + Math.random() * 1000); // Randomize processing time too
     } catch (err) {
       console.error(err);
+      setAlert({ message: "Simulation failed. Check console.", type: "error" });
     }
   };
 

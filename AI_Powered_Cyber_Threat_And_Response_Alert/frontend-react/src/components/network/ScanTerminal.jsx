@@ -72,7 +72,7 @@ const ScanTerminal = ({ logs }) => {
 
                 {/* Initial Prompt */}
                 <div className="text-slate-500 mb-4">
-                    CyberSentinels Integrated Terminal v2.4.0 <br />
+                    ThreatWatch AI AI Integrated Terminal v2.4.0 <br />
                     Type 'help' for available commands.
                 </div>
 
@@ -81,9 +81,9 @@ const ScanTerminal = ({ logs }) => {
                         <span className="text-slate-600 select-none shrink-0">[{log.time}]</span>
                         <span className="text-blue-500 select-none shrink-0">➜</span>
                         <span className={`${log.type === 'error' ? 'text-rose-400' :
-                                log.type === 'success' ? 'text-emerald-400' :
-                                    log.type === 'warning' ? 'text-amber-400' :
-                                        'text-slate-300'
+                            log.type === 'success' ? 'text-emerald-400' :
+                                log.type === 'warning' ? 'text-amber-400' :
+                                    'text-slate-300'
                             }`}>
                             {log.msg}
                         </span>

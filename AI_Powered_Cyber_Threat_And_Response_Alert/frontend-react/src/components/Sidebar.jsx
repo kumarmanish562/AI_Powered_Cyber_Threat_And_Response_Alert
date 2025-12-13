@@ -57,7 +57,9 @@ const Sidebar = () => {
           </div>
         </div>
         <div className="sidebar-logo flex flex-col">
-          <span className="text-lg font-bold text-white tracking-tight leading-none">Cyber<span className="text-blue-500">Sentinels</span></span>
+          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-200">
+            ThreatWatch AI<span className="font-extralight opacity-80">AI</span>
+          </span>
           <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mt-1">Command Center</span>
         </div>
       </div>

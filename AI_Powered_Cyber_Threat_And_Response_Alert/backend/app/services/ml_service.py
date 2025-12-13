@@ -21,8 +21,28 @@ class MLEngine:
         pred = self.model.predict(processed)[0]
         prob = self.model.predict_proba(processed)[0][1]
 
+        if data.get('simulation'):
+            # Override for Demo Simulation - Randomize for "Real-Time" feel
+            import random
+            severities = ["Critical", "High", "Medium", "Low"]
+            chosen_severity = random.choice(severities)
+            
+            # Adjust confidence based on severity
+            base_conf = 0.6
+            if chosen_severity == "Critical": base_conf = 0.95
+            elif chosen_severity == "High": base_conf = 0.85
+            elif chosen_severity == "Medium": base_conf = 0.70
+            
+            return {
+                "is_threat": True,
+                "prediction": "Attack",
+                "confidence": base_conf + (random.random() * 0.04), # Random variance
+                "severity": chosen_severity
+            }
+
         return {
             "is_threat": bool(pred == 1),
+            "prediction": "Attack" if pred == 1 else "Normal",
             "confidence": float(prob),
             "severity": "Critical" if prob > 0.8 else "High" if prob > 0.5 else "Low"
         }

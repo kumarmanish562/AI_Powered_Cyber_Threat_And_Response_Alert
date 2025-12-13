@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, ForeignKey
 from sqlalchemy.sql import func
 from app.db.session import Base
 
@@ -37,3 +37,6 @@ class Alert(Base):
     severity = Column(String)
     status = Column(String, default="Active")
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Link to User
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)

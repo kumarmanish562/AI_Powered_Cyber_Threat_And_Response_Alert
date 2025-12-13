@@ -14,7 +14,8 @@ import CreateCase from './pages/CreateCase';
 import NetworkScan from './pages/NetworkScan';
 import Settings from './pages/Settings';
 import Meetteam from './components/Meetteam';
-import ApiDocumentation from './components/ApiDocumentation'; // <--- Import
+import ApiDocumentation from './components/ApiDocumentation';
+import TechnicalSpecs from './components/TechnicalSpecs'; // <--- Import
 import StayUpdated from './components/StayUpdated'; // <--- Import
 import ProtectedRoute from './components/ProtectedRoute'; // <--- Import
 import Careers from './components/Home/Careers';
@@ -41,6 +42,7 @@ function App() {
         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
         <Route path="/meet-team" element={<Meetteam />} />
         <Route path="/api-docs" element={<ApiDocumentation />} /> {/* <--- Add Route */}
+        <Route path="/technical-specs/:featureId" element={<TechnicalSpecs />} /> {/* <--- Add Route */}
         <Route path="/stay-updated" element={<StayUpdated />} /> {/* <--- Add Route */}
         <Route path="/careers" element={<Careers />} />
         <Route path="/research" element={<SecurityResearch />} />

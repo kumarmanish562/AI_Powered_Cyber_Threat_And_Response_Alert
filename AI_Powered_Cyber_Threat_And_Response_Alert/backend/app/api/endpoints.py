@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
+from app.api.deps import get_current_user
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.db.session import get_db
-from app.db.models import Alert
+from app.db.models import Alert, User
 from app.schemas.traffic import TrafficData
 from app.services.ml_service import ml_engine
-from app.services.email_service import send_alert_email, send_newsletter_subscription_email
+from app.services.email_service import send_alert_email, send_newsletter_subscription_email, send_mock_sms
 from datetime import datetime, timedelta, timezone
 import traceback
 from typing import List
@@ -20,9 +21,11 @@ router = APIRouter()
 #  GET ALERTS ENDPOINT
 # ============================================================
 @router.get("/alerts")
-def get_alerts(limit: int = 50, db: Session = Depends(get_db)):
+@router.get("/alerts")
+def get_alerts(limit: int = 50, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     try:
-        alerts = db.query(Alert).order_by(Alert.timestamp.desc()).limit(limit).all()
+        # Show only alerts belonging to the user
+        alerts = db.query(Alert).filter(Alert.user_id == current_user.id).order_by(Alert.timestamp.desc()).limit(limit).all()
         return alerts
     except Exception as e:
         print(f"Error getting alerts: {e}")
@@ -36,7 +39,8 @@ def get_alerts(limit: int = 50, db: Session = Depends(get_db)):
 async def analyze_traffic(
     data: TrafficData,
     background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     try:
         result = ml_engine.predict(data.dict())
@@ -46,17 +50,31 @@ async def analyze_traffic(
             prediction="Attack" if result['is_threat'] else "Normal",
             confidence=result['confidence'],
             severity=result['severity'],
-            status="Active" if result['is_threat'] else "Safe"
+            status="Active" if result['is_threat'] else "Safe",
+            user_id=current_user.id  # Link to User
         )
         db.add(new_alert)
         db.commit()
         db.refresh(new_alert)
 
-        if result['is_threat'] and result['confidence'] > 0.8:
-            alert_payload = data.dict()
-            alert_payload.update(result)
-            alert_payload['alert_id'] = new_alert.id
-            background_tasks.add_task(send_alert_email, alert_payload)
+        if result['is_threat'] and (result['severity'] == "Critical" or result['confidence'] > 0.8):
+            # Fetch subscribed users
+            subscribed_users = db.query(User).filter(User.email_alerts == True).all()
+            recipients = [u.email for u in subscribed_users]
+
+            if recipients:
+                alert_payload = data.dict()
+                alert_payload.update(result)
+                alert_payload['alert_id'] = new_alert.id
+                alert_payload['src_ip'] = data.srcip # Explicitly map for email template
+                background_tasks.add_task(send_alert_email, recipients, alert_payload)
+
+            # --- MOCK SMS NOTIFICATION ---
+            # --- MOCK SMS NOTIFICATION ---
+            # Send ONLY to the current user if they have SMS enabled
+            if current_user.sms_alerts:
+                 sms_msg = f"Alert: {result['prediction']} detected from {data.srcip}. Severity: {result['severity']}."
+                 background_tasks.add_task(send_mock_sms, current_user.email, sms_msg)
 
         return {
             "id": new_alert.id,
@@ -67,7 +85,8 @@ async def analyze_traffic(
         }
 
     except Exception as e:
-        print(f"Error in analyze_traffic: {e}")
+        print(f"CRITICAL ERROR in analyze_traffic: {e}")
+        import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -76,18 +95,22 @@ async def analyze_traffic(
 #  DASHBOARD STATS
 # ============================================================
 @router.get("/stats")
-def get_stats(db: Session = Depends(get_db)):
+@router.get("/stats")
+def get_stats(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     try:
-        total_scans = db.query(Alert).count()
-        total_threats = db.query(Alert).filter(Alert.prediction == "Attack").count()
+        # Base query filtered by user
+        base_query = db.query(Alert).filter(Alert.user_id == current_user.id)
 
-        critical = db.query(Alert).filter(Alert.severity == "Critical").count()
-        high = db.query(Alert).filter(Alert.severity == "High").count()
-        medium = db.query(Alert).filter(Alert.severity == "Medium").count()
-        low = db.query(Alert).filter(Alert.severity == "Low").count()
+        total_scans = base_query.count()
+        total_threats = base_query.filter(Alert.prediction == "Attack").count()
 
-        active = db.query(Alert).filter(Alert.status == "Active").count()
-        remediated = db.query(Alert).filter(Alert.status == "Remediated").count()
+        critical = base_query.filter(Alert.severity == "Critical").count()
+        high = base_query.filter(Alert.severity == "High").count()
+        medium = base_query.filter(Alert.severity == "Medium").count()
+        low = base_query.filter(Alert.severity == "Low").count()
+
+        active = base_query.filter(Alert.status == "Active").count()
+        remediated = base_query.filter(Alert.status == "Remediated").count()
 
         return {
             "total_scans": total_scans,
@@ -262,7 +285,7 @@ def get_log_stats():
             {"label": "Database", "count": int(total_events * 0.10), "color": "bg-emerald-500"},
         ]
 
-        # 3. Top Talkers
+        # 3. Top Talkers+
         talkers = [
             {"ip": "192.168.140.253", "country": "Internal", "requests": random.randint(12000, 16000), "risk": "High"},
             {"ip": "45.22.19.112", "country": "Russia", "requests": random.randint(6000, 9000), "risk": "Critical"},

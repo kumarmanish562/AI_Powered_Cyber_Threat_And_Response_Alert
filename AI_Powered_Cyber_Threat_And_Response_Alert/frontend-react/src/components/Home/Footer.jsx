@@ -71,7 +71,7 @@ const Footer = () => {
                 </div>
               </div>
               <span className="text-xl font-bold text-white tracking-tight leading-none">
-                Cyber<span className="text-blue-500">Sentinels</span>_
+                ThreatWatch AI
               </span>
             </Link>
 
@@ -196,7 +196,7 @@ const Footer = () => {
 
         {/* --- Copyright --- */}
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-600 text-xs font-mono footer-content">
-          <p>© {new Date().getFullYear()} CyberSentinels Project. Open Source License.</p>
+          <p>© {new Date().getFullYear()} ThreatWatch AI Project. Open Source License.</p>
           <div className="flex gap-8 mt-4 md:mt-0">
             <a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-blue-400 transition-colors">Terms of Service</a>

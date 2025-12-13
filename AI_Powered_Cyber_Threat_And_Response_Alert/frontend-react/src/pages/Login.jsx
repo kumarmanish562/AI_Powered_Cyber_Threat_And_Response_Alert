@@ -379,7 +379,7 @@ const Login = () => {
               {view === 'login' && (
                 <div className="mt-8 text-center pt-6 border-t border-white/5">
                   <p className="text-slate-500 text-xs">
-                    New to CyberSentinels?
+                    New to ThreatWatch AI AI?
                     <Link
                       to="/register"
                       className="text-blue-400 hover:text-blue-300 font-bold ml-1 transition-colors"
