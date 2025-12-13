@@ -4,7 +4,7 @@ import StatCard from '../components/StatCard';
 import NotificationToast from '../components/NotificationToast';
 // Import the new Chart components
 import { SeverityChart, StatusChart } from '../components/DashboardCharts';
-import { getDashboardStats, analyzeTraffic, getProfile } from '../services/api';
+import { getDashboardStats, analyzeTraffic, getProfile, getNetworkDevices } from '../services/api';
 import {
   AlertTriangle,
   ShieldAlert,
@@ -14,7 +14,10 @@ import {
   Server,
   Zap,
   Clock,
-  Globe
+  Globe,
+  Laptop,
+  Smartphone,
+  Wifi
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -51,15 +54,27 @@ const Dashboard = () => {
   // Simulated Live Traffic Data (for the Area Chart)
   const [trafficData, setTrafficData] = useState([]);
 
+  // Real-time System Health Simulation
+  const [systemHealth, setSystemHealth] = useState({
+    cpu: 24,
+    ram: 58,
+    db: 12
+  });
+
+  // Connected Devices (Real-time Status)
+  const [devices, setDevices] = useState([]);
+
   // --- API & Data Fetching ---
   const fetchData = async () => {
     try {
-      const [statsData, userData] = await Promise.all([
+      const [statsData, userData, devicesData] = await Promise.all([
         getDashboardStats(),
-        getProfile()
+        getProfile(),
+        getNetworkDevices()
       ]);
       setStats(statsData);
       setUser(userData);
+      setDevices(devicesData);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -67,7 +82,17 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData(); // Initial load
-    const interval = setInterval(fetchData, 2000); // Poll backend every 2s for real-time feel
+    const interval = setInterval(() => {
+      fetchData(); // Stats & Devices
+
+      // Simulate System Health Fluctuation
+      setSystemHealth(prev => ({
+        cpu: Math.min(100, Math.max(10, prev.cpu + Math.floor(Math.random() * 10) - 5)),
+        ram: Math.min(90, Math.max(30, prev.ram + Math.floor(Math.random() * 8) - 4)),
+        db: Math.min(100, Math.max(5, prev.db + Math.floor(Math.random() * 5) - 2))
+      }));
+    }, 2000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -379,10 +404,13 @@ const Dashboard = () => {
                   <div>
                     <div className="flex justify-between text-xs text-slate-400 mb-2">
                       <span>AI Inference Engine (CPU)</span>
-                      <span className="text-emerald-400">24%</span>
+                      <span className="text-emerald-400 font-mono">{systemHealth.cpu}%</span>
                     </div>
                     <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-emerald-500 w-[24%] rounded-full"></div>
+                      <div
+                        className="h-full bg-emerald-500 rounded-full transition-all duration-500 ease-in-out"
+                        style={{ width: `${systemHealth.cpu}%` }}
+                      ></div>
                     </div>
                   </div>
 
@@ -390,10 +418,13 @@ const Dashboard = () => {
                   <div>
                     <div className="flex justify-between text-xs text-slate-400 mb-2">
                       <span>Log Buffer (RAM)</span>
-                      <span className="text-blue-400">58%</span>
+                      <span className="text-blue-400 font-mono">{systemHealth.ram}%</span>
                     </div>
                     <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-500 w-[58%] rounded-full"></div>
+                      <div
+                        className="h-full bg-blue-500 rounded-full transition-all duration-500 ease-in-out"
+                        style={{ width: `${systemHealth.ram}%` }}
+                      ></div>
                     </div>
                   </div>
 
@@ -401,10 +432,13 @@ const Dashboard = () => {
                   <div>
                     <div className="flex justify-between text-xs text-slate-400 mb-2">
                       <span>PostgreSQL Connections</span>
-                      <span className="text-purple-400">12 / 100</span>
+                      <span className="text-purple-400 font-mono">{systemHealth.db} / 100</span>
                     </div>
                     <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-purple-500 w-[12%] rounded-full"></div>
+                      <div
+                        className="h-full bg-purple-500 rounded-full transition-all duration-500 ease-in-out"
+                        style={{ width: `${systemHealth.db}%` }}
+                      ></div>
                     </div>
                   </div>
                 </div>
@@ -416,6 +450,43 @@ const Dashboard = () => {
               </div>
             </div>
 
+          </div>
+
+          {/* 5. Network Devices Row (New) */}
+          <div className="mb-8">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Wifi className="text-cyan-400" size={20} /> Network Devices (Live Monitoring)
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {devices.map((device, idx) => (
+                <div key={idx} className="bg-[#151f32]/60 backdrop-blur-sm rounded-lg border border-slate-800 p-4 flex items-center justify-between hover:border-slate-700 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${device.status === 'Critical' ? 'bg-red-500/20 text-red-500' :
+                        device.status === 'Warning' ? 'bg-amber-500/20 text-amber-500' : 'bg-emerald-500/20 text-emerald-500'
+                      }`}>
+                      {device.type === 'Server' ? <Server size={18} /> :
+                        device.type === 'Mobile' ? <Smartphone size={18} /> :
+                          <Laptop size={18} />}
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-200">{device.hostname}</h4>
+                      <p className="text-xs text-slate-500 font-mono">{device.ip}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className={`text-xs font-bold px-2 py-0.5 rounded-full inline-block mb-1 ${device.status === 'Critical' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+                        device.status === 'Warning' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                          'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                      }`}>
+                      {device.status}
+                    </div>
+                    <p className="text-[10px] text-slate-600 font-mono flex items-center gap-1 justify-end">
+                      <Activity size={10} /> {device.latency}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
         </div>

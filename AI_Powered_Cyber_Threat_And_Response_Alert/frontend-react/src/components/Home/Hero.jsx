@@ -116,7 +116,7 @@ const Hero = () => {
                 Get Protected <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </Link>
-            <Link to="/api-docs" className="w-full sm:w-auto">
+            <Link to="/documentation" className="w-full sm:w-auto">
               <button className="w-full sm:w-auto px-8 py-4 bg-white/5 text-white font-medium rounded-xl border border-white/10 hover:bg-white/10 transition-all backdrop-blur-sm flex items-center justify-center gap-2">
                 <Command size={18} /> View Documentation
               </button>

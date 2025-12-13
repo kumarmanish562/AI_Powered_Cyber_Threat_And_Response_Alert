@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { Book, Server, Zap, Database, Globe, Shield, Activity, Code, Lock, Terminal, FileJson, ArrowRight, ArrowLeft } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Book, Server, Zap, Database, Globe, Shield, Activity, Code, Lock, Terminal, FileJson, ArrowRight, ArrowLeft, RefreshCw, AlertTriangle, CheckCircle, Eye } from "lucide-react";
 import Navbar from "./Home/Navbar";
 import Footer from "./Home/Footer";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,48 @@ const ApiDocumentation = () => {
     const navigate = useNavigate();
     const containerRef = useRef(null);
     const contentRef = useRef(null);
+
+    // --- LIVE INTELLIGENCE DEMO STATE ---
+    const [demoData, setDemoData] = useState({
+        ip: "192.168.1.1",
+        risk: 12,
+        logs: [],
+        recommendation: "System appears normal."
+    });
+
+    useEffect(() => {
+        const fakeLogs = [
+            "Port 80 TCP connection established",
+            "SSL Handshake successful",
+            "Incoming packet size: 1024 bytes",
+            "Reputation check: Clean",
+            "Geo-location lookup: US-West",
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0)",
+            "DNS Query: api.threatwatch.ai",
+            "Firewall Allow Rule #104 matched"
+        ];
+
+        const interval = setInterval(() => {
+            const newRisk = Math.floor(Math.random() * 100);
+
+            // Generate a fake IP slightly different each time or keep static
+            const ipOctet = Math.floor(Math.random() * 255);
+            const newIP = `203.0.113.${ipOctet}`;
+
+            let rec = "Monitor traffic for anomalies.";
+            if (newRisk > 75) rec = "CRITICAL: Block inbound traffic immediately.";
+            else if (newRisk > 40) rec = "WARNING: Enable deep packet inspection.";
+
+            setDemoData(prev => ({
+                ip: newIP,
+                risk: newRisk,
+                logs: [fakeLogs[Math.floor(Math.random() * fakeLogs.length)], ...prev.logs].slice(0, 5),
+                recommendation: rec
+            }));
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -48,16 +90,7 @@ const ApiDocumentation = () => {
             <Navbar />
             <div className="flex-1 flex flex-col relative pt-20" ref={containerRef}>
 
-                {/* Back Button */}
-                <div className="max-w-7xl mx-auto w-full px-6 lg:px-8 py-6 z-20">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
-                    >
-                        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-                        <span>Back to Platform</span>
-                    </button>
-                </div>
+
 
                 {/* Background Ambience */}
                 <div className="absolute inset-0 pointer-events-none">
@@ -118,6 +151,72 @@ const ApiDocumentation = () => {
 
                     {/* Configuration */}
                     <section className="api-section max-w-6xl">
+                        {/* --- LIVE INTELLIGENCE DEMO --- */}
+                        <div className="mb-16 bg-[#0f172a]/90 border border-emerald-500/20 rounded-2xl p-1 overflow-hidden shadow-[0_0_40px_rgba(16,185,129,0.1)] relative group">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500"></div>
+                            <div className="p-8">
+                                <div className="flex items-center justify-between mb-8">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-400 animate-pulse">
+                                            <Eye size={24} />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl font-bold text-white">Live Intelligence Inspector</h2>
+                                            <p className="text-sm text-slate-400">Real-time threat scoring & remediation advice (Interactive Demo)</p>
+                                        </div>
+                                    </div>
+                                    <span className="px-3 py-1 bg-slate-800 rounded-full border border-slate-700 text-xs font-mono text-emerald-400 flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> SYSTEM ONLINE
+                                    </span>
+                                </div>
+
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                    {/* Risk Gauge */}
+                                    <div className="bg-slate-900/50 rounded-xl p-6 border border-slate-800 flex flex-col items-center justify-center text-center">
+                                        <div className="relative mb-4">
+                                            <svg className="w-32 h-32 transform -rotate-90">
+                                                <circle cx="64" cy="64" r="60" stroke="#1e293b" strokeWidth="8" fill="transparent" />
+                                                <circle cx="64" cy="64" r="60" stroke={demoData.risk > 75 ? "#f43f5e" : demoData.risk > 40 ? "#f59e0b" : "#10b981"} strokeWidth="8" fill="transparent" strokeDasharray="377" strokeDashoffset={377 - (377 * demoData.risk) / 100} className="transition-all duration-1000 ease-out" />
+                                            </svg>
+                                            <div className="absolute inset-0 flex items-center justify-center flex-col">
+                                                <span className="text-3xl font-bold text-white">{demoData.risk}</span>
+                                                <span className="text-[10px] uppercase tracking-widest text-slate-500">Risk Score</span>
+                                            </div>
+                                        </div>
+                                        <p className={`font-bold ${demoData.risk > 75 ? "text-rose-400" : demoData.risk > 40 ? "text-amber-400" : "text-emerald-400"}`}>
+                                            {demoData.risk > 75 ? "CRITICAL THREAT" : demoData.risk > 40 ? "SUSPICIOUS ACTIVITY" : "SAFE TRAFFIC"}
+                                        </p>
+                                    </div>
+
+                                    {/* Data Stream */}
+                                    <div className="lg:col-span-2 space-y-4">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="bg-black/30 p-4 rounded-lg border border-slate-700/50">
+                                                <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">Target IP</div>
+                                                <div className="font-mono text-lg text-cyan-400">{demoData.ip}</div>
+                                            </div>
+                                            <div className="bg-black/30 p-4 rounded-lg border border-slate-700/50">
+                                                <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">Recommendation</div>
+                                                <div className={`font-bold text-sm ${demoData.risk > 75 ? "text-rose-400" : "text-slate-200"}`}>{demoData.recommendation}</div>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-black/50 rounded-lg border border-slate-800 p-4 font-mono text-xs h-32 overflow-hidden flex flex-col justify-end relative">
+                                            <div className="absolute top-2 right-2 flex items-center gap-1 text-slate-600">
+                                                <RefreshCw size={10} className="animate-spin" /> Stream
+                                            </div>
+                                            {demoData.logs.map((log, i) => (
+                                                <div key={i} className="mb-1 text-slate-400 truncate">
+                                                    <span className="text-slate-600 mr-2">[{new Date().toLocaleTimeString()}]</span>
+                                                    {log}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="flex items-center gap-3 mb-8">
                             <div className="h-8 w-1 bg-gradient-to-b from-purple-400 to-pink-600 rounded-full"></div>
                             <h2 className="text-2xl font-bold text-white">Configuration</h2>

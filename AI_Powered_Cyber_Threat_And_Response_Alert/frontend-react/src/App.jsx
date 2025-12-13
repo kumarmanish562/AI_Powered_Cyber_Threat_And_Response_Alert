@@ -23,6 +23,8 @@ import SecurityResearch from './components/SecurityResearch';
 import Contact from './components/Home/Contact';
 import About from './components/Home/About';
 
+import UserDocumentation from './components/UserDocumentation'; // <--- Import
+
 function App() {
   return (
     <Router>
@@ -37,10 +39,11 @@ function App() {
         <Route path="/logs" element={<ProtectedRoute><SecurityLogs /></ProtectedRoute>} />
         <Route path="/analysis" element={<ProtectedRoute><ForensicsLab /></ProtectedRoute>} />
         <Route path="/analysis/new" element={<ProtectedRoute><CreateCase /></ProtectedRoute>} />
-        <Route path="/log-analysis" element={<ProtectedRoute><LogAnalysis /></ProtectedRoute>} /> {/* <--- Add Route */}
+        <Route path="/log-analysis" element={<ProtectedRoute><LogAnalysis /></ProtectedRoute>} />
         <Route path="/network" element={<ProtectedRoute><NetworkScan /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
         <Route path="/meet-team" element={<Meetteam />} />
+        <Route path="/documentation" element={<UserDocumentation />} /> {/* <--- Add Route */}
         <Route path="/api-docs" element={<ApiDocumentation />} /> {/* <--- Add Route */}
         <Route path="/technical-specs/:featureId" element={<TechnicalSpecs />} /> {/* <--- Add Route */}
         <Route path="/stay-updated" element={<StayUpdated />} /> {/* <--- Add Route */}
