@@ -225,14 +225,14 @@ const Features = () => {
   }, []);
 
   return (
-    <section id="features" ref={sectionRef} className="py-32 bg-[#020617] relative overflow-hidden">
+    <section id="features" ref={sectionRef} className="py-32 bg-slate-50 dark:bg-[#020617] relative overflow-hidden transition-colors duration-300">
 
       {/* --- 1. Enhanced Grid Background --- */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Glow Spot */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] bg-blue-900/10 blur-[120px] rounded-full"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] bg-blue-500/10 dark:bg-blue-900/10 blur-[120px] rounded-full"></div>
         {/* Sharp Grid with Mask */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30"></div>
+        <div className="absolute inset-0 dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -243,13 +243,13 @@ const Features = () => {
             <Activity size={12} />
             Core Capabilities
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-6">
+          <h2 className="text-4xl md:text-6xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">
             Total Visibility. <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500">
               Absolute Control.
             </span>
           </h2>
-          <p className="text-lg text-slate-400 leading-relaxed">
+          <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
             The only platform that combines AI inspection with consumer-grade usability. Secure your infrastructure without slowing down innovation.
           </p>
         </div>
@@ -269,18 +269,18 @@ const Features = () => {
                   <feature.icon size={32} className={`text-${feature.color}-400`} />
                 </div>
 
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
                   {feature.title}
                 </h3>
                 <h4 className={`text-lg font-mono mb-6 text-${feature.color}-400 flex items-center gap-2`}>
                   <span className="text-slate-600">//</span> {feature.subtitle}
                 </h4>
-                <p className="text-slate-400 text-lg leading-relaxed mb-8 border-l-2 border-slate-800 pl-6">
+                <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed mb-8 border-l-2 border-slate-200 dark:border-slate-800 pl-6">
                   {feature.description}
                 </p>
                 <button
                   onClick={() => setSelectedFeature(feature)}
-                  className={`group text-sm font-bold text-white flex items-center gap-2 hover:text-${feature.color}-400 transition-colors cursor-pointer`}
+                  className={`group text-sm font-bold text-slate-700 dark:text-white flex items-center gap-2 hover:text-${feature.color}-600 dark:hover:text-${feature.color}-400 transition-colors cursor-pointer`}
                 >
                   Explore Documentation
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
@@ -291,10 +291,10 @@ const Features = () => {
               <div className={`feature-visual relative group perspective-1000 ${index % 2 === 1 ? 'lg:order-1' : 'lg:order-2'}`}>
 
                 {/* 1. Main Image Container (Masked) */}
-                <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-white/10 bg-slate-900 shadow-2xl">
+                <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-900 shadow-2xl">
                   {/* Heavy overlay to ensure text contrast */}
-                  <div className="absolute inset-0 bg-[#020617]/70 z-10"></div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent z-10"></div>
+                  <div className="absolute inset-0 bg-slate-50/10 dark:bg-[#020617]/70 z-10"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-50 dark:from-[#020617] via-transparent to-transparent z-10"></div>
 
                   {/* The Image (Parallax Target) */}
                   <div className="absolute inset-0 overflow-hidden rounded-3xl">
@@ -427,17 +427,17 @@ const Features = () => {
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="bg-[#0f172a] w-full max-w-2xl rounded-2xl border border-slate-700 shadow-2xl overflow-hidden relative"
+                className="bg-white dark:bg-[#0f172a] w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden relative"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Modal Header */}
-                <div className="p-6 border-b border-slate-800 flex justify-between items-start">
+                <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-start">
                   <div className="flex items-center gap-4">
                     <div className={`p-3 rounded-lg bg-${selectedFeature.color}-500/10 border border-${selectedFeature.color}-500/20 text-${selectedFeature.color}-400`}>
                       <selectedFeature.icon size={24} />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white mb-1">{selectedFeature.title}</h3>
+                      <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{selectedFeature.title}</h3>
                       <p className={`text-sm font-mono text-${selectedFeature.color}-400 uppercase tracking-wider`}>
                         {selectedFeature.subtitle}
                       </p>
@@ -445,7 +445,7 @@ const Features = () => {
                   </div>
                   <button
                     onClick={() => setSelectedFeature(null)}
-                    className="p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                    className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
                   >
                     <X size={20} />
                   </button>
@@ -457,10 +457,10 @@ const Features = () => {
                 </div>
 
                 {/* Modal Footer */}
-                <div className="p-6 bg-slate-950/50 border-t border-slate-800 flex justify-end gap-3">
+                <div className="p-6 bg-slate-50 dark:bg-slate-950/50 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-3">
                   <button
                     onClick={() => setSelectedFeature(null)}
-                    className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
                   >
                     Close
                   </button>

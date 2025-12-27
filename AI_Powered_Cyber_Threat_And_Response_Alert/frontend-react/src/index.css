@@ -1,5 +1,6 @@
-
 @import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
 
 /* Custom Scrollbar for that 'Cyber' feel */
 ::-webkit-scrollbar {

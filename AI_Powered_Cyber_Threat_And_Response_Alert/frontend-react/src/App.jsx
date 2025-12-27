@@ -24,35 +24,38 @@ import Contact from './components/Home/Contact';
 import About from './components/Home/About';
 
 import UserDocumentation from './components/UserDocumentation'; // <--- Import
+import { ThemeProvider } from './context/ThemeContext'; // <--- Import ThemeProvider
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/threats" element={<ProtectedRoute><Threats /></ProtectedRoute>} />
-        <Route path="/remediation" element={<ProtectedRoute><Remediation /></ProtectedRoute>} />
-        <Route path="/logs" element={<ProtectedRoute><SecurityLogs /></ProtectedRoute>} />
-        <Route path="/analysis" element={<ProtectedRoute><ForensicsLab /></ProtectedRoute>} />
-        <Route path="/analysis/new" element={<ProtectedRoute><CreateCase /></ProtectedRoute>} />
-        <Route path="/log-analysis" element={<ProtectedRoute><LogAnalysis /></ProtectedRoute>} />
-        <Route path="/network" element={<ProtectedRoute><NetworkScan /></ProtectedRoute>} />
-        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-        <Route path="/meet-team" element={<Meetteam />} />
-        <Route path="/documentation" element={<UserDocumentation />} /> {/* <--- Add Route */}
-        <Route path="/api-docs" element={<ApiDocumentation />} /> {/* <--- Add Route */}
-        <Route path="/technical-specs/:featureId" element={<TechnicalSpecs />} /> {/* <--- Add Route */}
-        <Route path="/stay-updated" element={<StayUpdated />} /> {/* <--- Add Route */}
-        <Route path="/careers" element={<Careers />} />
-        <Route path="/research" element={<SecurityResearch />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/threats" element={<ProtectedRoute><Threats /></ProtectedRoute>} />
+          <Route path="/remediation" element={<ProtectedRoute><Remediation /></ProtectedRoute>} />
+          <Route path="/logs" element={<ProtectedRoute><SecurityLogs /></ProtectedRoute>} />
+          <Route path="/analysis" element={<ProtectedRoute><ForensicsLab /></ProtectedRoute>} />
+          <Route path="/analysis/new" element={<ProtectedRoute><CreateCase /></ProtectedRoute>} />
+          <Route path="/log-analysis" element={<ProtectedRoute><LogAnalysis /></ProtectedRoute>} />
+          <Route path="/network" element={<ProtectedRoute><NetworkScan /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+          <Route path="/meet-team" element={<Meetteam />} />
+          <Route path="/documentation" element={<UserDocumentation />} /> {/* <--- Add Route */}
+          <Route path="/api-docs" element={<ApiDocumentation />} /> {/* <--- Add Route */}
+          <Route path="/technical-specs/:featureId" element={<TechnicalSpecs />} /> {/* <--- Add Route */}
+          <Route path="/stay-updated" element={<StayUpdated />} /> {/* <--- Add Route */}
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/research" element={<SecurityResearch />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 

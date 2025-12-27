@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { LayoutDashboard, ShieldAlert, Activity, FileText, Settings, Shield, Search, Network, Zap, Book, ChevronRight, PieChart } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import gsap from "gsap";
+import ThemeToggle from './ThemeToggle';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -42,14 +43,14 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <div ref={sidebarRef} className="w-72 bg-[#020617] border-r border-white/5 min-h-screen flex flex-col text-slate-300 font-sans shrink-0 relative overflow-hidden transition-all duration-300 z-50 shadow-2xl">
+    <div ref={sidebarRef} className="w-72 bg-slate-50 dark:bg-[#020617] border-r border-slate-200 dark:border-white/5 min-h-screen flex flex-col text-slate-700 dark:text-slate-300 font-sans shrink-0 relative overflow-hidden transition-all duration-300 z-50 shadow-2xl shadow-slate-200/50 dark:shadow-none">
 
       {/* Decorative Background Glow */}
-      <div className="sidebar-bg-glow absolute top-0 left-0 w-full h-96 bg-blue-900/10 blur-[100px] pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_0%_0%,#000_70%,transparent_100%)] opacity-20 pointer-events-none"></div>
+      <div className="sidebar-bg-glow absolute top-0 left-0 w-full h-96 bg-blue-500/5 dark:bg-blue-900/10 blur-[100px] pointer-events-none"></div>
+      <div className="absolute inset-0 dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_0%_0%,#000_70%,transparent_100%)] opacity-20 pointer-events-none"></div>
 
       {/* Logo Area */}
-      <div className="h-24 flex items-center gap-4 px-8 border-b border-white/5 relative z-10 bg-[#020617]/80 backdrop-blur-xl">
+      <div className="h-24 flex items-center gap-4 px-8 border-b border-slate-200 dark:border-white/5 relative z-10 bg-slate-50/80 dark:bg-[#020617]/80 backdrop-blur-xl">
         <div className="sidebar-logo relative group cursor-pointer">
           <div className="absolute inset-0 bg-blue-500 rounded-xl blur-md opacity-20 group-hover:opacity-50 transition-opacity duration-500"></div>
           <div className="relative w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 border border-blue-400/30 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-900/20 group-hover:scale-105 transition-transform duration-300">
@@ -102,13 +103,16 @@ const Sidebar = () => {
       </nav>
 
       {/* Bottom Settings */}
-      <div className="p-4 border-t border-white/5 bg-[#020617]/50 backdrop-blur-md relative z-10 sidebar-item">
+      <div className="p-4 border-t border-slate-200 dark:border-white/5 bg-slate-100/50 dark:bg-[#020617]/50 backdrop-blur-md relative z-10 sidebar-item">
         <NavItem
           to="/settings"
           icon={<Settings size={20} />}
           label="System Settings"
           active={isActive('/settings')}
         />
+        <div className="mt-4 flex justify-center">
+          <ThemeToggle className="w-full bg-slate-200 hover:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300" />
+        </div>
         <div className="mt-4 px-4 flex items-center justify-between text-[10px] text-slate-600 font-mono uppercase">
           <span>v2.4.0 Stable</span>
           <div className="flex items-center gap-1.5">
@@ -124,10 +128,10 @@ const Sidebar = () => {
 
 const SectionLabel = ({ label, delay }) => (
   <div className="sidebar-item flex items-center px-4 mt-8 mb-3 group">
-    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest group-hover:text-blue-400 transition-colors duration-300">
+    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300">
       {label}
     </span>
-    <div className="ml-3 h-px flex-1 bg-slate-800 group-hover:bg-blue-500/30 transition-colors duration-300"></div>
+    <div className="ml-3 h-px flex-1 bg-slate-200 dark:bg-slate-800 group-hover:bg-blue-500/30 transition-colors duration-300"></div>
   </div>
 );
 
@@ -135,8 +139,8 @@ const NavItem = ({ to, icon, label, active, badge }) => (
   <Link
     to={to}
     className={`group flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 relative overflow-hidden ${active
-      ? 'text-white bg-white/5 shadow-lg shadow-black/20 border border-white/5'
-      : 'text-slate-400 hover:text-white hover:bg-white/5 hover:border hover:border-white/5 border border-transparent'
+      ? 'text-blue-900 dark:text-white bg-blue-50 dark:bg-white/5 shadow-lg shadow-blue-500/10 dark:shadow-black/20 border border-blue-100 dark:border-white/5'
+      : 'text-slate-500 dark:text-slate-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 hover:border hover:border-slate-200 dark:hover:border-white/5 border border-transparent'
       }`}
   >
     {/* Active Glow Effect */}

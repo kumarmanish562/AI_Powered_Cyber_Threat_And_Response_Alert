@@ -181,16 +181,16 @@ const Register = () => {
   // Success View Overlay
   if (success) {
     return (
-      <div className="min-h-screen bg-[#020617] flex flex-col font-sans text-slate-300">
+      <div className="min-h-screen bg-white dark:bg-[#020617] flex flex-col font-sans text-slate-700 dark:text-slate-300 transition-colors duration-300">
         <Navbar />
         <div className="flex-grow flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-900/20 to-[#020617]"></div>
-          <div className="bg-[#0f172a] border border-green-500/30 p-12 rounded-3xl text-center max-w-md w-full shadow-2xl relative z-10">
+          <div className="absolute inset-0 bg-green-50/50 dark:bg-gradient-to-br dark:from-green-900/20 dark:to-[#020617]"></div>
+          <div className="bg-white dark:bg-[#0f172a] border border-green-100 dark:border-green-500/30 p-12 rounded-3xl text-center max-w-md w-full shadow-2xl relative z-10 transition-colors">
             <div className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20 shadow-[0_0_40px_rgba(34,197,94,0.2)]">
-              <CheckCircle className="text-green-500 w-12 h-12" />
+              <CheckCircle className="text-green-600 dark:text-green-500 w-12 h-12" />
             </div>
-            <h2 className="text-3xl font-bold text-white mb-2">Access Granted</h2>
-            <p className="text-slate-400">Redirecting to dashboard...</p>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Access Granted</h2>
+            <p className="text-slate-500 dark:text-slate-400">Redirecting to dashboard...</p>
           </div>
         </div>
       </div>
@@ -198,15 +198,15 @@ const Register = () => {
   }
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-[#020617] flex flex-col font-sans text-slate-300 selection:bg-blue-500/30 overflow-hidden">
+    <div ref={containerRef} className="min-h-screen bg-slate-50 dark:bg-[#020617] flex flex-col font-sans text-slate-700 dark:text-slate-300 selection:bg-blue-500/30 overflow-hidden transition-colors duration-300">
       <Navbar />
 
       <div className="flex-grow flex relative pt-20">
 
         {/* --- Background Elements --- */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-900/10 blur-[120px] rounded-full"></div>
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20"></div>
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-500/10 dark:bg-blue-900/10 blur-[120px] rounded-full"></div>
+          <div className="absolute inset-0 dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20"></div>
         </div>
 
         <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 relative z-10 min-h-[calc(100vh-80px)]">
@@ -221,27 +221,27 @@ const Register = () => {
                 Secure Access
               </div>
 
-              <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
+              <h1 className="text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
                 Join the <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Cyber Defense.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Cyber.</span>
               </h1>
 
-              <p className="text-lg text-slate-400 mb-10 leading-relaxed">
+              <p className="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed">
                 Create your account to access real-time threat monitoring, automated security, and advanced tools.
               </p>
 
               {/* Decorative Card */}
-              <div className="bg-[#09090b] p-6 rounded-2xl border border-white/10 shadow-2xl max-w-sm">
+              <div className="bg-white dark:bg-[#09090b] p-6 rounded-2xl border border-slate-200 dark:border-white/10 shadow-2xl max-w-sm">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">
                     <Fingerprint className="text-blue-500" size={20} />
                   </div>
                   <div>
-                    <div className="text-white font-bold text-sm">Identity Verification</div>
+                    <div className="text-slate-900 dark:text-white font-bold text-sm">Identity Verification</div>
                     <div className="text-xs text-slate-500">Security Status: High</div>
                   </div>
                 </div>
-                <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                   <div className="h-full w-2/3 bg-blue-500 rounded-full animate-pulse"></div>
                 </div>
               </div>
@@ -257,17 +257,17 @@ const Register = () => {
           {/* --- RIGHT COLUMN: The Form --- */}
           <div className="flex items-center justify-center p-6 lg:p-12">
 
-            <div ref={formRef} className="w-full max-w-md bg-[#0f172a]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+            <div ref={formRef} className="w-full max-w-md bg-white/80 dark:bg-[#0f172a]/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-3xl p-8 shadow-2xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden">
 
               {/* Top Accent Line */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
 
               {/* Header */}
               <div className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-1">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
                   {step === 'register' ? 'Create Account' : 'Verify Email'}
                 </h2>
-                <p className="text-slate-400 text-sm">
+                <p className="text-slate-500 dark:text-slate-400 text-sm">
                   {step === 'register' ? 'Sign up to get started.' : `We sent a code to ${formData.email}`}
                 </p>
               </div>
@@ -278,36 +278,36 @@ const Register = () => {
                   <form className="space-y-5" onSubmit={handleRegister}>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="input-group group">
-                        <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">First Name</label>
-                        <input name="firstName" onChange={handleChange} type="text" className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600" placeholder="John" required />
+                        <label className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400">First Name</label>
+                        <input name="firstName" onChange={handleChange} type="text" className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600" placeholder="John" required />
                       </div>
                       <div className="input-group group">
-                        <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">Last Name</label>
-                        <input name="lastName" onChange={handleChange} type="text" className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600" placeholder="Doe" required />
+                        <label className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400">Last Name</label>
+                        <input name="lastName" onChange={handleChange} type="text" className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600" placeholder="Doe" required />
                       </div>
                     </div>
 
                     <div className="input-group group">
-                      <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">Email Address</label>
+                      <label className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400">Email Address</label>
                       <div className="relative">
                         <Mail className="absolute left-4 top-3.5 h-4 w-4 text-slate-500" />
-                        <input name="email" onChange={handleChange} type="email" className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600" placeholder="name@company.com" required />
+                        <input name="email" onChange={handleChange} type="email" className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600" placeholder="name@company.com" required />
                       </div>
                     </div>
 
                     <div className="input-group group">
-                      <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">Password</label>
+                      <label className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400">Password</label>
                       <div className="relative">
                         <Lock className="absolute left-4 top-3.5 h-4 w-4 text-slate-500" />
-                        <input name="password" onChange={handleChange} type="password" className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600" placeholder="••••••••" required />
+                        <input name="password" onChange={handleChange} type="password" className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600" placeholder="••••••••" required />
                       </div>
                     </div>
 
                     <div className="input-group group">
-                      <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">Confirm Password</label>
+                      <label className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400">Confirm Password</label>
                       <div className="relative">
                         <Key className="absolute left-4 top-3.5 h-4 w-4 text-slate-500" />
-                        <input name="confirm" onChange={handleChange} type="password" className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600" placeholder="••••••••" required />
+                        <input name="confirm" onChange={handleChange} type="password" className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600" placeholder="••••••••" required />
                       </div>
                     </div>
 
@@ -343,7 +343,7 @@ const Register = () => {
                         onChange={handleChange}
                         type="text"
                         maxLength="6"
-                        className="w-full bg-slate-950/50 border border-slate-700 rounded-2xl py-5 text-center text-4xl tracking-[0.5em] font-mono text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-800"
+                        className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-2xl py-5 text-center text-4xl tracking-[0.5em] font-mono text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-800"
                         placeholder="000000"
                         required
                         autoFocus
@@ -351,12 +351,12 @@ const Register = () => {
                     </div>
 
                     <div className="flex justify-between items-center text-xs">
-                      <button type="button" onClick={() => setStep('register')} className="text-slate-500 hover:text-white transition-colors">
+                      <button type="button" onClick={() => setStep('register')} className="text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors">
                         ← Wrong email?
                       </button>
 
                       {canResend ? (
-                        <button type="button" onClick={handleResendOtp} className="text-blue-400 hover:text-blue-300 flex items-center gap-1.5 font-bold transition-colors">
+                        <button type="button" onClick={handleResendOtp} className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 flex items-center gap-1.5 font-bold transition-colors">
                           <RefreshCw size={12} /> Resend Code
                         </button>
                       ) : (
@@ -383,9 +383,9 @@ const Register = () => {
 
               {/* Footer Login Link */}
               {step === 'register' && (
-                <div className="mt-8 text-center pt-6 border-t border-white/5">
+                <div className="mt-8 text-center pt-6 border-t border-slate-200 dark:border-white/5">
                   <p className="text-slate-500 text-xs">
-                    Already have an account? <Link to="/login" className="text-blue-400 hover:text-blue-300 font-bold ml-1 transition-colors">Log in</Link>
+                    Already have an account? <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-bold ml-1 transition-colors">Log in</Link>
                   </p>
                 </div>
               )}

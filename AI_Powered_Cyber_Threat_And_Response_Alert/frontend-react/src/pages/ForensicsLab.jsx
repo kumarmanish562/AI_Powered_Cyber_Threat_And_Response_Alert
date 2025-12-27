@@ -82,7 +82,7 @@ const ForensicsLab = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-[#020617] font-sans text-slate-200">
+        <div className="flex min-h-screen bg-slate-50 dark:bg-[#020617] font-sans text-slate-600 dark:text-slate-200 transition-colors duration-300">
             <Sidebar />
 
             <main ref={containerRef} className="flex-1 p-8 h-screen overflow-y-auto relative">
@@ -92,13 +92,13 @@ const ForensicsLab = () => {
                 {/* Header */}
                 <header className="lab-header flex justify-between items-end mb-10 relative z-10">
                     <div>
-                        <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
                             <div className="p-2.5 bg-purple-500/10 rounded-xl border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-                                <Microscope className="text-purple-400" size={28} />
+                                <Microscope className="text-purple-600 dark:text-purple-400" size={28} />
                             </div>
                             Forensics Lab
                         </h1>
-                        <p className="text-slate-400 mt-2 text-sm max-w-xl">
+                        <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm max-w-xl">
                             Manage digital investigations, analyze evidence artifacts, and generate forensic reports.
                         </p>
                     </div>
@@ -116,28 +116,28 @@ const ForensicsLab = () => {
                     <div className="lg:col-span-2 space-y-8">
 
                         {/* Active Cases */}
-                        <section className="lab-card bg-[#0f172a]/60 backdrop-blur-xl rounded-2xl border border-slate-800 p-6 shadow-xl">
+                        <section className="lab-card bg-white/80 dark:bg-[#0f172a]/60 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xl transition-colors duration-300">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                                    <FolderPlus size={18} className="text-blue-400" /> Active Cases
+                                <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <FolderPlus size={18} className="text-blue-600 dark:text-blue-400" /> Active Cases
                                 </h2>
                                 <div className="flex gap-2">
-                                    <span className="px-2 py-1 bg-slate-800 rounded text-xs text-slate-400 border border-slate-700">Sort by: Date</span>
+                                    <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">Sort by: Date</span>
                                 </div>
                             </div>
 
                             <div className="space-y-3">
                                 {cases.map((c) => (
-                                    <div key={c.id} className="group flex items-center justify-between p-4 bg-slate-900/50 hover:bg-slate-800/80 border border-slate-800 hover:border-purple-500/30 rounded-xl transition-all cursor-pointer">
+                                    <div key={c.id} className="group flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800/80 border border-slate-200 dark:border-slate-800 hover:border-purple-500/30 rounded-xl transition-all cursor-pointer">
                                         <div className="flex items-center gap-4">
-                                            <div className={`p-3 rounded-lg ${c.status === 'Active' ? 'bg-purple-500/10 text-purple-400' : 'bg-slate-800 text-slate-500'}`}>
+                                            <div className={`p-3 rounded-lg ${c.status === 'Active' ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
                                                 <FileCode size={20} />
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-slate-200 group-hover:text-white transition-colors">{c.name}</h3>
+                                                <h3 className="font-bold text-slate-700 dark:text-slate-200 group-hover:text-purple-600 dark:group-hover:text-white transition-colors">{c.name}</h3>
                                                 <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
                                                     <span className="flex items-center gap-1"><Clock size={12} /> {c.created}</span>
-                                                    <span className="w-1 h-1 bg-slate-700 rounded-full"></span>
+                                                    <span className="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full"></span>
                                                     <span>{c.type}</span>
                                                 </div>
                                             </div>
@@ -146,15 +146,15 @@ const ForensicsLab = () => {
                                         <div className="flex items-center gap-6">
                                             <div className="text-right">
                                                 <div className="text-xs text-slate-500 uppercase font-bold tracking-wider">Evidence</div>
-                                                <div className="font-mono text-slate-300">{c.evidence} Files</div>
+                                                <div className="font-mono text-slate-600 dark:text-slate-300">{c.evidence} Files</div>
                                             </div>
-                                            <div className={`px-3 py-1 rounded-full text-xs font-bold border ${c.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                                                c.status === 'Closed' ? 'bg-slate-700/50 text-slate-400 border-slate-600' :
-                                                    'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                            <div className={`px-3 py-1 rounded-full text-xs font-bold border ${c.status === 'Active' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' :
+                                                c.status === 'Closed' ? 'bg-slate-200 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600' :
+                                                    'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
                                                 }`}>
                                                 {c.status}
                                             </div>
-                                            <button className="p-2 hover:bg-slate-700 rounded-lg text-slate-500 hover:text-white transition-colors">
+                                            <button className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                                                 <MoreVertical size={16} />
                                             </button>
                                         </div>
@@ -165,21 +165,21 @@ const ForensicsLab = () => {
 
                         {/* Evidence Upload Zone */}
                         <section
-                            className={`lab-card border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center text-center transition-all duration-300 ${isDragging ? 'border-purple-500 bg-purple-500/10 scale-[1.02]' : 'border-slate-700 bg-[#0f172a]/40 hover:border-slate-600'
+                            className={`lab-card border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center text-center transition-all duration-300 ${isDragging ? 'border-purple-500 bg-purple-500/10 scale-[1.02]' : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-[#0f172a]/40 hover:border-slate-400 dark:hover:border-slate-600'
                                 }`}
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
                             onDrop={handleDrop}
                         >
-                            <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-lg">
-                                <UploadCloud size={32} className={isDragging ? "text-purple-400 animate-bounce" : "text-slate-400"} />
+                            <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                                <UploadCloud size={32} className={isDragging ? "text-purple-600 dark:text-purple-400 animate-bounce" : "text-slate-400"} />
                             </div>
-                            <h3 className="text-lg font-bold text-white mb-2">Upload Evidence Datasets</h3>
-                            <p className="text-slate-400 text-sm max-w-md mb-6">
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Upload Evidence Datasets</h3>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mb-6">
                                 Drag and drop PCAP files, System Logs, or Disk Images here to begin automated analysis.
                                 Supported formats: .pcap, .evtx, .log, .dd
                             </p>
-                            <button className="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium border border-slate-700 transition-colors">
+                            <button className="px-6 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-white rounded-lg font-medium border border-slate-300 dark:border-slate-700 transition-colors">
                                 Browse Files
                             </button>
                         </section>
@@ -199,14 +199,14 @@ const ForensicsLab = () => {
                                     { name: "Network Miner", icon: HardDrive, color: "text-cyan-400", bg: "bg-cyan-500/10", desc: "PCAP Analysis" },
                                     { name: "Memory Dump", icon: Database, color: "text-emerald-400", bg: "bg-emerald-500/10", desc: "Volatile Data" },
                                     { name: "Log Parser", icon: FileText, color: "text-amber-400", bg: "bg-amber-500/10", desc: "Event Correlation" },
-                                    { name: "Malware Sandbox", icon: Shield, color: "text-rose-400", bg: "bg-rose-500/10", desc: "Behavioral Analysis" },
+                                    { name: "Malware Sandbox", icon: Shield, color: "text-rose-600 dark:text-rose-400", bg: "bg-rose-500/10", desc: "Behavioral Analysis" },
                                 ].map((tool, i) => (
-                                    <div key={i} className="tool-card group flex items-center gap-4 p-3 bg-[#0f172a]/80 border border-slate-800 hover:border-slate-600 rounded-xl cursor-pointer hover:bg-slate-800 transition-all">
+                                    <div key={i} className="tool-card group flex items-center gap-4 p-3 bg-white dark:bg-[#0f172a]/80 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
                                         <div className={`p-2.5 rounded-lg ${tool.bg} ${tool.color} group-hover:scale-110 transition-transform`}>
                                             <tool.icon size={20} />
                                         </div>
                                         <div>
-                                            <div className="font-bold text-slate-200 group-hover:text-white">{tool.name}</div>
+                                            <div className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-600 dark:group-hover:text-white transition-colors">{tool.name}</div>
                                             <div className="text-xs text-slate-500">{tool.desc}</div>
                                         </div>
                                         <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
@@ -218,24 +218,24 @@ const ForensicsLab = () => {
                         </section>
 
                         {/* Storage Status */}
-                        <section className="lab-card bg-[#0f172a]/60 backdrop-blur rounded-2xl border border-slate-800 p-6">
-                            <h3 className="font-bold text-white mb-4">Evidence Storage</h3>
+                        <section className="lab-card bg-white/80 dark:bg-[#0f172a]/60 backdrop-blur rounded-2xl border border-slate-200 dark:border-slate-800 p-6 transition-colors duration-300">
+                            <h3 className="font-bold text-slate-900 dark:text-white mb-4">Evidence Storage</h3>
                             <div className="space-y-4">
                                 <div>
-                                    <div className="flex justify-between text-xs text-slate-400 mb-1">
+                                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
                                         <span>Used Space</span>
-                                        <span className="text-white font-mono">{storageUsed.toFixed(1)}%</span>
+                                        <span className="text-slate-900 dark:text-white font-mono">{storageUsed.toFixed(1)}%</span>
                                     </div>
-                                    <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                                    <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                                         <div className="h-full bg-purple-500 transition-all duration-1000 ease-out" style={{ width: `${storageUsed}%` }}></div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3 text-xs text-slate-500">
-                                    <div className="p-2 bg-slate-800 rounded-lg">
+                                    <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg">
                                         <HardDrive size={14} />
                                     </div>
                                     <div>
-                                        <div className="text-slate-300 font-bold">1.2 TB / 2.0 TB</div>
+                                        <div className="text-slate-700 dark:text-slate-300 font-bold">1.2 TB / 2.0 TB</div>
                                         <div>Encrypted Vault</div>
                                     </div>
                                 </div>

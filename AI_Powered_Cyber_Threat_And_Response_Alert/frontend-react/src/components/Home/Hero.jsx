@@ -68,18 +68,18 @@ const Hero = () => {
   return (
     <section
       ref={heroRef}
-      className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-[#020617] min-h-screen flex items-center perspective-2000"
+      className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-50 dark:bg-[#020617] min-h-screen flex items-center perspective-2000 transition-colors duration-300"
     >
       {/* --- UPDATED: Richer Dark Background & Sharper Grid --- */}
 
       {/* 1. Top Spotlight (Ambient Light) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-blue-600/15 blur-[120px] rounded-[100%] pointer-events-none"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-blue-500/10 dark:bg-blue-600/15 blur-[120px] rounded-[100%] pointer-events-none"></div>
 
       {/* 2. The Grid (Sharper, Indigo tinted lines instead of muddy white) */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
 
       {/* 3. Subtle bottom glow for depth */}
-      <div className="absolute bottom-0 left-0 right-0 h-[300px] bg-gradient-to-t from-[#020617] via-[#020617]/80 to-transparent pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-[300px] bg-gradient-to-t from-slate-50 dark:from-[#020617] via-slate-50/80 dark:via-[#020617]/80 to-transparent pointer-events-none"></div>
 
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8 items-center">
@@ -97,7 +97,7 @@ const Hero = () => {
           </div>
 
           {/* Headline (Updated Gradient) */}
-          <h1 className="hero-title text-5xl lg:text-7xl font-bold text-white tracking-tight mb-6 leading-[1.1]">
+          <h1 className="hero-title text-5xl lg:text-7xl font-bold text-slate-900 dark:text-white tracking-tight mb-6 leading-[1.1]">
             Security That <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500">
               Never Sleeps.
@@ -105,19 +105,19 @@ const Hero = () => {
           </h1>
 
           {/* Description */}
-          <p className="hero-desc text-lg text-slate-400 mb-10 max-w-xl leading-relaxed">
+          <p className="hero-desc text-lg text-slate-600 dark:text-slate-400 mb-10 max-w-xl leading-relaxed">
             Autonomous threat detection powered by next-gen AI. We identify, isolate, and neutralize cyber threats in milliseconds, not minutes.
           </p>
 
           {/* CTA Buttons */}
           <div className="hero-cta flex flex-wrap gap-4 w-full sm:w-auto">
             <Link to="/register" className="w-full sm:w-auto">
-              <button className="group w-full sm:w-auto px-8 py-4 bg-white text-black font-bold rounded-xl transition-all hover:bg-blue-50 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] flex items-center justify-center gap-2">
+              <button className="group w-full sm:w-auto px-8 py-4 bg-slate-900 text-white dark:bg-white dark:text-black font-bold rounded-xl transition-all hover:bg-blue-600 dark:hover:bg-blue-50 shadow-[0_0_20px_rgba(30,41,59,0.3)] dark:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] flex items-center justify-center gap-2">
                 Get Protected <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </Link>
             <Link to="/documentation" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-8 py-4 bg-white/5 text-white font-medium rounded-xl border border-white/10 hover:bg-white/10 transition-all backdrop-blur-sm flex items-center justify-center gap-2">
+              <button className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-white/5 text-slate-700 dark:text-white font-medium rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/10 transition-all backdrop-blur-sm flex items-center justify-center gap-2">
                 <Command size={18} /> View Documentation
               </button>
             </Link>
@@ -140,7 +140,7 @@ const Hero = () => {
           {/* Main Dashboard Card (Updated BG Color) */}
           <div
             ref={dashboardRef}
-            className="relative w-full max-w-[600px] bg-[#09090b] border border-white/10 rounded-2xl shadow-2xl overflow-hidden transform-style-3d rotate-y-[-15deg] rotate-x-[15deg]"
+            className="relative w-full max-w-[600px] bg-slate-900 border border-slate-700 dark:bg-[#09090b] dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden transform-style-3d rotate-y-[-15deg] rotate-x-[15deg]"
             style={{ boxShadow: '0 0 100px -20px rgba(79, 70, 229, 0.2)' }}
           >
             {/* Window Controls */}

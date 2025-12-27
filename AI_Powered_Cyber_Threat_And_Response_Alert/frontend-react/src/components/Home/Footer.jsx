@@ -48,14 +48,14 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer ref={footerRef} className="bg-[#020617] border-t border-white/5 pt-20 pb-10 relative overflow-hidden">
+    <footer ref={footerRef} className="bg-white dark:bg-[#020617] border-t border-slate-200 dark:border-white/5 pt-20 pb-10 relative overflow-hidden transition-colors duration-300">
 
       {/* --- BACKGROUND (Unified Grid) --- */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Bottom Spotlight */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-900/10 blur-[120px] rounded-t-full"></div>
         {/* Sharp Grid with Mask */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_100%,#000_70%,transparent_100%)] opacity-30"></div>
+        <div className="absolute inset-0 dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_100%,#000_70%,transparent_100%)] opacity-30"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
@@ -70,12 +70,12 @@ const Footer = () => {
                   <Shield className="h-4 w-4 text-white fill-white/20" />
                 </div>
               </div>
-              <span className="text-xl font-bold text-white tracking-tight leading-none">
+              <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight leading-none">
                 ThreatWatch AI
               </span>
             </Link>
 
-            <p className="text-slate-400 text-sm mb-8 leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-8 leading-relaxed">
               A student-led initiative re-engineering the future of autonomous cyber defense. Open source, AI-driven, and developer-first.
             </p>
 
@@ -88,7 +88,7 @@ const Footer = () => {
                 <a
                   key={index}
                   href={social.href}
-                  className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-blue-600 hover:border-blue-500 hover:shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all duration-300 group"
+                  className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-white hover:bg-blue-600 hover:border-blue-500 hover:shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all duration-300 group"
                 >
                   <social.icon size={18} className="group-hover:scale-110 transition-transform" />
                 </a>
@@ -98,10 +98,10 @@ const Footer = () => {
 
           {/* --- Platform Links --- */}
           <div className="footer-content">
-            <h4 className="text-white font-bold mb-6 flex items-center gap-2 text-sm uppercase tracking-wider">
+            <h4 className="text-slate-900 dark:text-white font-bold mb-6 flex items-center gap-2 text-sm uppercase tracking-wider">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_10px_blue]"></span> Platform
             </h4>
-            <ul className="space-y-3 text-sm text-slate-400">
+            <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
               <li>
                 <Link to="/threats" className="hover:text-blue-400 transition-colors flex items-center gap-2 group w-fit">
                   <ArrowRight size={12} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-blue-500" />
@@ -131,10 +131,10 @@ const Footer = () => {
 
           {/* --- Company Links --- */}
           <div className="footer-content">
-            <h4 className="text-white font-bold mb-6 flex items-center gap-2 text-sm uppercase tracking-wider">
+            <h4 className="text-slate-900 dark:text-white font-bold mb-6 flex items-center gap-2 text-sm uppercase tracking-wider">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 shadow-[0_0_10px_cyan]"></span> Company
             </h4>
-            <ul className="space-y-3 text-sm text-slate-400">
+            <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
               <li>
                 <a href="/#about" className="hover:text-cyan-400 transition-colors flex items-center gap-2 group w-fit">
                   <ArrowRight size={12} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-500" />
@@ -164,7 +164,7 @@ const Footer = () => {
 
           {/* --- Newsletter Column --- */}
           <div className="footer-content">
-            <h4 className="text-white font-bold mb-6 flex items-center gap-2 text-sm uppercase tracking-wider">
+            <h4 className="text-slate-900 dark:text-white font-bold mb-6 flex items-center gap-2 text-sm uppercase tracking-wider">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_emerald]"></span> Stay Updated
             </h4>
             <p className="text-slate-500 text-sm mb-4">Join our developer newsletter for security tips.</p>
@@ -178,7 +178,7 @@ const Footer = () => {
                   placeholder="developer@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-[#0B1121] border border-white/10 text-white pl-10 pr-12 py-3 rounded-xl text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-700"
+                  className="w-full bg-slate-100 dark:bg-[#0B1121] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white pl-10 pr-12 py-3 rounded-xl text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-700"
                   required
                 />
                 <button
@@ -195,7 +195,7 @@ const Footer = () => {
         </div>
 
         {/* --- Copyright --- */}
-        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-600 text-xs font-mono footer-content">
+        <div className="border-t border-slate-200 dark:border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-500 dark:text-slate-600 text-xs font-mono footer-content">
           <p>© {new Date().getFullYear()} ThreatWatch AI Project. Open Source License.</p>
           <div className="flex gap-8 mt-4 md:mt-0">
             <a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a>

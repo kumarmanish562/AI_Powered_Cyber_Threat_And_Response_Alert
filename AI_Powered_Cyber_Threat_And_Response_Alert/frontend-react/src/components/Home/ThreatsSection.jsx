@@ -99,12 +99,12 @@ const ThreatsSection = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="bg-[#020617] text-white relative h-screen overflow-hidden flex flex-col items-center">
+    <div ref={containerRef} className="bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-white relative h-screen overflow-hidden flex flex-col items-center transition-colors duration-300">
 
       {/* --- BACKGROUND (Masked Grid) --- */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-indigo-900/10 blur-[120px] rounded-full"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-indigo-500/10 dark:bg-indigo-900/10 blur-[120px] rounded-full"></div>
+        <div className="absolute inset-0 dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30"></div>
       </div>
 
       <div className="w-full h-full max-w-6xl mx-auto px-6 relative z-10 flex flex-col">
@@ -129,16 +129,16 @@ const ThreatsSection = () => {
               className="threat-card absolute top-0 left-0 w-full h-[calc(100vh-250px)] md:h-[600px] mt-4"
               style={{ zIndex: index + 1 }} // Ensure proper stacking order
             >
-              <div className="w-full h-full bg-[#09090b] rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col md:flex-row shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)]">
+              <div className="w-full h-full bg-white dark:bg-[#09090b] rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col md:flex-row shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)]">
 
                 {/* Left Column: Text */}
-                <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center border-r border-white/5 bg-[#09090b] relative z-10">
+                <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center border-r border-slate-200 dark:border-white/5 bg-white dark:bg-[#09090b] relative z-10">
                   <div className={`w-12 h-12 rounded-xl bg-${threat.color}-500/10 border border-${threat.color}-500/20 flex items-center justify-center mb-6`}>
                     <threat.icon size={24} className={`text-${threat.color}-500`} />
                   </div>
 
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-3xl font-bold text-white">{threat.title}</h3>
+                    <h3 className="text-3xl font-bold text-slate-900 dark:text-white">{threat.title}</h3>
                     <span className="text-xs font-mono text-slate-500 opacity-50">0{index + 1} / 04</span>
                   </div>
 
@@ -147,20 +147,20 @@ const ThreatsSection = () => {
                   </div>
 
                   <div className="space-y-6">
-                    <p className="text-lg text-slate-300 leading-relaxed">{threat.description}</p>
+                    <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed">{threat.description}</p>
 
-                    <div className="p-4 rounded-xl bg-white/5 border border-white/5">
-                      <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2 flex items-center gap-2">
-                        <Shield size={12} className="text-green-400" /> Countermeasure
+                    <div className="p-4 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5">
+                      <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <Shield size={12} className="text-green-600 dark:text-green-400" /> Countermeasure
                       </h4>
-                      <p className="text-sm text-slate-400 leading-relaxed font-mono">
+                      <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-mono">
                         {threat.mechanics}
                       </p>
                     </div>
                   </div>
 
                   <div className="mt-auto pt-8">
-                    <div className="flex items-center gap-2 text-sm font-bold text-white group cursor-pointer">
+                    <div className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white group cursor-pointer">
                       <span>Live Simulation</span>
                       <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </div>

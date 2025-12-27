@@ -109,18 +109,18 @@ const Login = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#020617] flex flex-col font-sans text-slate-300">
+      <div className="min-h-screen bg-white dark:bg-[#020617] flex flex-col font-sans text-slate-700 dark:text-slate-300 transition-colors duration-300">
         <Navbar />
         <div className="flex-grow flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-[#020617]"></div>
+          <div className="absolute inset-0 bg-blue-50/50 dark:bg-gradient-to-br dark:from-blue-900/20 dark:to-[#020617]"></div>
 
-          <div className="bg-[#0f172a] border border-blue-500/30 p-12 rounded-3xl text-center max-w-md w-full shadow-2xl relative z-10">
+          <div className="bg-white dark:bg-[#0f172a] border border-blue-100 dark:border-blue-500/30 p-12 rounded-3xl text-center max-w-md w-full shadow-2xl relative z-10 transition-colors">
             <div className="w-24 h-24 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-blue-500/20 shadow-[0_0_40px_rgba(59,130,246,0.2)]">
-              <ScanEye className="text-blue-500 w-12 h-12" />
+              <ScanEye className="text-blue-600 dark:text-blue-500 w-12 h-12" />
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-2">Identity Verified</h2>
-            <p className="text-slate-400">Initializing dashboard session...</p>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Identity Verified</h2>
+            <p className="text-slate-500 dark:text-slate-400">Initializing dashboard session...</p>
           </div>
         </div>
       </div>
@@ -128,14 +128,14 @@ const Login = () => {
   }
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-[#020617] flex flex-col font-sans text-slate-300 selection:bg-blue-500/30 overflow-visible">
+    <div ref={containerRef} className="min-h-screen bg-slate-50 dark:bg-[#020617] flex flex-col font-sans text-slate-700 dark:text-slate-300 selection:bg-blue-500/30 overflow-visible transition-colors duration-300">
       <Navbar />
 
       <div className="flex-grow flex relative pt-20">
 
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-indigo-900/10 blur-[120px] rounded-full"></div>
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20"></div>
+          <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-indigo-500/10 dark:bg-indigo-900/10 blur-[120px] rounded-full"></div>
+          <div className="absolute inset-0 dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20"></div>
         </div>
 
         <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 relative z-10 min-h-[calc(100vh-80px)]">
@@ -150,22 +150,22 @@ const Login = () => {
                 Restricted Area
               </div>
 
-              <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
+              <h1 className="text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
                 Welcome Back, <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Operator.</span>
               </h1>
 
-              <p className="text-lg text-slate-400 mb-10 leading-relaxed">
+              <p className="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed">
                 Access the central command terminal. Monitor live threats, manage incidents, and deploy countermeasures.
               </p>
 
-              <div className="bg-[#09090b] p-6 rounded-2xl border border-white/10 shadow-2xl max-w-sm">
+              <div className="bg-white dark:bg-[#09090b] p-6 rounded-2xl border border-slate-200 dark:border-white/10 shadow-2xl max-w-sm">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">
                     <Terminal className="text-emerald-500" size={20} />
                   </div>
                   <div>
-                    <div className="text-white font-bold text-sm">System Status</div>
+                    <div className="text-slate-900 dark:text-white font-bold text-sm">System Status</div>
                     <div className="text-xs text-green-400 flex items-center gap-1">
                       <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
                       Online & Secure
@@ -174,7 +174,7 @@ const Login = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                     <div className="h-full w-full bg-emerald-500/50 rounded-full"></div>
                   </div>
                   <div className="flex justify-between text-[10px] text-slate-500 font-mono">
@@ -196,18 +196,18 @@ const Login = () => {
           <div className="flex items-center justify-center p-6 lg:p-12">
             <div
               ref={formRef}
-              className="relative z-20 w-full max-w-md bg-[#0f172a]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl overflow-visible"
+              className="relative z-20 w-full max-w-md bg-white/80 dark:bg-[#0f172a]/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-3xl p-8 shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-visible"
             >
 
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
 
               <div className="mb-8">
-                <h2 className="text-2xl font-bold text-white mb-1">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
                   {view === 'login'
                     ? (showMfaInput ? 'Security Check' : 'Portal Login')
                     : 'Password Recovery'}
                 </h2>
-                <p className="text-slate-400 text-sm">
+                <p className="text-slate-500 dark:text-slate-400 text-sm">
                   {view === 'login'
                     ? (showMfaInput ? 'Enter your 2FA code.' : 'Enter your credentials to continue.')
                     : 'We’ll send you a reset link.'}
@@ -223,7 +223,7 @@ const Login = () => {
                       <>
                         {/* EMAIL INPUT */}
                         <div className="anim-input group">
-                          <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">
+                          <label className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400">
                             Email Address
                           </label>
                           <div className="relative">
@@ -232,7 +232,7 @@ const Login = () => {
                               type="email"
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
-                              className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600"
+                              className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600"
                               placeholder="operator@system.io"
                               required
                             />
@@ -242,14 +242,14 @@ const Login = () => {
                         {/* PASSWORD INPUT */}
                         <div className="anim-input group">
                           <div className="flex justify-between items-center mb-1.5">
-                            <label className="text-xs font-bold text-slate-500 uppercase group-focus-within:text-blue-400">
+                            <label className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400">
                               Password
                             </label>
 
                             <button
                               type="button"
                               onClick={() => setView('forgot')}
-                              className="text-xs text-blue-400 hover:text-blue-300 font-medium transition-colors"
+                              className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
                             >
                               Forgot?
                             </button>
@@ -261,7 +261,7 @@ const Login = () => {
                               type="password"
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
-                              className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600"
+                              className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600"
                               placeholder="••••••••"
                               required
                             />
@@ -270,18 +270,18 @@ const Login = () => {
                       </>
                     ) : (
                       /* MFA INPUT */
-                      <div className="anim-input bg-slate-900/50 p-6 rounded-2xl border border-blue-500/30 relative overflow-hidden">
-                        <label className="block text-xs font-bold text-blue-400 uppercase tracking-wider mb-3 text-center">
+                      <div className="anim-input bg-slate-100 dark:bg-slate-900/50 p-6 rounded-2xl border border-blue-500/30 relative overflow-hidden transition-colors">
+                        <label className="block text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-3 text-center">
                           Two-Factor Authentication
                         </label>
 
                         <div className="relative">
-                          <Fingerprint className="absolute left-4 top-3.5 h-5 w-5 text-blue-500" />
+                          <Fingerprint className="absolute left-4 top-3.5 h-5 w-5 text-blue-600 dark:text-blue-500" />
                           <input
                             type="text"
                             value={mfaCode}
                             onChange={(e) => setMfaCode(e.target.value)}
-                            className="w-full bg-slate-950 border border-blue-500/50 rounded-xl py-3 pl-12 pr-4 text-center text-xl tracking-[0.5em] font-mono text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none transition-all placeholder:text-slate-700"
+                            className="w-full bg-white dark:bg-slate-950 border border-blue-500/50 rounded-xl py-3 pl-12 pr-4 text-center text-xl tracking-[0.5em] font-mono text-slate-900 dark:text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-700"
                             placeholder="000000"
                             autoFocus
                           />
@@ -321,7 +321,7 @@ const Login = () => {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600"
+                            className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600"
                             required
                           />
                         </div>
@@ -337,7 +337,7 @@ const Login = () => {
                       <button
                         type="button"
                         onClick={() => setView('login')}
-                        className="anim-input w-full text-xs text-slate-500 hover:text-white mt-2 transition-colors flex items-center justify-center gap-1 group"
+                        className="anim-input w-full text-xs text-slate-500 hover:text-slate-800 dark:hover:text-white mt-2 transition-colors flex items-center justify-center gap-1 group"
                       >
                         <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" />
                         Back to Login
@@ -350,16 +350,16 @@ const Login = () => {
                         <CheckCircle2 className="text-green-500 w-8 h-8" />
                       </div>
 
-                      <h3 className="text-xl font-bold text-white mb-2">Check your inbox</h3>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Check your inbox</h3>
 
-                      <p className="text-slate-400 text-sm mb-6">
+                      <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">
                         We've sent a password reset link to <br />
-                        <span className="text-white font-mono">{email}</span>
+                        <span className="text-slate-900 dark:text-white font-mono">{email}</span>
                       </p>
 
                       <button
                         onClick={() => { setView('login'); setResetSent(false); }}
-                        className="text-blue-400 hover:text-blue-300 text-sm font-bold hover:underline transition-all"
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 text-sm font-bold hover:underline transition-all"
                       >
                         Return to Login
                       </button>
@@ -377,12 +377,12 @@ const Login = () => {
 
               {/* APPLY FOR ACCESS BUTTON — NOW ALWAYS VISIBLE IN LOGIN VIEW */}
               {view === 'login' && (
-                <div className="mt-8 text-center pt-6 border-t border-white/5">
+                <div className="mt-8 text-center pt-6 border-t border-slate-200 dark:border-white/5">
                   <p className="text-slate-500 text-xs">
                     New to ThreatWatch AI AI?
                     <Link
                       to="/register"
-                      className="text-blue-400 hover:text-blue-300 font-bold ml-1 transition-colors"
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-bold ml-1 transition-colors"
                     >
                       Apply for access
                     </Link>

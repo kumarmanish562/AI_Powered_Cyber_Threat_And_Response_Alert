@@ -147,22 +147,22 @@ export default function SecurityLogs() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0f172a] text-slate-300 font-sans">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-600 dark:text-slate-300 font-sans transition-colors duration-300">
       <Sidebar />
 
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         {/* Background Gradient */}
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-blue-900/10 to-transparent pointer-events-none"></div>
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-blue-500/5 dark:from-blue-900/10 to-transparent pointer-events-none"></div>
 
         {/* --- Top Header --- */}
-        <div className="p-6 border-b border-slate-800 bg-[#0f172a]/95 backdrop-blur z-20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
+        <div className="p-6 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur z-20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0 transition-colors">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-blue-600/10 rounded-xl border border-blue-600/20 shadow-[0_0_15px_rgba(37,99,235,0.2)]">
               <FileText className="text-blue-400" size={26} />
             </div>
             <div>
-              <h1 className="text-2xl text-white font-bold tracking-tight">Security Logs</h1>
-              <p className="text-slate-400 text-sm mt-1 flex items-center gap-2">
+              <h1 className="text-2xl text-slate-900 dark:text-white font-bold tracking-tight">Security Logs</h1>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 flex items-center gap-2">
                 Audit trail and system events registry.
                 {loading && <span className="text-cyan-500 animate-pulse text-xs">(Syncing...)</span>}
               </p>
@@ -173,8 +173,8 @@ export default function SecurityLogs() {
             <button
               onClick={() => setIsLive(!isLive)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold border transition-all ${isLive
-                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
-                : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
+                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
             >
               <RefreshCw size={14} className={isLive ? "animate-spin" : ""} />
@@ -182,7 +182,7 @@ export default function SecurityLogs() {
             </button>
             <button
               onClick={handleExportCSV}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 hover:text-white text-slate-300 text-sm font-medium rounded-lg border border-slate-700 transition-colors shadow-lg"
+              className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white hover:bg-slate-700 text-sm font-medium rounded-lg border border-slate-700 transition-colors shadow-lg"
             >
               <Download size={16} /> Export CSV
             </button>
@@ -190,28 +190,28 @@ export default function SecurityLogs() {
         </div>
 
         {/* --- Controls / Filters --- */}
-        <div className="px-6 py-4 bg-[#1e293b]/50 backdrop-blur-sm border-b border-slate-800 shrink-0 grid grid-cols-1 md:grid-cols-12 gap-4 relative z-10">
+        <div className="px-6 py-4 bg-slate-50/80 dark:bg-[#1e293b]/50 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 shrink-0 grid grid-cols-1 md:grid-cols-12 gap-4 relative z-10 transition-colors">
 
           {/* Search */}
           <div className="md:col-span-5 relative">
-            <Search className="absolute left-3 top-2.5 text-slate-500" size={16} />
+            <Search className="absolute left-3 top-2.5 text-slate-400 dark:text-slate-500 transition-colors" size={16} />
             <input
               type="text"
               placeholder="Search by Event, Source, or IP..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#0f172a] border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition"
+              className="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-900 dark:text-slate-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-600"
             />
           </div>
 
           {/* Level Filter */}
           <div className="md:col-span-3">
             <div className="relative">
-              <Filter className="absolute left-3 top-2.5 text-slate-500" size={16} />
+              <Filter className="absolute left-3 top-2.5 text-slate-400 dark:text-slate-500 transition-colors" size={16} />
               <select
                 value={levelFilter}
                 onChange={(e) => setLevelFilter(e.target.value)}
-                className="w-full bg-[#0f172a] border border-slate-700 rounded-lg pl-9 pr-8 py-2 text-sm text-slate-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none appearance-none cursor-pointer"
+                className="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 rounded-lg pl-9 pr-8 py-2 text-sm text-slate-900 dark:text-slate-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none appearance-none cursor-pointer"
               >
                 <option value="ALL">All Levels</option>
                 <option value="ERROR">Error</option>
@@ -226,11 +226,11 @@ export default function SecurityLogs() {
           {/* Time Range Filter */}
           <div className="md:col-span-4">
             <div className="relative w-full">
-              <Calendar className="absolute left-3 top-2.5 text-slate-500" size={16} />
+              <Calendar className="absolute left-3 top-2.5 text-slate-400 dark:text-slate-500 transition-colors" size={16} />
               <select
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value)}
-                className="w-full bg-[#0f172a] border border-slate-700 rounded-lg pl-9 pr-8 py-2 text-sm text-slate-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none appearance-none cursor-pointer"
+                className="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 rounded-lg pl-9 pr-8 py-2 text-sm text-slate-900 dark:text-slate-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none appearance-none cursor-pointer"
               >
                 <option value="1h">Last 1 Hour</option>
                 <option value="6h">Last 6 Hours</option>
@@ -243,9 +243,9 @@ export default function SecurityLogs() {
         </div>
 
         {/* --- Data Table Container --- */}
-        <div className="flex-1 overflow-auto bg-[#0f172a] relative scroll-smooth">
+        <div className="flex-1 overflow-auto bg-slate-50 dark:bg-[#0f172a] relative scroll-smooth transition-colors">
           <table className="w-full text-left border-collapse">
-            <thead className="bg-[#1e293b] sticky top-0 z-10 text-xs font-semibold text-slate-400 uppercase tracking-wider shadow-md">
+            <thead className="bg-slate-100 dark:bg-[#1e293b] sticky top-0 z-10 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider shadow-md transition-colors">
               <tr><th className="p-4 w-10"></th> {/* Expand Toggle */}
                 <th className="p-4">Timestamp</th>
                 <th className="p-4">Level</th>
@@ -276,32 +276,32 @@ export default function SecurityLogs() {
                     <tr
                       onClick={() => toggleExpand(log.id)}
                       className={`cursor-pointer transition-colors border-l-2 ${expandedRow === log.id
-                        ? "bg-slate-800/60 border-l-blue-500"
-                        : "hover:bg-slate-800/30 border-l-transparent"
+                        ? "bg-slate-100 dark:bg-slate-800/60 border-l-blue-500"
+                        : "hover:bg-slate-100 dark:hover:bg-slate-800/30 border-l-transparent"
                         }`}
                     >
-                      <td className="p-4 text-slate-500">
+                      <td className="p-4 text-slate-400 dark:text-slate-500">
                         {expandedRow === log.id ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                       </td>
-                      <td className="p-4 font-mono text-slate-400 text-xs whitespace-nowrap">{log.timestampDisplay}</td>
+                      <td className="p-4 font-mono text-slate-500 dark:text-slate-400 text-xs whitespace-nowrap">{log.timestampDisplay}</td>
                       <td className="p-4"><LogLevelBadge level={log.level} /></td>
-                      <td className="p-4 font-medium text-slate-200">
+                      <td className="p-4 font-medium text-slate-800 dark:text-slate-200">
                         <div className="flex items-center gap-2">
                           {log.level === 'ERROR' && <Shield size={14} className="text-red-400" />}
                           {log.level === 'SUCCESS' && <Activity size={14} className="text-emerald-400" />}
                           {log.event}
                         </div>
                       </td>
-                      <td className="p-4 text-slate-400">{log.source}</td>
-                      <td className="p-4 text-slate-300">{log.user}</td>
-                      <td className="p-4 text-right font-mono text-xs text-cyan-500/80">{log.ip}</td>
+                      <td className="p-4 text-slate-600 dark:text-slate-400">{log.source}</td>
+                      <td className="p-4 text-slate-600 dark:text-slate-300">{log.user}</td>
+                      <td className="p-4 text-right font-mono text-xs text-cyan-600 dark:text-cyan-500/80">{log.ip}</td>
                     </tr>
 
                     {/* Expanded Detail Row */}
                     {expandedRow === log.id && (
-                      <tr className="bg-[#0b1120] animate-in slide-in-from-top-2 duration-200">
+                      <tr className="bg-slate-50 dark:bg-[#0b1120] animate-in slide-in-from-top-2 duration-200">
                         <td colSpan="7" className="p-0">
-                          <div className="border-y border-slate-800/50 p-6 shadow-inner relative overflow-hidden">
+                          <div className="border-y border-slate-200 dark:border-slate-800/50 p-6 shadow-inner relative overflow-hidden">
                             {/* Decorative glow for expanded row */}
                             <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-blue-500 to-transparent"></div>
 
@@ -311,23 +311,23 @@ export default function SecurityLogs() {
                               </h4>
                               <button
                                 onClick={() => handleCopy(JSON.stringify(log, null, 2))}
-                                className="flex items-center gap-2 text-xs text-cyan-400 hover:text-cyan-300 transition-colors border border-cyan-900/50 px-2 py-1 rounded bg-cyan-950/30"
+                                className="flex items-center gap-2 text-xs text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 transition-colors border border-cyan-500/20 dark:border-cyan-900/50 px-2 py-1 rounded bg-cyan-50 dark:bg-cyan-950/30"
                               >
                                 <Copy size={12} /> Copy JSON
                               </button>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                              <div className="font-mono text-xs space-y-3 text-slate-400">
-                                <p className="flex justify-between border-b border-slate-800 pb-1"><span className="text-slate-500">ID</span> <span className="text-slate-200">{log.id}</span></p>
-                                <p className="flex justify-between border-b border-slate-800 pb-1"><span className="text-slate-500">Event</span> <span className="text-slate-200">{log.event}</span></p>
-                                <p className="flex justify-between border-b border-slate-800 pb-1"><span className="text-slate-500">Source</span> <span className="text-white">{log.source}</span></p>
-                                <p className="flex justify-between border-b border-slate-800 pb-1"><span className="text-slate-500">User</span> <span className="text-white">{log.user}</span></p>
-                                <p className="flex justify-between border-b border-slate-800 pb-1"><span className="text-slate-500">Trace ID</span> <span className="text-cyan-400">{log.trace_id}</span></p>
+                              <div className="font-mono text-xs space-y-3 text-slate-500 dark:text-slate-400">
+                                <p className="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-1"><span className="text-slate-500">ID</span> <span className="text-slate-800 dark:text-slate-200">{log.id}</span></p>
+                                <p className="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-1"><span className="text-slate-500">Event</span> <span className="text-slate-800 dark:text-slate-200">{log.event}</span></p>
+                                <p className="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-1"><span className="text-slate-500">Source</span> <span className="text-slate-900 dark:text-white">{log.source}</span></p>
+                                <p className="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-1"><span className="text-slate-500">User</span> <span className="text-slate-900 dark:text-white">{log.user}</span></p>
+                                <p className="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-1"><span className="text-slate-500">Trace ID</span> <span className="text-cyan-600 dark:text-cyan-400">{log.trace_id}</span></p>
                               </div>
 
                               {/* Raw Message Block */}
-                              <div className="bg-[#020408] rounded-lg p-4 border border-slate-800 font-mono text-xs text-emerald-400 overflow-x-auto shadow-inner">
+                              <div className="bg-slate-900 rounded-lg p-4 border border-slate-800 font-mono text-xs text-emerald-400 overflow-x-auto shadow-inner">
                                 {`{
     "timestamp": "${log.timestamp}",
     "level": "${log.level}",
@@ -360,7 +360,7 @@ export default function SecurityLogs() {
         </div>
 
         {/* Footer Stats */}
-        <div className="p-3 bg-[#1e293b] border-t border-slate-800 flex justify-between items-center text-xs text-slate-500 shrink-0 z-20">
+        <div className="p-3 bg-white/95 dark:bg-[#1e293b] border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-xs text-slate-500 shrink-0 z-20 transition-colors">
           <span>Total Records: {logs.length}</span>
           <div className="flex gap-4">
             <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-red-500"></div> {logs.filter(l => l.level === 'ERROR').length} Errors</span>

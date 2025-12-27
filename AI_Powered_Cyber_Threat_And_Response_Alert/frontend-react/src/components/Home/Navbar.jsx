@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ChevronRight, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
+import ThemeToggle from '../ThemeToggle';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -76,7 +77,7 @@ const Navbar = () => {
     <nav
       ref={navRef}
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled
-        ? 'bg-[#050505]/80 backdrop-blur-xl border-b border-white/10 py-3 shadow-lg shadow-blue-900/5'
+        ? 'bg-white/80 dark:bg-[#020617]/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 py-3 shadow-lg shadow-blue-900/5'
         : 'bg-transparent border-b border-transparent py-6'
         }`}
     >
@@ -102,22 +103,24 @@ const Navbar = () => {
           </Link>
 
           {/* --- Desktop Links --- */}
-          <div className="hidden md:flex items-center bg-white/5 rounded-full px-2 py-1 border border-white/5 backdrop-blur-md">
+          <div className="hidden md:flex items-center bg-slate-100 dark:bg-white/5 rounded-full px-2 py-1 border border-slate-200 dark:border-white/5 backdrop-blur-md">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.path}
-                className="nav-link relative px-5 py-2 text-sm font-medium text-slate-400 hover:text-white transition-colors group"
+                className="nav-link relative px-5 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-white transition-colors group"
               >
                 <span className="relative z-10">{link.name}</span>
                 {/* Hover Glow Pill */}
-                <span className="absolute inset-0 bg-white/10 rounded-full scale-75 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out -z-0"></span>
+                <span className="absolute inset-0 bg-white dark:bg-white/10 rounded-full scale-75 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out -z-0 shadow-sm dark:shadow-none"></span>
               </a>
             ))}
           </div>
 
           {/* --- CTA (Log in removed) --- */}
+          {/* --- CTA (Log in removed) --- */}
           <div className="hidden md:flex items-center gap-6 nav-cta">
+            <ThemeToggle />
             <Link to="/register">
               <button className="group relative px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-bold rounded-lg shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
@@ -130,7 +133,8 @@ const Navbar = () => {
           </div>
 
           {/* --- Mobile Toggle --- */}
-          <div className="md:hidden nav-cta">
+          <div className="md:hidden nav-cta flex items-center gap-4">
+            <ThemeToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
@@ -144,7 +148,7 @@ const Navbar = () => {
       {/* --- Mobile Menu --- */}
       <div
         ref={menuRef}
-        className="md:hidden absolute top-full left-0 w-full bg-[#050505] border-b border-white/10 overflow-hidden h-0 opacity-0"
+        className="md:hidden absolute top-full left-0 w-full bg-white dark:bg-[#020617] border-b border-slate-200 dark:border-white/10 overflow-hidden h-0 opacity-0"
       >
         <div className="px-6 py-8 space-y-2">
           {navLinks.map((link) => (
@@ -158,7 +162,7 @@ const Navbar = () => {
               <ChevronRight size={16} className="opacity-50" />
             </a>
           ))}
-          <div className="h-px bg-white/10 my-4"></div>
+          <div className="h-px bg-slate-200 dark:bg-white/10 my-4"></div>
           <div className="grid gap-3">
             <Link to="/register" onClick={() => setIsOpen(false)}>
               <button className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-500 transition-colors">

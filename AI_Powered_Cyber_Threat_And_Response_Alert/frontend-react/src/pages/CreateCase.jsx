@@ -74,12 +74,12 @@ const CreateCase = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-[#020617] font-sans text-slate-200">
+        <div className="flex min-h-screen bg-slate-50 dark:bg-[#020617] font-sans text-slate-600 dark:text-slate-200 transition-colors duration-300">
             <Sidebar />
 
             <main ref={containerRef} className="flex-1 p-8 h-screen overflow-y-auto relative">
                 {/* Background Elements */}
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-900/10 blur-[120px] rounded-full pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-500/5 dark:bg-emerald-900/10 blur-[120px] rounded-full pointer-events-none"></div>
 
                 <div className="max-w-4xl mx-auto">
                     {/* Header */}
@@ -90,9 +90,9 @@ const CreateCase = () => {
                         >
                             <X size={16} /> Cancel & Return
                         </button>
-                        <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
                             <div className="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                                <FolderPlus className="text-emerald-400" size={28} />
+                                <FolderPlus className="text-emerald-600 dark:text-emerald-400" size={28} />
                             </div>
                             Create New Case
                         </h1>
@@ -101,19 +101,19 @@ const CreateCase = () => {
                         </p>
                     </header>
 
-                    <form onSubmit={handleSubmit} className="form-card bg-[#0f172a]/60 backdrop-blur-xl rounded-2xl border border-slate-800 p-8 shadow-xl">
+                    <form onSubmit={handleSubmit} className="form-card bg-white/80 dark:bg-[#0f172a]/60 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 p-8 shadow-xl transition-colors duration-300">
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                             {/* Left Column: Case Details */}
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Case Name</label>
+                                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Case Name</label>
                                     <div className="relative">
-                                        <Briefcase className="absolute left-3 top-3 text-slate-500" size={18} />
+                                        <Briefcase className="absolute left-3 top-3 text-slate-400 dark:text-slate-500" size={18} />
                                         <input
                                             type="text"
                                             required
-                                            className="w-full bg-slate-900/50 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-slate-600"
+                                            className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600"
                                             placeholder="e.g., Incident #2024-001"
                                             value={formData.caseName}
                                             onChange={(e) => setFormData({ ...formData, caseName: e.target.value })}
@@ -122,9 +122,9 @@ const CreateCase = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Description</label>
+                                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Description</label>
                                     <textarea
-                                        className="w-full bg-slate-900/50 border border-slate-700 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-slate-600 min-h-[120px]"
+                                        className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 rounded-xl py-3 px-4 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600 min-h-[120px]"
                                         placeholder="Describe the incident, suspected vectors, and scope..."
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -133,11 +133,11 @@ const CreateCase = () => {
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Case Type</label>
+                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Case Type</label>
                                         <div className="relative">
-                                            <Tag className="absolute left-3 top-3 text-slate-500" size={18} />
+                                            <Tag className="absolute left-3 top-3 text-slate-400 dark:text-slate-500" size={18} />
                                             <select
-                                                className="w-full bg-slate-900/50 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer"
+                                                className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer"
                                                 value={formData.type}
                                                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                                             >
@@ -149,11 +149,11 @@ const CreateCase = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Priority</label>
+                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Priority</label>
                                         <div className="relative">
-                                            <AlertCircle className="absolute left-3 top-3 text-slate-500" size={18} />
+                                            <AlertCircle className="absolute left-3 top-3 text-slate-400 dark:text-slate-500" size={18} />
                                             <select
-                                                className="w-full bg-slate-900/50 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer"
+                                                className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer"
                                                 value={formData.priority}
                                                 onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
                                             >
@@ -169,9 +169,9 @@ const CreateCase = () => {
 
                             {/* Right Column: Evidence Upload */}
                             <div className="flex flex-col h-full">
-                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Initial Evidence</label>
+                                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Initial Evidence</label>
                                 <div
-                                    className={`flex-1 border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all duration-300 ${isDragging ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-700 bg-slate-900/30 hover:border-slate-600'
+                                    className={`flex-1 border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all duration-300 ${isDragging ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/30 hover:border-slate-400 dark:hover:border-slate-600'
                                         }`}
                                     onDragOver={handleDragOver}
                                     onDragLeave={handleDragLeave}
@@ -187,17 +187,17 @@ const CreateCase = () => {
 
                                     {files.length === 0 ? (
                                         <>
-                                            <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-lg">
-                                                <UploadCloud size={28} className={isDragging ? "text-emerald-400 animate-bounce" : "text-slate-400"} />
+                                            <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-lg transition-colors">
+                                                <UploadCloud size={28} className={isDragging ? "text-emerald-500 dark:text-emerald-400 animate-bounce" : "text-slate-400"} />
                                             </div>
-                                            <h3 className="text-sm font-bold text-white mb-1">Upload Artifacts</h3>
+                                            <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1">Upload Artifacts</h3>
                                             <p className="text-slate-500 text-xs max-w-[200px] mb-4">
                                                 Drag & drop files here or click to browse.
                                             </p>
                                             <button
                                                 type="button"
                                                 onClick={() => fileInputRef.current?.click()}
-                                                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg font-medium border border-slate-700 transition-colors"
+                                                className="px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-xs rounded-lg font-medium border border-slate-300 dark:border-slate-700 transition-colors"
                                             >
                                                 Select Files
                                             </button>
@@ -216,18 +216,18 @@ const CreateCase = () => {
                                             </div>
                                             <div className="space-y-2">
                                                 {files.map((file, idx) => (
-                                                    <div key={idx} className="flex items-center justify-between p-2 bg-slate-800/50 rounded-lg border border-slate-700 text-left group">
+                                                    <div key={idx} className="flex items-center justify-between p-2 bg-slate-100 dark:bg-slate-800/50 rounded-lg border border-slate-300 dark:border-slate-700 text-left group transition-colors">
                                                         <div className="flex items-center gap-2 overflow-hidden">
                                                             <FileText size={14} className="text-slate-400 shrink-0" />
                                                             <div className="truncate">
-                                                                <div className="text-xs text-slate-200 truncate max-w-[120px]">{file.name}</div>
+                                                                <div className="text-xs text-slate-700 dark:text-slate-200 truncate max-w-[120px]">{file.name}</div>
                                                                 <div className="text-[10px] text-slate-500">{(file.size / 1024).toFixed(1)} KB</div>
                                                             </div>
                                                         </div>
                                                         <button
                                                             type="button"
                                                             onClick={() => removeFile(idx)}
-                                                            className="p-1 hover:bg-rose-500/20 rounded text-slate-500 hover:text-rose-400 transition-colors"
+                                                            className="p-1 hover:bg-rose-500/20 rounded text-slate-400 hover:text-rose-500 dark:text-slate-500 dark:hover:text-rose-400 transition-colors"
                                                         >
                                                             <X size={12} />
                                                         </button>
@@ -241,11 +241,11 @@ const CreateCase = () => {
                         </div>
 
                         {/* Footer Actions */}
-                        <div className="pt-6 border-t border-slate-800 flex justify-end gap-4">
+                        <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-4 transition-colors">
                             <button
                                 type="button"
                                 onClick={() => navigate('/analysis')}
-                                className="px-6 py-2.5 text-slate-400 hover:text-white font-medium transition-colors"
+                                className="px-6 py-2.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium transition-colors"
                             >
                                 Cancel
                             </button>

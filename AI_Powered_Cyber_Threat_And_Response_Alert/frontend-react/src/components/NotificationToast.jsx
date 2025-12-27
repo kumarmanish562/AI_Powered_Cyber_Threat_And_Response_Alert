@@ -51,40 +51,40 @@ const NotificationToast = ({ message, type, onClose }) => {
   // Dynamic Styles based on type
   const styles = {
     critical: {
-      border: 'border-rose-500',
-      bg: 'bg-rose-950/90',
-      iconBg: 'bg-rose-500/20',
-      iconColor: 'text-rose-500',
-      title: 'text-rose-400',
+      border: 'border-rose-200 dark:border-rose-500',
+      bg: 'bg-rose-50/95 dark:bg-rose-950/90',
+      iconBg: 'bg-rose-100 dark:bg-rose-500/20',
+      iconColor: 'text-rose-600 dark:text-rose-500',
+      title: 'text-rose-800 dark:text-rose-400',
       Icon: AlertTriangle,
-      glow: 'shadow-rose-900/40'
+      glow: 'shadow-lg shadow-rose-500/10 dark:shadow-rose-900/40'
     },
     success: {
-      border: 'border-emerald-500',
-      bg: 'bg-emerald-950/90',
-      iconBg: 'bg-emerald-500/20',
-      iconColor: 'text-emerald-500',
-      title: 'text-emerald-400',
+      border: 'border-emerald-200 dark:border-emerald-500',
+      bg: 'bg-emerald-50/95 dark:bg-emerald-950/90',
+      iconBg: 'bg-emerald-100 dark:bg-emerald-500/20',
+      iconColor: 'text-emerald-600 dark:text-emerald-500',
+      title: 'text-emerald-800 dark:text-emerald-400',
       Icon: CheckCircle,
-      glow: 'shadow-emerald-900/40'
+      glow: 'shadow-lg shadow-emerald-500/10 dark:shadow-emerald-900/40'
     },
     info: {
-      border: 'border-blue-500',
-      bg: 'bg-slate-900/90',
-      iconBg: 'bg-blue-500/20',
-      iconColor: 'text-blue-500',
-      title: 'text-blue-400',
+      border: 'border-blue-200 dark:border-blue-500',
+      bg: 'bg-white/95 dark:bg-slate-900/90',
+      iconBg: 'bg-blue-100 dark:bg-blue-500/20',
+      iconColor: 'text-blue-600 dark:text-blue-500',
+      title: 'text-blue-800 dark:text-blue-400',
       Icon: Info,
-      glow: 'shadow-blue-900/40'
+      glow: 'shadow-lg shadow-blue-500/10 dark:shadow-blue-900/40'
     },
     warning: { // Adding warning just in case
-      border: 'border-amber-500',
-      bg: 'bg-amber-950/90',
-      iconBg: 'bg-amber-500/20',
-      iconColor: 'text-amber-500',
-      title: 'text-amber-400',
+      border: 'border-amber-200 dark:border-amber-500',
+      bg: 'bg-amber-50/95 dark:bg-amber-950/90',
+      iconBg: 'bg-amber-100 dark:bg-amber-500/20',
+      iconColor: 'text-amber-600 dark:text-amber-500',
+      title: 'text-amber-800 dark:text-amber-400',
       Icon: Bell,
-      glow: 'shadow-amber-900/40'
+      glow: 'shadow-lg shadow-amber-500/10 dark:shadow-amber-900/40'
     }
   };
 
@@ -94,11 +94,11 @@ const NotificationToast = ({ message, type, onClose }) => {
   return (
     <div
       ref={toastRef}
-      className={`fixed bottom-6 right-6 z-[100] max-w-sm w-full backdrop-blur-xl rounded-2xl border ${currentStyle.border} shadow-2xl ${currentStyle.glow} ${currentStyle.bg} overflow-hidden`}
+      className={`fixed bottom-6 right-6 z-[100] max-w-sm w-full backdrop-blur-xl rounded-2xl border ${currentStyle.border} shadow-2xl ${currentStyle.glow} ${currentStyle.bg} overflow-hidden transition-colors duration-300`}
     >
       {/* Background Pulse Effect for Critical */}
       {type === 'critical' && (
-        <div className="absolute inset-0 bg-rose-500/10 animate-pulse pointer-events-none"></div>
+        <div className="absolute inset-0 bg-rose-500/5 dark:bg-rose-500/10 animate-pulse pointer-events-none"></div>
       )}
 
       <div className="flex items-start gap-4 p-5 relative z-10">
@@ -112,14 +112,14 @@ const NotificationToast = ({ message, type, onClose }) => {
               type === 'success' ? 'Success' :
                 'System Update'}
           </h4>
-          <p className="text-slate-200 text-sm leading-relaxed font-medium">
+          <p className="text-slate-600 dark:text-slate-200 text-sm leading-relaxed font-medium">
             {message}
           </p>
         </div>
 
         <button
           onClick={handleClose}
-          className="text-slate-400 hover:text-white hover:bg-white/10 rounded-lg p-1.5 transition-colors -mt-2 -mr-2"
+          className="text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 rounded-lg p-1.5 transition-colors -mt-2 -mr-2"
         >
           <X size={16} />
         </button>

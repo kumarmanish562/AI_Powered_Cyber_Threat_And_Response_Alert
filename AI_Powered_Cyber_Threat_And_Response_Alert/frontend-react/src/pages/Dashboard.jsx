@@ -32,7 +32,7 @@ const LiveClock = () => {
   }, []);
 
   return (
-    <div className="flex items-center gap-2 text-slate-400 font-mono text-sm bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700/50">
+    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 font-mono text-sm bg-slate-100 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700/50">
       <Clock size={14} />
       <span>{time.toLocaleTimeString()}</span>
     </div>
@@ -234,7 +234,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-[#0b1120] font-sans text-slate-200">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-[#020617] font-sans text-slate-700 dark:text-slate-200 transition-colors duration-300">
 
       {/* Toast Notifications */}
       {alert && (
@@ -249,12 +249,12 @@ const Dashboard = () => {
 
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         {/* Background Gradients for Cyber feel */}
-        <div className="absolute top-0 left-0 w-full h-96 bg-blue-600/5 blur-[120px] pointer-events-none"></div>
+        <div className="absolute top-0 left-0 w-full h-96 bg-blue-500/5 dark:bg-blue-600/5 blur-[120px] pointer-events-none"></div>
 
         {/* --- Header --- */}
-        <header className="px-8 py-6 border-b border-slate-800/60 bg-[#0b1120]/80 backdrop-blur-sm z-10 flex justify-between items-center shrink-0">
+        <header className="px-8 py-6 border-b border-slate-200 dark:border-slate-800/60 bg-white/80 dark:bg-[#0b1120]/80 backdrop-blur-sm z-10 flex justify-between items-center shrink-0 transition-colors duration-300">
           <div>
-            <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
               <Shield className="text-blue-500 fill-blue-500/10" size={28} />
               {user ? `Welcome, ${user.full_name}` : 'Command Center'}
             </h1>
@@ -269,7 +269,7 @@ const Dashboard = () => {
 
             <button
               onClick={runSimulation}
-              className="group relative px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/50 rounded-lg text-sm font-bold transition-all overflow-hidden"
+              className="group relative px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-500 border border-rose-500/20 dark:border-rose-500/50 rounded-lg text-sm font-bold transition-all overflow-hidden"
             >
               <div className="absolute inset-0 w-full h-full bg-rose-500/10 translate-y-full group-hover:translate-y-0 transition-transform"></div>
               <span className="relative flex items-center gap-2">
@@ -317,14 +317,14 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
 
             {/* 2. Live Network Traffic (Area Chart) - Takes up 2/3 width */}
-            <div className="lg:col-span-2 bg-[#151f32]/60 backdrop-blur-sm rounded-xl border border-slate-800 p-6 shadow-xl relative overflow-hidden">
+            <div className="lg:col-span-2 bg-white/60 dark:bg-[#151f32]/60 backdrop-blur-sm rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-xl relative overflow-hidden transition-colors duration-300">
               <div className="absolute top-0 right-0 p-4 opacity-5">
                 <Server size={120} />
               </div>
 
               <div className="flex justify-between items-center mb-6 relative z-10">
                 <div>
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Activity className="text-blue-400" size={18} /> Network Throughput
                   </h3>
                   <p className="text-slate-500 text-xs mt-1">Real-time packet analysis velocity (Mbps)</p>
@@ -366,8 +366,8 @@ const Dashboard = () => {
             </div>
 
             {/* 3. Threat Severity (Pie Chart) - Takes up 1/3 width */}
-            <div className="bg-[#151f32]/60 backdrop-blur-sm rounded-xl border border-slate-800 p-6 shadow-xl flex flex-col">
-              <h3 className="text-lg font-bold text-white mb-2">Threat Severity</h3>
+            <div className="bg-white/60 dark:bg-[#151f32]/60 backdrop-blur-sm rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-xl flex flex-col transition-colors duration-300">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Threat Severity</h3>
               <p className="text-slate-500 text-xs mb-4">Distribution by risk level</p>
 
               <div className="flex-1 flex items-center justify-center">
@@ -381,10 +381,10 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             {/* Status Donut */}
-            <div className="bg-[#151f32]/60 backdrop-blur-sm rounded-xl border border-slate-800 p-6 shadow-xl">
+            <div className="bg-white/60 dark:bg-[#151f32]/60 backdrop-blur-sm rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-xl transition-colors duration-300">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-white">Remediation Status</h3>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">Remediation Status</h3>
                   <p className="text-slate-500 text-xs mt-1">Action taken on detected threats</p>
                 </div>
                 <Globe className="text-slate-600" size={20} />
@@ -395,18 +395,18 @@ const Dashboard = () => {
             </div>
 
             {/* Quick System Health (Visual Only) */}
-            <div className="bg-[#151f32]/60 backdrop-blur-sm rounded-xl border border-slate-800 p-6 shadow-xl flex flex-col justify-between">
+            <div className="bg-white/60 dark:bg-[#151f32]/60 backdrop-blur-sm rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-xl flex flex-col justify-between transition-colors duration-300">
               <div>
-                <h3 className="text-lg font-bold text-white mb-6">System Health</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6">System Health</h3>
 
                 <div className="space-y-6">
                   {/* CPU Usage */}
                   <div>
-                    <div className="flex justify-between text-xs text-slate-400 mb-2">
+                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
                       <span>AI Inference Engine (CPU)</span>
                       <span className="text-emerald-400 font-mono">{systemHealth.cpu}%</span>
                     </div>
-                    <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-emerald-500 rounded-full transition-all duration-500 ease-in-out"
                         style={{ width: `${systemHealth.cpu}%` }}
@@ -416,11 +416,11 @@ const Dashboard = () => {
 
                   {/* Memory Usage */}
                   <div>
-                    <div className="flex justify-between text-xs text-slate-400 mb-2">
+                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
                       <span>Log Buffer (RAM)</span>
                       <span className="text-blue-400 font-mono">{systemHealth.ram}%</span>
                     </div>
-                    <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-blue-500 rounded-full transition-all duration-500 ease-in-out"
                         style={{ width: `${systemHealth.ram}%` }}
@@ -430,11 +430,11 @@ const Dashboard = () => {
 
                   {/* Database */}
                   <div>
-                    <div className="flex justify-between text-xs text-slate-400 mb-2">
+                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
                       <span>PostgreSQL Connections</span>
                       <span className="text-purple-400 font-mono">{systemHealth.db} / 100</span>
                     </div>
-                    <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-purple-500 rounded-full transition-all duration-500 ease-in-out"
                         style={{ width: `${systemHealth.db}%` }}
@@ -444,7 +444,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-700/50 flex gap-4 text-xs text-slate-500">
+              <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700/50 flex gap-4 text-xs text-slate-500">
                 <span className="flex items-center gap-1"><CheckCircle size={12} className="text-emerald-500" /> Database Connected</span>
                 <span className="flex items-center gap-1"><CheckCircle size={12} className="text-emerald-500" /> API Gateway Stable</span>
               </div>
@@ -454,29 +454,29 @@ const Dashboard = () => {
 
           {/* 5. Network Devices Row (New) */}
           <div className="mb-8">
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
               <Wifi className="text-cyan-400" size={20} /> Network Devices (Live Monitoring)
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {devices.map((device, idx) => (
-                <div key={idx} className="bg-[#151f32]/60 backdrop-blur-sm rounded-lg border border-slate-800 p-4 flex items-center justify-between hover:border-slate-700 transition-colors">
+                <div key={idx} className="bg-white/60 dark:bg-[#151f32]/60 backdrop-blur-sm rounded-lg border border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between hover:border-blue-500/30 dark:hover:border-slate-700 transition-colors">
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${device.status === 'Critical' ? 'bg-red-500/20 text-red-500' :
-                        device.status === 'Warning' ? 'bg-amber-500/20 text-amber-500' : 'bg-emerald-500/20 text-emerald-500'
+                      device.status === 'Warning' ? 'bg-amber-500/20 text-amber-500' : 'bg-emerald-500/20 text-emerald-500'
                       }`}>
                       {device.type === 'Server' ? <Server size={18} /> :
                         device.type === 'Mobile' ? <Smartphone size={18} /> :
                           <Laptop size={18} />}
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-slate-200">{device.hostname}</h4>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-slate-200">{device.hostname}</h4>
                       <p className="text-xs text-slate-500 font-mono">{device.ip}</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <div className={`text-xs font-bold px-2 py-0.5 rounded-full inline-block mb-1 ${device.status === 'Critical' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
-                        device.status === 'Warning' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-                          'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                      device.status === 'Warning' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                        'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                       }`}>
                       {device.status}
                     </div>

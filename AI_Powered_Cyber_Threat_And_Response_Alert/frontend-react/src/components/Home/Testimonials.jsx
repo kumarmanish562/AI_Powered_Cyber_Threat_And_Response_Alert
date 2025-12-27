@@ -106,13 +106,13 @@ const Testimonials = () => {
   const currentData = testimonials[active];
 
   return (
-    <section ref={sectionRef} className="relative py-32 bg-[#020617] overflow-hidden min-h-[900px] flex flex-col justify-center">
+    <section ref={sectionRef} className="relative py-32 bg-slate-50 dark:bg-[#020617] overflow-hidden min-h-[900px] flex flex-col justify-center transition-colors duration-300">
 
       {/* --- BACKGROUND (Matches Hero/Threats) --- */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Spotlights */}
-        <div className={`absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-${currentData.theme}-500/10 blur-[120px] rounded-full transition-colors duration-1000`}></div>
-        <div className="absolute inset-0 bg-[#020617]/40"></div>
+        <div className={`absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-${currentData.theme}-500/10 dark:bg-${currentData.theme}-500/10 blur-[120px] rounded-full transition-colors duration-1000`}></div>
+        <div className="absolute inset-0 bg-slate-50/40 dark:bg-[#020617]/40"></div>
         {/* Grid */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30"></div>
       </div>
@@ -125,17 +125,17 @@ const Testimonials = () => {
             <Star className="text-yellow-500 fill-yellow-500" size={12} />
             Success Stories
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-            Trusted by the <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500">World's Safest Companies</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
+            Trusted by the <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-slate-500 dark:from-white dark:to-slate-500">World's Safest Companies</span>
           </h2>
         </div>
 
         {/* --- Main Card --- */}
-        <div className="relative w-full max-w-6xl mx-auto aspect-[16/16] lg:aspect-[21/9] bg-[#09090b] rounded-3xl border border-white/10 overflow-hidden shadow-2xl flex flex-col lg:flex-row">
+        <div className="relative w-full max-w-6xl mx-auto aspect-[16/16] lg:aspect-[21/9] bg-white dark:bg-[#09090b] rounded-3xl border border-slate-200 dark:border-white/10 overflow-hidden shadow-2xl flex flex-col lg:flex-row">
 
           {/* Left: Image (40%) */}
-          <div className="lg:w-2/5 relative overflow-hidden bg-slate-900 border-b lg:border-b-0 lg:border-r border-white/10 h-64 lg:h-auto group">
-            <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-transparent to-transparent z-10 opacity-60"></div>
+          <div className="lg:w-2/5 relative overflow-hidden bg-slate-200 dark:bg-slate-900 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-white/10 h-64 lg:h-auto group">
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 dark:from-[#09090b] via-transparent to-transparent z-10 opacity-60"></div>
             <img
               ref={imageRef}
               src={currentData.image}
@@ -144,7 +144,7 @@ const Testimonials = () => {
             />
 
             {/* Floating Badge on Image */}
-            <div ref={statsRef} className="absolute bottom-6 left-6 z-20 bg-black/60 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-lg">
+            <div ref={statsRef} className="absolute bottom-6 left-6 z-20 bg-white/60 dark:bg-black/60 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-lg">
               <div className="flex items-center gap-2 text-xs font-mono text-slate-400 mb-1">
                 <Activity size={12} /> {currentData.stats.label}
               </div>
@@ -165,12 +165,12 @@ const Testimonials = () => {
             <div ref={textRef} className="relative z-10">
 
               {/* Quote Icon */}
-              <div ref={quoteRef} className={`w-12 h-12 rounded-full bg-${currentData.theme}-500/10 border border-${currentData.theme}-500/20 flex items-center justify-center mb-8`}>
-                <Quote size={20} className={`text-${currentData.theme}-400`} />
+              <div ref={quoteRef} className={`w-12 h-12 rounded-full bg-${currentData.theme}-100 dark:bg-${currentData.theme}-500/10 border border-${currentData.theme}-200 dark:border-${currentData.theme}-500/20 flex items-center justify-center mb-8`}>
+                <Quote size={20} className={`text-${currentData.theme}-600 dark:text-${currentData.theme}-400`} />
               </div>
 
               {/* The Quote */}
-              <h3 className="anim-text text-2xl md:text-4xl font-bold text-white leading-tight mb-8">
+              <h3 className="anim-text text-2xl md:text-4xl font-bold text-slate-900 dark:text-white leading-tight mb-8">
                 "{currentData.quote}"
               </h3>
 
@@ -178,8 +178,8 @@ const Testimonials = () => {
               <div className="anim-text flex items-center gap-4">
                 <div className={`w-1 h-12 bg-gradient-to-b from-${currentData.theme}-500 to-transparent rounded-full`}></div>
                 <div>
-                  <div className="text-xl font-bold text-white">{currentData.author}</div>
-                  <div className="text-slate-400 flex items-center gap-2 text-sm mt-1">
+                  <div className="text-xl font-bold text-slate-900 dark:text-white">{currentData.author}</div>
+                  <div className="text-slate-500 dark:text-slate-400 flex items-center gap-2 text-sm mt-1">
                     <User size={14} /> {currentData.role}
                     <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
                     <Building2 size={14} /> {currentData.company}
@@ -193,14 +193,14 @@ const Testimonials = () => {
             <div className="absolute bottom-8 right-8 flex gap-3 z-20">
               <button
                 onClick={handlePrev}
-                className="p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white hover:text-black transition-all duration-300 group"
+                className="p-4 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-white hover:text-black transition-all duration-300 group"
                 disabled={isAnimating}
               >
                 <ChevronLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
               </button>
               <button
                 onClick={handleNext}
-                className="p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white hover:text-black transition-all duration-300 group"
+                className="p-4 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-white hover:text-black transition-all duration-300 group"
                 disabled={isAnimating}
               >
                 <ChevronRight size={20} className="group-hover:translate-x-0.5 transition-transform" />

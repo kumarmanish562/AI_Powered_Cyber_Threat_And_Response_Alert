@@ -88,14 +88,14 @@ const About = () => {
   }, []);
 
   return (
-    <section id="about" ref={sectionRef} className="py-32 bg-[#020617] relative overflow-hidden">
+    <section id="about" ref={sectionRef} className="py-32 bg-slate-50 dark:bg-[#020617] relative overflow-hidden transition-colors duration-300">
 
       {/* --- BACKGROUND (Unified Grid) --- */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Glow Spot */}
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[600px] h-[600px] bg-blue-900/10 blur-[120px] rounded-full"></div>
+        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 dark:bg-blue-900/10 blur-[120px] rounded-full"></div>
         {/* Sharp Grid with Radial Mask */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30"></div>
+        <div className="absolute inset-0 dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -112,7 +112,7 @@ const About = () => {
             </div>
 
             {/* Headline */}
-            <h2 className="about-reveal text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
+            <h2 className="about-reveal text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-8 leading-tight">
               Defending the Future with <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400">
                 Intelligent Code.
@@ -120,9 +120,9 @@ const About = () => {
             </h2>
 
             {/* Description */}
-            <div className="about-reveal space-y-6 text-lg text-slate-400 leading-relaxed mb-10">
+            <div className="about-reveal space-y-6 text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-10">
               <p>
-                ThreatWatch AI AI began as a research project to solve a single problem: <strong className="text-slate-200">Static firewalls cannot stop dynamic threats.</strong>
+                ThreatWatch AI AI began as a research project to solve a single problem: <strong className="text-slate-800 dark:text-slate-200">Static firewalls cannot stop dynamic threats.</strong>
               </p>
               <p>
                 Today, we are a global network of security engineers, data scientists, and ethical hackers building the first autonomous defense layer for the modern web. We don't just log attacks; we predict and neutralize them.
@@ -130,14 +130,14 @@ const About = () => {
             </div>
 
             {/* Stats Grid */}
-            <div className="about-reveal stats-grid grid grid-cols-2 gap-6 pt-8 border-t border-white/10">
+            <div className="about-reveal stats-grid grid grid-cols-2 gap-6 pt-8 border-t border-slate-200 dark:border-white/10">
               {stats.map((stat, index) => (
                 <div key={stat.id} className="flex flex-col">
                   <div className={`flex items-center gap-2 text-${stat.color}-400 mb-2`}>
                     <stat.icon size={18} />
                     <span className="text-xs font-mono uppercase tracking-wider text-slate-500">{stat.label}</span>
                   </div>
-                  <div className="text-3xl font-bold text-white flex items-baseline">
+                  <div className="text-3xl font-bold text-slate-900 dark:text-white flex items-baseline">
                     <span ref={el => counterRefs.current[index] = el}>0</span>
                     <span>{stat.suffix}</span>
                   </div>
@@ -148,8 +148,8 @@ const About = () => {
             {/* CTA */}
             <div className="about-reveal mt-12">
               <Link to="/meet-team">
-                <button className="group flex items-center gap-3 text-white font-bold hover:text-blue-400 transition-colors">
-                  <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-blue-500/20 group-hover:border-blue-500/50 transition-all">
+                <button className="group flex items-center gap-3 text-slate-900 dark:text-white font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center group-hover:bg-blue-500/20 group-hover:border-blue-500/50 transition-all">
                     <ArrowRight size={20} className="group-hover:translate-x-0.5 transition-transform" />
                   </div>
                   <span>Read Our Manifesto</span>

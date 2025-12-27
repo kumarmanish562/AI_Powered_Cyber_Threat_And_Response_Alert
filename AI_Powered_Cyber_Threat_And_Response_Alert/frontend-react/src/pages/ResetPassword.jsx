@@ -104,14 +104,14 @@ const ResetPassword = () => {
     }
 
     return (
-        <div ref={containerRef} className="min-h-screen bg-[#020617] flex flex-col font-sans text-slate-300 selection:bg-blue-500/30 overflow-hidden">
+        <div ref={containerRef} className="min-h-screen bg-slate-50 dark:bg-[#020617] flex flex-col font-sans text-slate-700 dark:text-slate-300 selection:bg-blue-500/30 overflow-hidden transition-colors duration-300">
             <Navbar />
 
             <div className="flex-grow flex relative pt-20">
                 {/* --- Background Elements --- */}
                 <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-indigo-900/10 blur-[120px] rounded-full"></div>
-                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20"></div>
+                    <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-indigo-500/10 dark:bg-indigo-900/10 blur-[120px] rounded-full"></div>
+                    <div className="absolute inset-0 dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 relative z-10 min-h-[calc(100vh-80px)]">
@@ -126,12 +126,12 @@ const ResetPassword = () => {
                                 Secure Recovery
                             </div>
 
-                            <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
+                            <h1 className="text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
                                 Regain Access <br />
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Securely.</span>
                             </h1>
 
-                            <p className="text-lg text-slate-400 mb-10 leading-relaxed">
+                            <p className="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed">
                                 Reset your credentials to restore access to the command terminal. Ensure your new password meets security standards.
                             </p>
                         </div>
@@ -139,27 +139,27 @@ const ResetPassword = () => {
 
                     {/* --- RIGHT COLUMN: The Form --- */}
                     <div className="flex items-center justify-center p-6 lg:p-12">
-                        <div ref={formRef} className="w-full max-w-md bg-[#0f172a]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+                        <div ref={formRef} className="w-full max-w-md bg-white/80 dark:bg-[#0f172a]/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-3xl p-8 shadow-2xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden">
 
                             {/* Top Accent Line */}
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
 
                             {/* Header */}
                             <div className="mb-8">
-                                <h2 className="text-2xl font-bold text-white mb-1">Reset Password</h2>
-                                <p className="text-slate-400 text-sm">Enter the OTP sent to your email and your new password.</p>
+                                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">Reset Password</h2>
+                                <p className="text-slate-500 dark:text-slate-400 text-sm">Enter the OTP sent to your email and your new password.</p>
                             </div>
 
                             <form className="space-y-5" onSubmit={handleSubmit}>
 
                                 {/* Email (Read Only if passed, else editable) */}
                                 <div className="anim-input group">
-                                    <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">Email Address</label>
+                                    <label className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400">Email Address</label>
                                     <input
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600"
+                                        className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600"
                                         placeholder="operator@system.io"
                                         required
                                     />
@@ -167,14 +167,14 @@ const ResetPassword = () => {
 
                                 {/* OTP Input */}
                                 <div className="anim-input group">
-                                    <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">OTP Code</label>
+                                    <label className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400">OTP Code</label>
                                     <div className="relative">
-                                        <KeyRound className="absolute left-4 top-3.5 h-4 w-4 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+                                        <KeyRound className="absolute left-4 top-3.5 h-4 w-4 text-slate-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors" />
                                         <input
                                             type="text"
                                             value={otp}
                                             onChange={(e) => setOtp(e.target.value)}
-                                            className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600 tracking-widest font-mono"
+                                            className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600 tracking-widest font-mono"
                                             placeholder="000000"
                                             required
                                         />
@@ -183,14 +183,14 @@ const ResetPassword = () => {
 
                                 {/* New Password */}
                                 <div className="anim-input group">
-                                    <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">New Password</label>
+                                    <label className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400">New Password</label>
                                     <div className="relative">
-                                        <Lock className="absolute left-4 top-3.5 h-4 w-4 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+                                        <Lock className="absolute left-4 top-3.5 h-4 w-4 text-slate-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors" />
                                         <input
                                             type="password"
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
-                                            className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600"
+                                            className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600"
                                             placeholder="••••••••"
                                             required
                                         />
@@ -199,14 +199,14 @@ const ResetPassword = () => {
 
                                 {/* Confirm Password */}
                                 <div className="anim-input group">
-                                    <label className="text-xs font-bold text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-400">Confirm Password</label>
+                                    <label className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5 block group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400">Confirm Password</label>
                                     <div className="relative">
-                                        <Lock className="absolute left-4 top-3.5 h-4 w-4 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+                                        <Lock className="absolute left-4 top-3.5 h-4 w-4 text-slate-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors" />
                                         <input
                                             type="password"
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600"
+                                            className="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600"
                                             placeholder="••••••••"
                                             required
                                         />
@@ -236,8 +236,8 @@ const ResetPassword = () => {
                                 </div>
                             )}
 
-                            <div className="mt-6 text-center pt-6 border-t border-white/5">
-                                <Link to="/login" className="text-slate-500 hover:text-white text-xs flex items-center justify-center gap-1 group transition-colors">
+                            <div className="mt-6 text-center pt-6 border-t border-slate-200 dark:border-white/5">
+                                <Link to="/login" className="text-slate-500 dark:text-slate-500 hover:text-blue-600 dark:hover:text-white text-xs flex items-center justify-center gap-1 group transition-colors">
                                     <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" /> Back to Login
                                 </Link>
                             </div>

@@ -92,12 +92,12 @@ const DeviceDetailsModal = ({ device, onClose }) => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"
+                className="absolute inset-0 bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm transition-opacity"
                 onClick={onClose}
             ></div>
 
             {/* Modal Content */}
-            <div ref={modalRef} className="relative w-full max-w-3xl bg-[#020617] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div ref={modalRef} className="relative w-full max-w-3xl bg-white dark:bg-[#020617] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors duration-300">
 
                 {/* Background Grid */}
                 <div className="absolute inset-0 pointer-events-none z-0">
@@ -106,96 +106,96 @@ const DeviceDetailsModal = ({ device, onClose }) => {
                 </div>
 
                 {/* Header */}
-                <div className="p-6 border-b border-slate-800/60 flex justify-between items-start bg-[#0f172a]/80 backdrop-blur-md relative z-10 shrink-0">
+                <div className="p-6 border-b border-slate-200 dark:border-slate-800/60 flex justify-between items-start bg-slate-50/80 dark:bg-[#0f172a]/80 backdrop-blur-md relative z-10 shrink-0 transition-colors">
                     <div className="flex items-center gap-4">
-                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center shadow-lg border ${statusStyle.replace('text-', 'border-').split(' ')[2]} bg-slate-900`}>
+                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center shadow-lg border ${statusStyle.replace('text-', 'border-').split(' ')[2]} bg-white dark:bg-slate-900`}>
                             <Server size={28} className={statusStyle.split(' ')[0]} />
                         </div>
                         <div>
                             <div className="flex items-center gap-3">
-                                <h2 className="text-2xl font-bold text-white tracking-tight">{device.hostname}</h2>
+                                <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{device.hostname}</h2>
                                 <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase border tracking-wider ${statusStyle}`}>
                                     {device.status}
                                 </span>
                             </div>
-                            <p className="text-slate-400 font-mono text-sm mt-1 flex items-center gap-2">
+                            <p className="text-slate-500 dark:text-slate-400 font-mono text-sm mt-1 flex items-center gap-2">
                                 <Globe size={12} /> {device.ip}
                             </p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-slate-800 rounded-lg"
+                        className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg"
                     >
                         <X size={20} />
                     </button>
                 </div>
 
                 {/* Body - Scrollable */}
-                <div className="p-6 overflow-y-auto custom-scrollbar relative z-10 flex-1 bg-[#020617]/50">
+                <div className="p-6 overflow-y-auto custom-scrollbar relative z-10 flex-1 bg-slate-100/50 dark:bg-[#020617]/50 transition-colors">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                         {/* Status Card */}
-                        <div className="modal-anim-item bg-slate-900/50 p-5 rounded-xl border border-slate-800 hover:border-slate-700 transition-colors">
+                        <div className="modal-anim-item bg-white dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
                             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                <Activity size={14} className="text-blue-400" /> Connectivity
+                                <Activity size={14} className="text-blue-500 dark:text-blue-400" /> Connectivity
                             </h3>
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-slate-300 text-sm">Latency</span>
+                                    <span className="text-slate-500 dark:text-slate-300 text-sm">Latency</span>
                                     <div className="flex items-center gap-2">
                                         <span className="flex h-2 w-2 relative">
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                                         </span>
-                                        <span className="font-mono text-white font-bold">{device.latency}</span>
+                                        <span className="font-mono text-slate-900 dark:text-white font-bold">{device.latency}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-slate-300 text-sm">Packet Loss</span>
-                                    <span className="font-mono text-emerald-400 text-sm">0%</span>
+                                    <span className="text-slate-500 dark:text-slate-300 text-sm">Packet Loss</span>
+                                    <span className="font-mono text-emerald-600 dark:text-emerald-400 text-sm">0%</span>
                                 </div>
-                                <div className="w-full bg-slate-800 rounded-full h-1.5 mt-2">
+                                <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 mt-2">
                                     <div className="bg-emerald-500 h-1.5 rounded-full w-[98%] shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
                                 </div>
                             </div>
                         </div>
 
                         {/* System Info */}
-                        <div className="modal-anim-item bg-slate-900/50 p-5 rounded-xl border border-slate-800 hover:border-slate-700 transition-colors">
+                        <div className="modal-anim-item bg-white dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
                             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                <Cpu size={14} className="text-purple-400" /> System Fingerprint
+                                <Cpu size={14} className="text-purple-600 dark:text-purple-400" /> System Fingerprint
                             </h3>
                             <div className="space-y-3">
-                                <div className="flex justify-between text-sm border-b border-slate-800/50 pb-2">
-                                    <span className="text-slate-400">Operating System</span>
-                                    <span className="text-white font-medium flex items-center gap-2">
+                                <div className="flex justify-between text-sm border-b border-slate-200 dark:border-slate-800/50 pb-2">
+                                    <span className="text-slate-500 dark:text-slate-400">Operating System</span>
+                                    <span className="text-slate-900 dark:text-white font-medium flex items-center gap-2">
                                         {device.os === 'Linux' ? <Terminal size={14} /> : <Server size={14} />}
                                         {device.os}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-sm border-b border-slate-800/50 pb-2">
-                                    <span className="text-slate-400">Device Type</span>
-                                    <span className="text-white font-medium">{device.type}</span>
+                                <div className="flex justify-between text-sm border-b border-slate-200 dark:border-slate-800/50 pb-2">
+                                    <span className="text-slate-500 dark:text-slate-400">Device Type</span>
+                                    <span className="text-slate-900 dark:text-white font-medium">{device.type}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-slate-400">MAC Address</span>
+                                    <span className="text-slate-500 dark:text-slate-400">MAC Address</span>
                                     <span className="text-slate-500 font-mono text-xs">00:1B:44:11:3A:B7</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Open Ports */}
-                        <div className="modal-anim-item md:col-span-2 bg-slate-900/50 p-5 rounded-xl border border-slate-800 hover:border-slate-700 transition-colors">
+                        <div className="modal-anim-item md:col-span-2 bg-white dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
                             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                <Wifi size={14} className="text-amber-400" /> Network Exposure
+                                <Wifi size={14} className="text-amber-500 dark:text-amber-400" /> Network Exposure
                             </h3>
                             <div className="flex flex-wrap gap-3">
                                 {device.ports && device.ports.length > 0 ? (
                                     device.ports.map(port => (
-                                        <div key={port} className="flex flex-col items-center justify-center bg-slate-950 border border-slate-800 rounded-lg p-3 w-24 hover:border-blue-500/30 transition-colors group">
+                                        <div key={port} className="flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-3 w-24 hover:border-blue-500/30 transition-colors group">
                                             <span className="text-[10px] text-slate-500 uppercase font-bold mb-1">Port</span>
-                                            <span className="text-lg font-mono text-blue-400 font-bold group-hover:text-blue-300">{port}</span>
+                                            <span className="text-lg font-mono text-blue-600 dark:text-blue-400 font-bold group-hover:text-blue-500 dark:group-hover:text-blue-300">{port}</span>
                                         </div>
                                     ))
                                 ) : (
@@ -207,12 +207,12 @@ const DeviceDetailsModal = ({ device, onClose }) => {
                         </div>
 
                         {/* Security Analysis */}
-                        <div className="modal-anim-item md:col-span-2 bg-gradient-to-br from-slate-900 to-slate-900/50 p-5 rounded-xl border border-slate-800 relative overflow-hidden">
+                        <div className="modal-anim-item md:col-span-2 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800 relative overflow-hidden transition-colors">
                             <div className={`absolute top-0 left-0 w-1 h-full ${statusStyle.split(' ')[1]}`}></div>
                             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
                                 <Shield size={14} className={statusStyle.split(' ')[0]} /> Threat Analysis
                             </h3>
-                            <p className="text-sm text-slate-300 leading-relaxed">
+                            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                                 {device.status === 'Critical'
                                     ? "Multiple high-severity vulnerabilities detected. Unusual traffic patterns observed on port 445. Immediate isolation recommended."
                                     : device.status === 'Warning'
@@ -223,8 +223,8 @@ const DeviceDetailsModal = ({ device, onClose }) => {
                         </div>
 
                         {/* Deep Scan Section */}
-                        <div className="modal-anim-item md:col-span-2 bg-black/40 rounded-xl border border-slate-700 overflow-hidden shadow-inner">
-                            <div className="bg-[#0f172a] px-4 py-3 border-b border-slate-700 flex justify-between items-center">
+                        <div className="modal-anim-item md:col-span-2 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-inner transition-colors">
+                            <div className="bg-slate-100 dark:bg-[#0f172a] px-4 py-3 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center transition-colors">
                                 <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
                                     <Terminal size={14} />
                                     <span>ROOT_ACCESS :: DEEP_SCAN_V2.exe</span>
@@ -267,10 +267,10 @@ const DeviceDetailsModal = ({ device, onClose }) => {
                 </div>
 
                 {/* Footer */}
-                <div className="p-6 border-t border-slate-800/60 bg-[#0f172a]/80 backdrop-blur-md flex justify-end gap-4 shrink-0 relative z-10">
+                <div className="p-6 border-t border-slate-200 dark:border-slate-800/60 bg-slate-50/80 dark:bg-[#0f172a]/80 backdrop-blur-md flex justify-end gap-4 shrink-0 relative z-10 transition-colors">
                     <button
                         onClick={onClose}
-                        className="px-6 py-2.5 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors border border-transparent hover:border-slate-700"
+                        className="px-6 py-2.5 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 rounded-xl transition-colors border border-transparent hover:border-slate-300 dark:hover:border-slate-700"
                     >
                         Close
                     </button>

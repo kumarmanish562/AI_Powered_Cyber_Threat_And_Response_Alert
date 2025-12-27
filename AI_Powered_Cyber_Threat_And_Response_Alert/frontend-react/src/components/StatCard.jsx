@@ -30,7 +30,7 @@ const StatCard = ({ title, count, icon, colorClass, borderColor }) => {
     <>
       <div
         ref={cardRef}
-        className={`group relative bg-[#1e293b]/60 backdrop-blur-md rounded-2xl p-6 border border-slate-800/80 transition-colors duration-300 hover:border-slate-600 overflow-hidden shadow-xl cursor-pointer`}
+        className={`group relative bg-white/80 dark:bg-[#1e293b]/60 backdrop-blur-md rounded-2xl p-6 border border-slate-200 dark:border-slate-800/80 transition-colors duration-300 hover:border-slate-300 dark:hover:border-slate-600 overflow-hidden shadow-xl cursor-pointer`}
         onClick={() => setIsModalOpen(true)}
       >
 
@@ -40,35 +40,35 @@ const StatCard = ({ title, count, icon, colorClass, borderColor }) => {
         <div className="relative z-10">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <h3 className="text-slate-400 text-[11px] font-bold uppercase tracking-[0.1em] mb-2 flex items-center gap-2">
+              <h3 className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-[0.1em] mb-2 flex items-center gap-2">
                 {title}
               </h3>
               <div className="flex items-baseline gap-2">
                 {/* Main Number with subtle glow */}
-                <span className={`text-3xl font-extrabold tracking-tight text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]`}>
+                <span className={`text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]`}>
                   {count}
                 </span>
               </div>
             </div>
 
             {/* Icon Container with Glass effect */}
-            <div className={`stat-icon p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md shadow-inner transition-transform ${colorClass}`}>
+            <div className={`stat-icon p-3 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 backdrop-blur-md shadow-inner transition-transform ${colorClass}`}>
               {React.cloneElement(icon, { size: 24, strokeWidth: 2 })}
             </div>
           </div>
 
           {/* Divider */}
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent my-4 opacity-50"></div>
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent my-4 opacity-50"></div>
 
           {/* Bottom Action Area */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity">
               <TrendingUp size={12} className={colorClass} />
-              <span className="text-[10px] font-mono text-slate-400 uppercase">Live Data</span>
+              <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase">Live Data</span>
             </div>
 
             <button
-              className={`group/btn flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-white transition-colors uppercase tracking-wide`}
+              className={`group/btn flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-blue-600 dark:hover:text-white transition-colors uppercase tracking-wide`}
             >
               Details
               <ArrowRight size={12} className="transition-transform duration-300 group-hover/btn:translate-x-1" />

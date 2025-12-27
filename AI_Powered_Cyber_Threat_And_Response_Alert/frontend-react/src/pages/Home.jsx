@@ -12,7 +12,7 @@ import Footer from '../components/Home/Footer';
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-blue-500 selection:text-white scroll-smooth">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-200 font-sans selection:bg-blue-500 selection:text-white scroll-smooth transition-colors duration-300">
       <Navbar />
       <main>
         <Hero />
